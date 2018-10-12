@@ -23,18 +23,6 @@ public class GenAlgBusiness {
 	private int[][] citiesDistances;
 	
 	private Crossover xover = new Crossover();
-	/**
-	 * GenAlgBusiness
-	 * Create default object, only for testing.
-	 * For normal use, use GenAlgBusiness(int popSize, int iterationMax, int elitism, String[] cities, int[][] citiesDistances)
-	 */
-	public GenAlgBusiness() {
-		this.popSize = 10;
-		this.iterationMax = 50;
-		this.elitism = 2;
-		this.cities = CandD.c2;
-		this.citiesDistances = CandD.cd2;
-	}
 	
 	public GenAlgBusiness(int popSize, int iterationMax, int elitism, String[] cities, int[][] citiesDistances) {
 		this.popSize = popSize;
@@ -44,7 +32,7 @@ public class GenAlgBusiness {
 		this.citiesDistances = citiesDistances;
 	}
 
-	public void go() {
+	public String go() {
 		long startTime = System.currentTimeMillis();
 		pop = new Population(this.popSize,citiesDistances);
 		Population  newPop;
@@ -81,42 +69,10 @@ public class GenAlgBusiness {
 			pop = newPop;
 			
 		}
-		System.out.print(pop.getBestChrom().getChromValue()+" km : ");
-		System.out.println(pop.getBestChrom().getTour(cities));
 		long stopTime = System.currentTimeMillis();
 		long elapsedTime = stopTime - startTime;
-		wTF(pop.getBestChrom().getChromValue() + "\t" + elapsedTime);
+		
+		return pop.getBestChrom().getChromValue()/1000 +" km : " + pop.getBestChrom().getTour(cities);
 	}
 	
-	private void wTF(String result) {
-		String text = "";
-		try {
-			BufferedInputStream bis = new BufferedInputStream(new FileInputStream("C:\\Users\\user\\Desktop\\ga.txt"));
-			int i = 0;
-			while( (i = bis.read()) != -1 ) {
-				text += (char) i;
-			}
-			bis.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		BufferedOutputStream bos;
-		try {
-			bos = new BufferedOutputStream(new FileOutputStream("C:\\Users\\user\\Desktop\\ga.txt"));
-			byte[] textB = (text + System.lineSeparator() + result).getBytes();
-			
-			bos.write(textB);
-			
-			bos.flush();
-			bos.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		
-	}
 }

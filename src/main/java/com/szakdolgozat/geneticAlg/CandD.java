@@ -1,6 +1,6 @@
 package com.szakdolgozat.geneticAlg;
 
-public final class CandD {
+public class CandD {
 	public static final String[] c1= {"v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", "v11", "v12", "v13", "v14", "v15", "v16", "v17", "v18", "v19", "v20", "v21", "v22", "v23", "v24", "v25", "v26", "v27", "v28", "v29", "v30", "v31", "v32", "v33", "v34", "v35", "v36", "v37", "v38", "v39", "v40", "v41", "v42", "v43", "v44", "v45", "v46", "v47", "v48"};
 	public static final int[][] cd1= {{0, 4727, 1205, 6363, 3657, 3130, 2414,  563,  463, 5654, 1713, 1604, 2368, 2201, 1290, 1004, 3833, 2258, 3419, 2267, 2957,  720, 1700, 5279, 2578, 6076, 3465, 2654, 3625, 3115, 1574, 3951, 1748, 2142, 6755, 2383, 3306, 1029, 3530,  825, 2188, 4820, 3489, 1947, 6835, 1542, 2379, 3744},
 			{ 4727,    0, 3588, 2012, 1842, 6977, 6501, 5187, 5028, 2327, 4148, 4723, 3635, 3125, 4907, 3930, 7463, 6338, 7243, 5105, 4043, 4022, 3677, 2863, 3106, 1850, 7173, 6630, 1204, 6814, 6001, 3447, 5253, 2656, 3123, 6274, 7183, 5622, 3085, 4564, 2756, 1591, 7027, 6186, 3472, 5461, 4390, 2088},
@@ -60,6 +60,32 @@ public final class CandD {
 		    { 115,  82, 278, 368,   0, 103, 275 },
 		    {  83, 176, 161, 320, 103,   0, 228 },
 		    { 139, 285, 298, 131, 275, 228,   0 }
-	}; 	
+	};
+	
+	private int[][] distances;
+	private String[] cities;
+
+	public CandD(int[][] distances, String[] cities) {
+		this.distances = distances;
+		this.cities = cities;
+	}
+	
+	public int[][] getDistances() {
+		return distances;
+	}
+	
+	public void setDistances(int[][] distances) {
+		this.distances = distances;
+	}
+	
+	public String[] getCities() {
+		return cities;
+	}
+	
+	public void setCities(String[] cities) {
+		this.cities = cities;
+	}
+	
+	
 
 }

@@ -65,7 +65,7 @@ public class Chromosome implements Comparable{
 		this.fitness = (double)1/this.getChromValue();
 	}
 	
-	public int getChromValue() {
+	public double getChromValue() {
 		return this.value;
 	}
 	
