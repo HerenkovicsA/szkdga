@@ -31,7 +31,6 @@ public class DeliveryService {
 				if(i==j) {
 					distanceMatrix[i][j] = 0 ;
 				}else {
-					System.out.println(gs);
 					distanceMatrix[i][j] = gs.getDistance(askGoogle, addresses[i], addresses[j]);
 				}
 				

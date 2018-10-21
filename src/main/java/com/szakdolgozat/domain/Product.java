@@ -1,5 +1,6 @@
 package com.szakdolgozat.domain;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,9 +15,8 @@ import javax.persistence.OneToMany;
 
 @Entity
 @Table(name = "products")
-public class Product {
+public class Product implements Serializable{
 	
-	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 6652648022347822854L;
 	
 	@Id
@@ -81,10 +81,10 @@ public class Product {
 		result = prime * result + (int) (Id ^ (Id >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + onStock;
+		result = prime * result + ((pathToPicture == null) ? 0 : pathToPicture.hashCode());
 		long temp;
 		temp = Double.doubleToLongBits(price);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
-		result = prime * result + ((producttoorders == null) ? 0 : producttoorders.hashCode());
 		return result;
 	}
 
@@ -106,12 +106,12 @@ public class Product {
 			return false;
 		if (onStock != other.onStock)
 			return false;
-		if (Double.doubleToLongBits(price) != Double.doubleToLongBits(other.price))
-			return false;
-		if (producttoorders == null) {
-			if (other.producttoorders != null)
+		if (pathToPicture == null) {
+			if (other.pathToPicture != null)
 				return false;
-		} else if (!producttoorders.equals(other.producttoorders))
+		} else if (!pathToPicture.equals(other.pathToPicture))
+			return false;
+		if (Double.doubleToLongBits(price) != Double.doubleToLongBits(other.price))
 			return false;
 		return true;
 	}

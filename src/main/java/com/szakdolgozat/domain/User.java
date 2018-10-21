@@ -1,5 +1,6 @@
 package com.szakdolgozat.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -7,167 +8,164 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements Serializable{
 	
-	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 6652648022347822854L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long Id;
+	@ManyToOne
+	@JoinColumn(name = "role_id")
+	private Role role;	
 	private String name;
+	private String password;
 	private Date birthday;
 	private String email;
+	@Column(name = "phone_number")
 	private String phoneNumber;
-	private boolean male;
+	private int sex;
 	private String city;
 	private String address;
-	@Column(name = "housenumber")
+	@Column(name= "post_Code")
+	private int postCode;
+	@Column(name = "house_number")
 	private int houseNumber;
-	private String longitude;
-	private String latitude;
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
 	private Set<Order> ordersOfUser = new HashSet<Order>();
-	
-	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
+	private Set<Delivery> deliveriesOfEmployee = new HashSet<Delivery>();
+		
 	public User() {
 		
 	}
-
-
-	public User( String name, Date birthday, String email, String phoneNumber, boolean male, String city,
-			String address, int houseNumber, String longitude, String latitude, Set<Order> ordersOfUser) {
-		this.name = name;
-		this.birthday = birthday;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.male = male;
-		this.city = city;
-		this.address = address;
-		this.houseNumber = houseNumber;
-		this.longitude = longitude;
-		this.latitude = latitude;
-		this.ordersOfUser = ordersOfUser;
+	
+	public Role getRole() {
+		return role;
 	}
 
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public int getPostCode() {
+		return postCode;
+	}
+
+	public void setPostCode(int postCode) {
+		this.postCode = postCode;
+	}
+
+	public long getId() {
+		return Id;
+	}
+
+	public void setId(long id) {
+		Id = id;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 
 	public String getName() {
 		return name;
 	}
 
-
 	public void setName(String name) {
 		this.name = name;
 	}
-
 
 	public Date getBirthday() {
 		return birthday;
 	}
 
-
 	public void setBirthday(Date birthday) {
 		this.birthday = birthday;
 	}
-
 
 	public String getEmail() {
 		return email;
 	}
 
-
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
 
 	public String getPhoneNumber() {
 		return phoneNumber;
 	}
 
-
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
 	}
 
-
-	public boolean isMale() {
-		return male;
+	public int getSex() {
+		return sex;
 	}
 
-
-	public void setMale(boolean male) {
-		this.male = male;
+	public void setSex(int sex) {
+		this.sex = sex;
 	}
-
 
 	public String getCity() {
 		return city;
 	}
 
-
 	public void setCity(String city) {
 		this.city = city;
 	}
-
 
 	public String getAddress() {
 		return address;
 	}
 
-
 	public void setAddress(String address) {
 		this.address = address;
 	}
-
 
 	public int getHouseNumber() {
 		return houseNumber;
 	}
 
-
 	public void setHouseNumber(int houseNumber) {
 		this.houseNumber = houseNumber;
 	}
-
-
-	public String getLongitude() {
-		return longitude;
-	}
-
-
-	public void setLongitude(String longitude) {
-		this.longitude = longitude;
-	}
-
-
-	public String getLatitude() {
-		return latitude;
-	}
-
-
-	public void setLatitude(String latitude) {
-		this.latitude = latitude;
-	}
-
 
 	public Set<Order> getOrdersOfUser() {
 		return ordersOfUser;
 	}
 
-
 	public void setOrdersOfUser(Set<Order> ordersOfUser) {
 		this.ordersOfUser = ordersOfUser;
 	}
 
+	public Set<Delivery> getDeliveriesOfEmployee() {
+		return deliveriesOfEmployee;
+	}
+
+	public void setDeliveriesOfEmployee(Set<Delivery> deliveriesOfEmployee) {
+		this.deliveriesOfEmployee = deliveriesOfEmployee;
+	}
 
 	@Override
 	public int hashCode() {
@@ -179,12 +177,12 @@ public class User {
 		result = prime * result + ((city == null) ? 0 : city.hashCode());
 		result = prime * result + ((email == null) ? 0 : email.hashCode());
 		result = prime * result + houseNumber;
-		result = prime * result + ((latitude == null) ? 0 : latitude.hashCode());
-		result = prime * result + ((longitude == null) ? 0 : longitude.hashCode());
-		result = prime * result + (male ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((ordersOfUser == null) ? 0 : ordersOfUser.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
 		result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());
+		result = prime * result + postCode;
+		result = prime * result + ((role == null) ? 0 : role.hashCode());
+		result = prime * result + sex;
 		return result;
 	}
 
@@ -222,32 +220,29 @@ public class User {
 			return false;
 		if (houseNumber != other.houseNumber)
 			return false;
-		if (latitude == null) {
-			if (other.latitude != null)
-				return false;
-		} else if (!latitude.equals(other.latitude))
-			return false;
-		if (longitude == null) {
-			if (other.longitude != null)
-				return false;
-		} else if (!longitude.equals(other.longitude))
-			return false;
-		if (male != other.male)
-			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (ordersOfUser == null) {
-			if (other.ordersOfUser != null)
+		if (password == null) {
+			if (other.password != null)
 				return false;
-		} else if (!ordersOfUser.equals(other.ordersOfUser))
+		} else if (!password.equals(other.password))
 			return false;
 		if (phoneNumber == null) {
 			if (other.phoneNumber != null)
 				return false;
 		} else if (!phoneNumber.equals(other.phoneNumber))
+			return false;
+		if (postCode != other.postCode)
+			return false;
+		if (role == null) {
+			if (other.role != null)
+				return false;
+		} else if (!role.equals(other.role))
+			return false;
+		if (sex != other.sex)
 			return false;
 		return true;
 	}
@@ -255,10 +250,10 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [Id=" + Id + ", name=" + name + ", birthday=" + birthday + ", emailAddress=" + email
-				+ ", phoneNumber=" + phoneNumber + ", male=" + male + ", city=" + city + ", address=" + address
-				+ ", houseNumber=" + houseNumber + ", longitude=" + longitude + ", latitude=" + latitude
-				+ ", ordersOfUser=" + ordersOfUser + "]";
+		return "User [Id=" + Id + ", role name=" + role.getName() + ", name=" + name + ", password=" + password + ", birthday="
+				+ birthday + ", email=" + email + ", phoneNumber=" + phoneNumber + ", sex=" + sex + ", city=" + city
+				+ ", address=" + address + ", postCode=" + postCode + ", houseNumber=" + houseNumber + ", ordersOfUser="
+				+ ordersOfUser + ", deliveriesOfEmployee=" + deliveriesOfEmployee + "]";
 	}
 
 	

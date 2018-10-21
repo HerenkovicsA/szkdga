@@ -1,18 +1,20 @@
-INSERT INTO szkdg_db.users(
-			name, birthday, city, address, housenumber, latitude, longitude, email, male, phonenumber)
-    VALUES ( 'Nagy Pál', '1989-03-25', 'Győr', 'Szent István utca', 5, '47.682242', '17.6276891', 'nagypali89@freemail.hu', true, '+36201234567');
+INSERT INTO szkdg_db.roles(
+			name)
+    VALUES ('ADMIN'),('USER'),('EMPLOYEE');
 
-INSERT INTO szkdg_db.employees(
-			name, birthday, city, address, housenumber, email, male, phonenumber)
-    VALUES ( 'Kis Péter', '1992-04-22', 'Győr', 'Szent Imre utca', 9, 'kisP92@gmail.com', true, '+36201235486');
+INSERT INTO szkdg_db.users(
+			name, role_id, password, birthday, city, address, house_number, post_code, email, sex, phone_number)
+    VALUES ( 'Nagy Pál', 1, 'nagyP', '1989-03-25', 'Győr', 'Szent István utca', 5, 9022, 'nagypali89@freemail.hu', 0, '+36201234567'),
+    ( 'Kiss József', 2, 'KisJ', '1989-03-25', 'Győr', 'Szent István utca', 6, 9022, 'KisJ@gmail.com', 0, '+36202234567'),
+    ( 'Lakatos Ramóna', 3, 'LakatosR', '1999-03-25', 'Győr', 'Szent István utca', 7, 9022, 'lakatosR@freemail.hu', 1, '+36301234567');
 
 INSERT INTO szkdg_db.deliveries(
 			delivery_date, done, employee_id)
-    VALUES ( '2018-10-15', false, 1);
+    VALUES ( '2018-10-15', false, 3);
 	
 INSERT INTO szkdg_db.orders(
-			dead_line, done, delivery_id, user_id)
-    VALUES ( '2018-10-16', false, 1, 1);
+			dead_line, done, deliver_id, user_id)
+    VALUES ( '2018-10-16', false, 1, 2);
 	
 INSERT INTO szkdg_db.products(
 			name, onstock, price, path_to_picture)

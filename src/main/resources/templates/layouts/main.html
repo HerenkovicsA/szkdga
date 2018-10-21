@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="hu"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<title>Bolt</title>
+	
+<!-- 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" /> -->
+	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/side-bar.css}" href="../static/css/side-bar.css"/>
+	
+
+	<script type="text/javascript" th:src="@{/js/lib/jquery-2.0.3.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}"></script>
+</head>
+<body>
+
+	<form name="logoutForm" th:action="@{/logout}" method="post" th:hidden="true">
+		<input hidden type="submit" value="Sign Out"/>
+	</form> 
+   
+	<div class="container">
+		<div layout:fragment="everyContent">
+		</div>
+
+
+		<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>		
+		<footer>
+			<p>Bolt, minden egy helyen!</p>
+		</footer>
+	
+	</div>
+</body>
+</html>

@@ -34,7 +34,6 @@ public class GoogleService {
 	public int getDistance(boolean askGoogle, String origin, String destination) {
 		JsonNode jsNode = getDistanceJson(askGoogle, origin, destination);
 		int distance = jsNode.findValue("distance").findValue("value").asInt();
-		System.out.println("getDistnace "+ distance);
 		return distance;
 	}
 	

@@ -1,5 +1,6 @@
 package com.szakdolgozat.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,9 +17,8 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name ="orders")
-public class Order {
+public class Order implements Serializable{
 
-	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 6652648022347822854L;
 	
 	@Id
@@ -30,7 +30,7 @@ public class Order {
 	private User user;
 	private boolean done;
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<ProductsToOrders> productstoorder = new HashSet<ProductsToOrders>();
+	private Set<ProductsToOrders> producttoorders = new HashSet<ProductsToOrders>();
 	@ManyToOne
 	@JoinColumn(name = "deliver_id")
 	private Delivery delivery;
@@ -43,12 +43,12 @@ public class Order {
 		return Id;
 	}
 	
-	public Order(Date deadLine, User user, boolean done, Set<ProductsToOrders> productstoorder, Delivery delivery) {
+	public Order(Date deadLine, User user, boolean done, Set<ProductsToOrders> producttoorders, Delivery delivery) {
 		super();
 		this.deadLine = deadLine;
 		this.user = user;
 		this.done = done;
-		this.productstoorder = productstoorder;
+		this.producttoorders = producttoorders;
 		this.delivery = delivery;
 	}
 
@@ -84,13 +84,15 @@ public class Order {
 		this.done = done;
 	}
 
-	public Set<ProductsToOrders> getProductstoorder() {
-		return productstoorder;
+	public Set<ProductsToOrders> getProductstoorders() {
+		return producttoorders;
 	}
 
-	public void setProductstoorder(Set<ProductsToOrders> productstoorder) {
-		this.productstoorder = productstoorder;
+	public void setProductstoorders(Set<ProductsToOrders> producttoorders) {
+		this.producttoorders = producttoorders;
 	}
+
+	
 
 	@Override
 	public int hashCode() {
@@ -100,7 +102,6 @@ public class Order {
 		result = prime * result + ((deadLine == null) ? 0 : deadLine.hashCode());
 		result = prime * result + ((delivery == null) ? 0 : delivery.hashCode());
 		result = prime * result + (done ? 1231 : 1237);
-		result = prime * result + ((productstoorder == null) ? 0 : productstoorder.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
@@ -128,11 +129,6 @@ public class Order {
 			return false;
 		if (done != other.done)
 			return false;
-		if (productstoorder == null) {
-			if (other.productstoorder != null)
-				return false;
-		} else if (!productstoorder.equals(other.productstoorder))
-			return false;
 		if (user == null) {
 			if (other.user != null)
 				return false;
@@ -143,8 +139,8 @@ public class Order {
 
 	@Override
 	public String toString() {
-		return "Order [Id=" + Id + ", deadLine=" + deadLine + ", user=" + user + ", done=" + done + ", productstoorder="
-				+ productstoorder + ", delivery=" + delivery + "]";
+		return "Order [Id=" + Id + ", deadLine=" + deadLine + ", userId=" + user.getId() + ", done=" + done + ", producttoorders="
+				+ producttoorders + ", deliveryId=" + delivery.getId() + "]";
 	}
 
 	

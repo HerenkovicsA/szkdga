@@ -1,22 +1,17 @@
 package com.szakdolgozat.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.szakdolgozat.domain.User;
 import com.szakdolgozat.repository.UserRepository;
 
-@Service
-public class UserService {
-
-	private UserRepository userRepo;
+public interface UserService {
 	
-	public void createUer(User user){
-		userRepo.save(user);
-	}
-
-	public UserService(UserRepository userRepo) {
-		this.userRepo = userRepo;
-	}
+	public void createUser(User user);
 	
+	public User findByName(String name);
+	
+	public int registerUser(User userToRegister);
+
+	public User findByEmail(String email);
+	
+	public void encodeExistingUserPassword();
 }

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html class="no-js"
+		lang="en"
+		xmlns:th="http://www.thymleaf.org"
+		layout:decorator="layouts/main">
+		
+<head>
+<meta charset="utf-8" />
+<title>Shop</title>
+<meta name="description" content="Holiday Manager">
+<meta name="viewport" content="width=device-width">
+
+
+</head>
+<body>
+	<div layout:fragment="everyContent">
+		<h1 class='col-xs-offset-5'>Shop</h1>
+	
+		<div class="btn-group-vertical col-xs-4 col-xs-offset-4">
+			<a href="http://localhost:8080/solution" class="btn btn-primary main-login-btn" id="playerMainBtn">NOOOO</a>
+			<a href="http://localhost:8080/admin" class="btn btn-danger main-login-btn" id="operatorMainBtn">Admin</a>
+			<p th:text="${solution}">Solution's gonna be here</p>
+		</div>
+		
+	</div>
+</body>
+</html>

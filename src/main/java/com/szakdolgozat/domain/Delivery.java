@@ -1,5 +1,6 @@
 package com.szakdolgozat.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
@@ -16,9 +17,8 @@ import javax.persistence.ManyToOne;
 
 @Entity
 @Table(name = "deliveries")
-public class Delivery {
+public class Delivery implements Serializable{
 	
-	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 6652648022347822854L;
 	
 	@Id
@@ -26,7 +26,7 @@ public class Delivery {
 	private long Id;
 	@ManyToOne
 	@JoinColumn(name = "employee_id")
-	private Employee employee;
+	private User user;
 	private Date deliveryDate;
 	private boolean done;
 	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -34,14 +34,6 @@ public class Delivery {
 	
 	public Delivery() {
 	
-	}
-
-	public Delivery(Employee employee, Date deliveryDate, boolean done, Set<Order> ordersOfDelivery) {
-		super();
-		this.employee = employee;
-		this.deliveryDate = deliveryDate;
-		this.done = done;
-		this.ordersOfDelivery = ordersOfDelivery;
 	}
 
 	public long getId() {
@@ -52,12 +44,12 @@ public class Delivery {
 		Id = id;
 	}
 
-	public Employee getEmployee() {
-		return employee;
+	public User getEmployee() {
+		return user;
 	}
 
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
+	public void setEmployee(User employee) {
+		this.user = employee;
 	}
 
 	public Date getDeliveryDate() {
@@ -84,8 +76,6 @@ public class Delivery {
 		this.ordersOfDelivery = ordersOfDelivery;
 	}
 
-	
-	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -93,8 +83,7 @@ public class Delivery {
 		result = prime * result + (int) (Id ^ (Id >>> 32));
 		result = prime * result + ((deliveryDate == null) ? 0 : deliveryDate.hashCode());
 		result = prime * result + (done ? 1231 : 1237);
-		result = prime * result + ((employee == null) ? 0 : employee.hashCode());
-		result = prime * result + ((ordersOfDelivery == null) ? 0 : ordersOfDelivery.hashCode());
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
 
@@ -116,22 +105,17 @@ public class Delivery {
 			return false;
 		if (done != other.done)
 			return false;
-		if (employee == null) {
-			if (other.employee != null)
+		if (user == null) {
+			if (other.user != null)
 				return false;
-		} else if (!employee.equals(other.employee))
-			return false;
-		if (ordersOfDelivery == null) {
-			if (other.ordersOfDelivery != null)
-				return false;
-		} else if (!ordersOfDelivery.equals(other.ordersOfDelivery))
+		} else if (!user.equals(other.user))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return "Delivery [Id=" + Id + ", employee=" + employee + ", deliveryDate=" + deliveryDate + ", done=" + done
+		return "Delivery [Id=" + Id + ", employeeId=" + user.getId() + ", deliveryDate=" + deliveryDate + ", done=" + done
 				+ ", ordersOfDelivery=" + ordersOfDelivery + "]";
 	}
 	

@@ -1,7 +1,10 @@
 package com.szakdolgozat.domain;
 
+import java.io.Serializable;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -9,10 +12,12 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "productstoorders")
-public class ProductsToOrders {
+public class ProductsToOrders implements Serializable{
+	
+	private static final long serialVersionUID = 6652648022347822854L;
 	
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long Id;
 	@ManyToOne
 	@JoinColumn(name = "productId")
@@ -97,7 +102,7 @@ public class ProductsToOrders {
 
 	@Override
 	public String toString() {
-		return "ProductsToOrders [Id=" + Id + ", product=" + product + ", order=" + order + ", quantity=" + quantity
+		return "ProductsToOrders [Id=" + Id + ", productId=" + product.getId() + ", orderId=" + order.getId() + ", quantity=" + quantity
 				+ "]";
 	}
 	

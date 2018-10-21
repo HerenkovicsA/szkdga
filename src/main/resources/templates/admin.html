@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html class="no-js"  layout:decorator="layouts/main">
+<head>
+
+<script type="text/javascript" th:src="@{/js/lib/jquery-2.0.3.min.js}" src="../static/js/lib/jquery-2.0.3.min.js"></script> 
+<script type="text/javascript" th:src="@{/js/admin.js}" src="../static/js/admin.js"></script>
+
+</head>
+<body>
+	<div layout:fragment="everyContent">
+		<div id="mySidenav" class="sidenav">
+			<a href="" class="closebtn" id="closebtn">&times;</a>
+			<a href="/">Bolt</a>
+			<a href="/admin?employees">Alkalmazottak</a>
+			<a href="/admin?products">Termékek</a>
+			<a href="/admin?orders">Megrendelések</a>
+			<a href="/admin?deliveries">Kiszállítások</a>
+			<a href="javascript: document.logoutForm.submit()" role="menuitem"> Logout</a>
+		</div>
+		
+		<!-- Use any element to open the sidenav -->
+		<button type="button" class="btn btn-primary" id= "openNav">open</button>
+		
+		<!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
+		<div id="main">
+			<div th:if="${param.employees}">
+				Alkalmazottak
+			</div>
+			<div th:if="${param.products}">
+				Termékek
+			</div>
+			<div th:if="${param.orders}">
+				Megrendelések
+			</div>
+			<div th:if="${param.deliveries}">
+				Kiszállítások
+			</div>
+		</div>
+	</div>
+</body>
+</html>
