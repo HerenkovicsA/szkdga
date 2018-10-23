@@ -16,6 +16,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name = "users")
@@ -25,22 +32,38 @@ public class User implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false)
 	private long Id;
 	@ManyToOne
-	@JoinColumn(name = "role_id")
-	private Role role;	
+	@JoinColumn(name = "role_id", nullable = false)
+	private Role role;
+	@Column(nullable = false)
+	@Pattern(regexp = "(?U)[-.\\p{L}\\s]+", message = "A név csak unicode karaktereket tartalmazhat (számokat nem)")
 	private String name;
+	@Column(nullable = false)
 	private String password;
+	@Column(nullable = false)
+	@Past(message = "Születésnap a mai napnál korábbi kell, hogy legyen")
+	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private Date birthday;
+	@Column(nullable = false)
+	@Email(message = "Email cím csak valid cím lehet (valami@valami.valami).")
 	private String email;
-	@Column(name = "phone_number")
+	@Column(name = "phone_number", nullable = false)
+	@Pattern(regexp = "([237]0\\d{7}+)|(\\d{8}+)", message = "Mobil: 20 vagy 30 vagy 70 -el kell kezdődnie, "
+			+ "majd további 7 szám (201234567) vagy vezetékes: 8 szám (96123456)")
 	private String phoneNumber;
+	@Column(nullable = false)
 	private int sex;
+	@Column(nullable = false)
 	private String city;
+	@Column(nullable = false)
 	private String address;
-	@Column(name= "post_Code")
+	@Column(name= "post_Code", nullable = false)
+	@Min(1000)
+	@Max(9999)
 	private int postCode;
-	@Column(name = "house_number")
+	@Column(name = "house_number", nullable = false)
 	private int houseNumber;
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
 	private Set<Order> ordersOfUser = new HashSet<Order>();

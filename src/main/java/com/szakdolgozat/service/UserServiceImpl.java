@@ -60,11 +60,11 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	@Override
 	public int registerUser(User userToRegister) {
 		User userCheck = findByEmail(userToRegister.getEmail());
-
 		if (userCheck != null)	return 0;
-		userToRegister.setRole(roleRepo.findByName(USER_ROLE));		
+		userToRegister.setRole(roleRepo.findByName(USER_ROLE));
+		userToRegister.setPhoneNumber(userToRegister.getPhoneNumber());
 		userToRegister.setPassword(passwordEncoder.encode(userToRegister.getPassword()));
-		userRepo.save(userToRegister);		
+		userRepo.save(userToRegister);
 
 		return 1;
 	}

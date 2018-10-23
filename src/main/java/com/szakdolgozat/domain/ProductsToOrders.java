@@ -2,6 +2,7 @@ package com.szakdolgozat.domain;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,13 +19,15 @@ public class ProductsToOrders implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false)
 	private long Id;
 	@ManyToOne
-	@JoinColumn(name = "productId")
+	@JoinColumn(name = "productId", nullable = false)
 	private Product product;
 	@ManyToOne
-	@JoinColumn(name = "orderId")
+	@JoinColumn(name = "orderId", nullable = false)
 	private Order order;
+	@Column(nullable = false)
 	private int quantity;
 
 	public ProductsToOrders() {

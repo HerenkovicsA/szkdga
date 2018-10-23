@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,11 +24,14 @@ public class Delivery implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false)
 	private long Id;
 	@ManyToOne
-	@JoinColumn(name = "employee_id")
+	@JoinColumn(name = "employee_id", nullable = false)
 	private User user;
+	@Column(nullable = false)
 	private Date deliveryDate;
+	@Column(nullable = false)
 	private boolean done;
 	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Order> ordersOfDelivery = new HashSet<Order>();

@@ -21,14 +21,17 @@ public class Product implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false)
 	private long Id;
+	@Column(nullable = false)
 	private String name;
+	@Column(nullable = false)
 	private double price;
-	@Column(name = "onstock")
+	@Column(name = "onstock", nullable = false)
 	private int onStock;
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<ProductsToOrders> producttoorders = new HashSet<ProductsToOrders>();
-	@Column(length = 2000)
+	@Column(length = 2000, nullable = false)
 	private String pathToPicture;
 	
 	public Product() {

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="hu" layout:decorator="layouts/main">
+<head>
+</head>
+<body>
+<div layout:fragment="everyContent">
+   
+    <article>
+        <header>
+            <h1 th:text="${error}">The problem</h1> 
+        </header>
+    
+ 	    <section >
+            <p th:text="${message}">Message.</p>
+            <p th:text="${path}">Path.</p>
+            <p th:text="${status}">Status</p>
+            <p th:text="${timestamp}">Time stamp</p>
+        </section>      
+    </article>
+
+
+</div>
+</body>
+</html>

@@ -8,18 +8,21 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.szakdolgozat.service.DeliveryService;
+import com.szakdolgozat.service.UserService;
 
 @Controller
 public class HomeController {
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
+	private UserService us;
 	private DeliveryService ds;
 	private String[] addresses = {"Dunaszeg Rákóczi Ferenc utca 8.", "Abda Szent Imre utca 8.", "Győr Március 15. utca 3."}; 
 
 	@Autowired
-	public HomeController(DeliveryService ds) {
+	public HomeController(DeliveryService ds, UserService us) {
 		this.ds = ds;
+		this.us = us;
 	}
 	
 	@RequestMapping("/")

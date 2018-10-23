@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,16 +24,19 @@ public class Order implements Serializable{
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(nullable = false)
 	private long Id;
+	@Column(nullable = false)
 	private Date deadLine;
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
+	@Column(nullable = false)
 	private boolean done;
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<ProductsToOrders> producttoorders = new HashSet<ProductsToOrders>();
 	@ManyToOne
-	@JoinColumn(name = "deliver_id")
+	@JoinColumn(name = "deliver_id", nullable = false)
 	private Delivery delivery;
 	
 	public Order() {
