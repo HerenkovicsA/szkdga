@@ -1,5 +1,8 @@
 package com.szakdolgozat.service;
 
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -10,6 +13,9 @@ import org.springframework.stereotype.Service;
 
 import com.szakdolgozat.repository.RoleRepository;
 import com.szakdolgozat.service.UserDetailsImpl;
+import com.szakdolgozat.domain.Delivery;
+import com.szakdolgozat.domain.Order;
+import com.szakdolgozat.domain.ProductsToOrders;
 import com.szakdolgozat.domain.Role;
 import com.szakdolgozat.domain.User;
 import com.szakdolgozat.repository.UserRepository;
@@ -25,13 +31,25 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	private final String ADMIN_ROLE = "ADMIN";
 	private final String EMPLOYEE_ROLE = "EMPLOYEE";
 	
-	@Autowired
-	public UserServiceImpl(UserRepository userRepo, RoleRepository roleRepo, BCryptPasswordEncoder passwordEncoder) {
-		this.userRepo = userRepo;
-		this.roleRepo = roleRepo;
-		this.passwordEncoder = passwordEncoder;
+	public UserServiceImpl() {
+		
 	}
 	
+	@Autowired
+	public void setUserRepo(UserRepository userRepo) {
+		this.userRepo = userRepo;
+	}
+
+	@Autowired
+	public void setRoleRepo(RoleRepository roleRepo) {
+		this.roleRepo = roleRepo;
+	}
+
+	@Autowired
+	public void setPasswordEncoder(BCryptPasswordEncoder passwordEncoder) {
+		this.passwordEncoder = passwordEncoder;
+	}
+
 	public void createUser(User user){
 		userRepo.save(user);
 	}
@@ -79,5 +97,55 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 			System.out.println("     encoded:  " + user.getPassword()) ;
 			userRepo.save(user);
 		}
+	}
+
+	@Override
+	public List<User> findAllEmployees() throws Exception {
+		List<User> employees = userRepo.findAllByRole(roleRepo.findByName(EMPLOYEE_ROLE));
+		if(employees.isEmpty()) throw new Exception("No employee found");
+		return employees;
+	}
+
+	@Override
+	public List<User> findAllUsers() throws Exception {
+		List<User> users = userRepo.findAllByRole(roleRepo.findByName(USER_ROLE));
+		if(users.isEmpty()) throw new Exception("No user found");
+		return users;
+	}
+
+	@Override
+	public Set<Order> findOrdersOfUser(long userId) throws Exception {
+		User user = userRepo.findById(userId).get();
+		Set<Order> ordersOfUserSet = user.getOrdersOfUser();
+		if(ordersOfUserSet.isEmpty()) throw new Exception("No orders to user");
+		return ordersOfUserSet;
+	}
+
+	@Override
+	public Set<Delivery> findDeliveriesOfEmployee(long employeeId) throws Exception {
+		User employee = userRepo.findById(employeeId).get();
+		Set<Delivery> deliveriesOfEmployeeSet = employee.getDeliveriesOfEmployee();
+		if(deliveriesOfEmployeeSet.isEmpty()) throw new Exception("No delivery to employee");
+		return deliveriesOfEmployeeSet;
+	}
+
+	@Override
+	public void editUser(User userToEdit) throws Exception{
+		User user = userRepo.findById(userToEdit.getId()).get();
+		if( !user.getEmail().equals(userToEdit.getEmail()) && userRepo.findByEmail(userToEdit.getEmail())!=null)
+			throw new Exception("Az email cím már foglalt.");
+		if(!userToEdit.getPassword().isEmpty()) 
+			user.setPassword(passwordEncoder.encode(userToEdit.getPassword()));
+		user.setAddress(userToEdit.getAddress());
+		user.setBirthday(userToEdit.getBirthday());
+		user.setCity(userToEdit.getCity());
+		user.setEmail(userToEdit.getEmail());
+		user.setHouseNumber(userToEdit.getHouseNumber());
+		user.setName(userToEdit.getName());
+		user.setPhoneNumber(userToEdit.getPhoneNumber());
+		user.setPostCode(userToEdit.getPostCode());
+		user.setRole(userToEdit.getRole());
+		user.setSex(userToEdit.getSex());
+		userRepo.save(user);
 	}
 }

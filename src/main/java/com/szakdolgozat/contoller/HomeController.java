@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.szakdolgozat.service.DeliveryService;
+import com.szakdolgozat.service.DeliveryServiceImpl;
 import com.szakdolgozat.service.UserService;
 
 @Controller
@@ -16,11 +16,11 @@ public class HomeController {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private UserService us;
-	private DeliveryService ds;
+	private DeliveryServiceImpl ds;
 	private String[] addresses = {"Dunaszeg Rákóczi Ferenc utca 8.", "Abda Szent Imre utca 8.", "Győr Március 15. utca 3."}; 
 
 	@Autowired
-	public HomeController(DeliveryService ds, UserService us) {
+	public HomeController(DeliveryServiceImpl ds, UserService us) {
 		this.ds = ds;
 		this.us = us;
 	}
@@ -34,11 +34,6 @@ public class HomeController {
 	public String solution(Model model) {
 		model.addAttribute("solution", ds.getShortestRoute(false, 30, 500, addresses));
 		return "index";
-	}
-	
-	@RequestMapping("/admin")
-	public String admin(){
-		return "admin";
 	}
 	
 	@RequestMapping("/employee")

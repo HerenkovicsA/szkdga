@@ -1,0 +1,22 @@
+#openNav{
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+.errorMessages{
+	display: none;
+}
+.addButton{
+  max-width:15%;
+  max-height:15%;
+  float: right;
+  width: auto;
+  height: auto;
+}
+.header h1 {
+  position: relative;
+}
+img.deletePic{
+	height:20%;
+	width:20%;
+}

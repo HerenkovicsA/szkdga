@@ -30,10 +30,10 @@ public class Product implements Serializable{
 	@Column(name = "onstock", nullable = false)
 	private int onStock;
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<ProductsToOrders> producttoorders = new HashSet<ProductsToOrders>();
+	private Set<ProductsToOrders> productsToOrder = new HashSet<ProductsToOrders>();
 	@Column(length = 2000, nullable = false)
 	private String pathToPicture;
-	
+
 	public Product() {
 	}
 
@@ -67,14 +67,22 @@ public class Product implements Serializable{
 
 	public void setOnStock(int onStock) {
 		this.onStock = onStock;
+	}	
+	
+	public String getPathToPicture() {
+		return pathToPicture;
 	}
 
-	public Set<ProductsToOrders> getProducttoorders() {
-		return producttoorders;
+	public void setPathToPicture(String pathToPicture) {
+		this.pathToPicture = pathToPicture;
 	}
 
-	public void setProducttoorders(Set<ProductsToOrders> producttoorders) {
-		this.producttoorders = producttoorders;
+	public Set<ProductsToOrders> getProductstoOrder() {
+		return productsToOrder;
+	}
+
+	public void setProductstoOrder(Set<ProductsToOrders> productsToOrder) {
+		this.productsToOrder = productsToOrder;
 	}
 
 	@Override
@@ -122,7 +130,7 @@ public class Product implements Serializable{
 	@Override
 	public String toString() {
 		return "Product [Id=" + Id + ", name=" + name + ", price=" + price + ", onStock=" + onStock
-				+ ", producttoorders=" + producttoorders + "]";
+				+ ", producttoorders=" + productsToOrder + "]";
 	}
 
 		

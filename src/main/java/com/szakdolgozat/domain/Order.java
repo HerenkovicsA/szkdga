@@ -34,10 +34,12 @@ public class Order implements Serializable{
 	@Column(nullable = false)
 	private boolean done;
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Set<ProductsToOrders> producttoorders = new HashSet<ProductsToOrders>();
+	private Set<ProductsToOrders> productsToOrder = new HashSet<ProductsToOrders>();
 	@ManyToOne
 	@JoinColumn(name = "deliver_id", nullable = false)
 	private Delivery delivery;
+	@Column
+	private double value;
 	
 	public Order() {
 		
@@ -47,13 +49,21 @@ public class Order implements Serializable{
 		return Id;
 	}
 	
-	public Order(Date deadLine, User user, boolean done, Set<ProductsToOrders> producttoorders, Delivery delivery) {
-		super();
+	public Order(Date deadLine, User user, boolean done, Set<ProductsToOrders> producttoorders, Delivery delivery, double value) {
 		this.deadLine = deadLine;
 		this.user = user;
 		this.done = done;
-		this.producttoorders = producttoorders;
+		this.productsToOrder = producttoorders;
 		this.delivery = delivery;
+		this.value = value;
+	}
+	
+	public double getValue() {
+		return value;
+	}
+
+	public void setValue(double value) {
+		this.value = value;
 	}
 
 	public Delivery getDelivery() {
@@ -88,12 +98,12 @@ public class Order implements Serializable{
 		this.done = done;
 	}
 
-	public Set<ProductsToOrders> getProductstoorders() {
-		return producttoorders;
+	public Set<ProductsToOrders> getProductsToOrder() {
+		return productsToOrder;
 	}
 
-	public void setProductstoorders(Set<ProductsToOrders> producttoorders) {
-		this.producttoorders = producttoorders;
+	public void setProductsToOrder(Set<ProductsToOrders> productsToOrder) {
+		this.productsToOrder = productsToOrder;
 	}
 
 	
@@ -107,6 +117,9 @@ public class Order implements Serializable{
 		result = prime * result + ((delivery == null) ? 0 : delivery.hashCode());
 		result = prime * result + (done ? 1231 : 1237);
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(value);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
 
@@ -138,13 +151,15 @@ public class Order implements Serializable{
 				return false;
 		} else if (!user.equals(other.user))
 			return false;
+		if (Double.doubleToLongBits(value) != Double.doubleToLongBits(other.value))
+			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		return "Order [Id=" + Id + ", deadLine=" + deadLine + ", userId=" + user.getId() + ", done=" + done + ", producttoorders="
-				+ producttoorders + ", deliveryId=" + delivery.getId() + "]";
+				+ productsToOrder + ", deliveryId=" + delivery.getId() + "value=" + value + "]";
 	}
 
 	

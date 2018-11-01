@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<body>
+	<form th:fragment="user" method="post">
+		<div id="emailError" class="alert alert-danger errorMessages"></div>
+		<div id="postCodeError" class="alert alert-danger errorMessages"></div>
+		<input type="text" id="id" style="display:none"/>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Email cím: </label>
+			<div class="col-sm-10">
+				<input type="text" id="email" class="form-control" required/>
+				<div style="color: red" id="emailErrorDiv" class="errorMessages"></div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Jelszó:  </label>
+			<div class="col-sm-10">
+				<input type="password" id="password" class="form-control" placeholder="Hagyja üresen, ha nem akarja megváltoztatni"/>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Teljes név:  </label>
+			<div class="col-sm-10">
+				<input type="text" id="name" class="form-control" required />
+				<div style="color: red" id="nameErrorDiv" class="errorMessages"></div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Születésnap:  </label>
+			<div class="col-sm-10">
+				<input type="date" id="birthday" class="form-control" required/>
+				<div style="color: red" id="birthdayErrorDiv" class="errorMessages"></div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Telefonszám:  </label>
+			<div class="col-sm-10">
+				<input type="text" id="phoneNumber" class="form-control" required />
+				<div style="color: red" id="phoneNumberErrorDiv" class="errorMessages"></div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Nem: </label>
+			<div class="col-sm-10">
+				<select id="sex" class="form-control" required>
+					<option value="0">Férfi</option>
+					<option value="1">Nő</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Irányítószám:  </label>
+			<div class="col-sm-10">
+				<input type="text" id="postCode" class="form-control" required />
+				<div style="color: red" id="postCodeErrorDiv" class="errorMessages"></div>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Város:  </label>
+			<div class="col-sm-10">
+				<input type="text" id="city" class="form-control" required />
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Cím (utca/tér/stb.):  </label>
+			<div class="col-sm-10">
+				<input type="text" id="address" class="form-control" required />
+			</div>
+		</div>
+		<div class="form-group row">	
+			<label class="col-sm-2 col-form-label">Ház szám:  </label>
+			<div class="col-sm-10">
+				<input type="text" id="houseNumber" class="form-control" required/>
+			</div>
+		</div>
+				<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Szerepkör: </label>
+			<div class="col-sm-10">
+				<select id="role" class="form-control" required>
+					<option value="1">ADMIN</option>
+					<option value="2">USER</option>
+					<option value="3">EMPLOYEE</option>
+				</select>
+			</div>
+		</div>
+		<p><input id="submitUser" type="submit" value="Submit" /> </p>
+	</form>
+<!--+++++++++++++++++++++++++++++++++++++++++New produc modal++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<form th:fragment="newProduct" th:action="@{/admin/addProduct}" th:object="${newProduct}" method="post" enctype="multipart/form-data">
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Név:  </label>
+			<div class="col-sm-10">
+				<input type="text" th:field="*{name}" id="name" class="form-control" required />
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Raktáron:  </label>
+			<div class="col-sm-10">
+				<input type="number" th:field="*{onStock}" id="onStock" class="form-control" required />
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Ár:  </label>
+			<div class="col-sm-10">
+				<input type="number" th:field="*{price}" step="0.01" id="price" class="form-control" required />
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Kép:  </label>
+			<div class="col-sm-10">
+				<input type="file" accept="image/*" name="file" id="picture" class="form-control" multiple="multiple" required />
+			</div>
+		</div>
+		<p><input id="submitAddProduct" type="submit" value="Hozzáad" /> </p>
+	</form>
+	<form th:fragment="t"></form>
+</body>
+</html>
