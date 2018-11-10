@@ -123,8 +123,6 @@ public class OrderServiceImpl implements OrderService {
 			
 			if(Boolean.parseBoolean(productArrayInfo[2])) {
 				try {
-					removeProductsToOrdersFromOrder(ptos.findByOrderAndProduct(
-							Long.valueOf(map.get("orderId").toString()) ,Long.parseLong(productArrayInfo[0])), orderToEdit);
 					ptos.deleteByOrderIdAndProductId(Long.valueOf(map.get("orderId").toString()) ,Long.parseLong(productArrayInfo[0]));
 				} catch (Exception e) {
 					log.error(e.getMessage());
@@ -132,16 +130,9 @@ public class OrderServiceImpl implements OrderService {
 				
 			}
 		}
+		or.save(orderToEdit);
 	}
 	
-	private void removeProductsToOrdersFromOrder(ProductsToOrders ptoToRemove, Order order) {
-		System.out.println(order.getProductsToOrder());
-		Set<ProductsToOrders> ptoSet = order.getProductsToOrder();
-		if(ptoSet.contains(ptoToRemove)) {
-			ptoSet.remove(ptoToRemove);
-			order.setProductsToOrder(ptoSet);
-		} else log.error("ProductsToOrders with " + ptoToRemove.getId() + " id is not belongs to order with " + order.getId() + " id");
-		System.out.println(order.getProductsToOrder());
-	}
+
 
 }
