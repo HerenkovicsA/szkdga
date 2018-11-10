@@ -8,7 +8,7 @@ public interface ProductService {
 
 	List<Product> findAll() throws Exception;
 	
-	void addNewProduct(Product product, String pathToFile);
+	void addOrEditProduct(Product product, String pathToFile);
 
 	String deleteProduct(long id);
 

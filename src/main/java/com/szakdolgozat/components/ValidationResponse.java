@@ -1,4 +1,4 @@
-package com.szakdolgozat.validation;
+package com.szakdolgozat.components;
 
 import java.util.List;
 

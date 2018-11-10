@@ -31,4 +31,9 @@ public interface UserService {
 	public Set<Delivery> findDeliveriesOfEmployee(long employeeId) throws Exception;
 
 	public void editUser(User user) throws Exception;
+
+	public String deleteUser(long id);
+
+	public Object getAllUserNameAndId() throws Exception;
+
 }

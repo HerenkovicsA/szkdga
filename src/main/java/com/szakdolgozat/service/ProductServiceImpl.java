@@ -30,11 +30,17 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void addNewProduct(Product product, String pathToFile) {
-		Product productToSave = new Product();
+	public void addOrEditProduct(Product product, String pathToFile) {
+		Product productToSave;
+		if(pathToFile != null) {
+			productToSave = new Product();
+			productToSave.setPathToPicture(pathToFile);
+		}else {
+			productToSave = pr.findById(product.getId()).get();
+			productToSave.setPathToPicture(product.getPathToPicture());
+		}		
 		productToSave.setName(product.getName());
 		productToSave.setOnStock(product.getOnStock());
-		productToSave.setPathToPicture(pathToFile);
 		productToSave.setPrice(product.getPrice());
 		pr.save(productToSave);
 	}

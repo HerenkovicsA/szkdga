@@ -87,8 +87,8 @@
 		</div>
 		<p><input id="submitUser" type="submit" value="Submit" /> </p>
 	</form>
-<!--+++++++++++++++++++++++++++++++++++++++++New produc modal++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
-	<form th:fragment="newProduct" th:action="@{/admin/addProduct}" th:object="${newProduct}" method="post" enctype="multipart/form-data">
+<!--+++++++++++++++++++++++++++++++++++++++++Product modal++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<form th:fragment="newProduct" th:action="@{/admin/addOrEditProduct}" th:object="${newProduct}" method="post" enctype="multipart/form-data">
 		<div class="form-group row">
 			<label class="col-sm-2 col-form-label">Név:  </label>
 			<div class="col-sm-10">
@@ -98,13 +98,13 @@
 		<div class="form-group row">
 			<label class="col-sm-2 col-form-label">Raktáron:  </label>
 			<div class="col-sm-10">
-				<input type="number" th:field="*{onStock}" id="onStock" class="form-control" required />
+				<input type="number" th:field="*{onStock}" id="onStock" class="form-control" required min="0"/>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label class="col-sm-2 col-form-label">Ár:  </label>
 			<div class="col-sm-10">
-				<input type="number" th:field="*{price}" step="0.01" id="price" class="form-control" required />
+				<input type="number" th:field="*{price}" step="0.01" id="price" class="form-control" required min="0" />
 			</div>
 		</div>
 		<div class="form-group row">
@@ -112,8 +112,44 @@
 			<div class="col-sm-10">
 				<input type="file" accept="image/*" name="file" id="picture" class="form-control" multiple="multiple" required />
 			</div>
+			<p class="col-sm-12" id="infoPicEdit" hidden>Ha nem akar változtatni a képen, hagyja üresen a mezőt</p>
 		</div>
+		<input type="text" th:field="*{pathToPicture}" hidden/>
+		<input type="text" th:field="*{id}" hidden/>
 		<p><input id="submitAddProduct" type="submit" value="Hozzáad" /> </p>
+	</form>
+<!--+++++++++++++++++++++++++++++++++++++++++Orders modal++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
+	<form th:fragment="editOrder" method="post">
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Vásárló:  </label>
+			<div class="col-sm-10">
+			<!-- Vásárló dropdown --><select id="user"></select>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Határidő:  </label>
+			<div class="col-sm-10">
+				<input type="date" id="deadLine" class="form-control" required/>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Kézbesítve:  </label>
+			<div class="col-sm-10">
+				<input type="checkbox" class="form-control" id="done"/>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Érték:  </label>
+			<div class="col-sm-10">
+				<input type="number" class="form-control" id="value" disabled/>
+			</div>
+		</div>
+		<input type="text" id="id" hidden/>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label">Termékek:  </label>
+			<table id="orderTable"></table>
+		</div>
+		<p><input id="submitOrder" type="submit" value="Módosít" /> </p>
 	</form>
 	<form th:fragment="t"></form>
 </body>

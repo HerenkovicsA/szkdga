@@ -7,9 +7,13 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
@@ -29,7 +33,8 @@ public class Product implements Serializable{
 	private double price;
 	@Column(name = "onstock", nullable = false)
 	private int onStock;
-	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
+	@JsonManagedReference
 	private Set<ProductsToOrders> productsToOrder = new HashSet<ProductsToOrders>();
 	@Column(length = 2000, nullable = false)
 	private String pathToPicture;

@@ -1,6 +1,10 @@
 package com.szakdolgozat.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -147,5 +151,26 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 		user.setRole(userToEdit.getRole());
 		user.setSex(userToEdit.getSex());
 		userRepo.save(user);
+	}
+
+	@Override
+	public String deleteUser(long id) {
+		boolean exists = userRepo.findById(id).isPresent();
+		if(exists) {
+			userRepo.deleteById(id);
+			return "deleted";
+		}else {
+			return "not exists";
+		}
+	}
+
+	@Override
+	public Object getAllUserNameAndId() throws Exception {
+		Map<Long, String> users = new HashMap<Long, String>();
+		List<User> userList = findAllUsers();
+		for (User user : userList) {
+			users.put(user.getId(), user.getName());
+		}
+		return users;
 	}
 }

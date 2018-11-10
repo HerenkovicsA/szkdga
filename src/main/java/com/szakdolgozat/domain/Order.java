@@ -16,6 +16,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name ="orders")
 public class Order implements Serializable{
@@ -30,13 +33,16 @@ public class Order implements Serializable{
 	private Date deadLine;
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
+	@JsonBackReference
 	private User user;
 	@Column(nullable = false)
 	private boolean done;
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
 	private Set<ProductsToOrders> productsToOrder = new HashSet<ProductsToOrders>();
 	@ManyToOne
 	@JoinColumn(name = "deliver_id", nullable = false)
+	@JsonBackReference
 	private Delivery delivery;
 	@Column
 	private double value;

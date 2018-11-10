@@ -51,6 +51,7 @@
 								 data-postCode=${employee.postCode}, data-city=${employee.city}, data-address=${employee.address}, data-houseNumber=${employee.houseNumber},
 								 data-email=${employee.email}, data-sex=${employee.sex}, data-phoneNumber=${employee.phoneNumber}, data-role=${employee.role.id}" 
 								type="button" class="btn btn-dark userButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								<a class="delete User" th:id="${employee.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a>
 							</td>
 						</tr>
 					</tbody>
@@ -72,19 +73,21 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="costumer : ${userList}">
-							<td th:text="${costumer.name}">name</td>
-							<td th:text="${#dates.format(costumer.birthday, 'yyyy-MM-dd')}">birthday</td>
-							<td th:text="${costumer.postCode} + ', ' + ${costumer.city} + ' ' + ${costumer.address} + ' ' + ${costumer.houseNumber}">address</td>
-							<td th:text="${costumer.email}">email</td>
-							<td th:text="${costumer.sex==1}?'Nő':'Férfi'">sex</td> 
-							<td th:text="${costumer.phoneNumber}">phone_number</td>
-							<td><a th:href="@{/admin/orders(o,userId=${costumer.id})}">Rendelések</a></td>
-							<td><button th:attr="data-id=${costumer.id}, data-name=${costumer.name}, data-birthday=${#dates.format(costumer.birthday, 'yyyy-MM-dd')},
-								 data-postCode=${costumer.postCode}, data-city=${costumer.city}, data-address=${costumer.address}, data-houseNumber=${costumer.houseNumber},
-								 data-email=${costumer.email}, data-sex=${costumer.sex}, data-phoneNumber=${costumer.phoneNumber}, data-role=${costumer.role.id}" 
+						<tr th:each="customer : ${userList}">
+							<td th:text="${customer.name}">name</td>
+							<td th:text="${#dates.format(customer.birthday, 'yyyy-MM-dd')}">birthday</td>
+							<td th:text="${customer.postCode} + ', ' + ${customer.city} + ' ' + ${customer.address} + ' ' + ${customer.houseNumber}">address</td>
+							<td th:text="${customer.email}">email</td>
+							<td th:text="${customer.sex==1}?'Nő':'Férfi'">sex</td> 
+							<td th:text="${customer.phoneNumber}">phone_number</td>
+							<td><a th:href="@{/admin/orders(o,userId=${customer.id})}">Rendelések</a></td>
+							<td><button th:attr="data-id=${customer.id}, data-name=${customer.name}, data-birthday=${#dates.format(customer.birthday, 'yyyy-MM-dd')},
+								 data-postCode=${customer.postCode}, data-city=${customer.city}, data-address=${customer.address}, data-houseNumber=${customer.houseNumber},
+								 data-email=${customer.email}, data-sex=${customer.sex}, data-phoneNumber=${customer.phoneNumber}, data-role=${customer.role.id}" 
 								type="button" class="btn btn-dark userButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								<a class="delete User" th:id="${customer.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a>
 							</td>
+							
 						</tr>
 					</tbody>
 				</table>
@@ -108,16 +111,23 @@
 						<tr th:unless="${param.orderId}" th:each="product : ${productList}">
 							<td  th:text="${product.name}">name</td>
 							<td th:text="${product.onStock}">on stock</td>
-							<td th:text="${product.price}">price</td>
-							<td><img class="img-fluid" src="../static/images/kinfe.jpg" th:attr="src=@{${product.pathToPicture}}"/></td>
-							<td><a class="delete" th:id="${product.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
+							<td th:text="${product.price} + ' Ft'">price</td>
+							<td><img class="img-fluid productPic" th:attr="src=@{${product.pathToPicture}}"/></td>
+							<td><button th:attr="data-id=${product.id}, data-name=${product.name}, data-onStock=${product.onStock},
+								data-price=${product.price}, data-pathToPicture=${product.pathToPicture}"
+								type="button" class="btn btn-dark productButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								<a class="delete Product" th:id="${product.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
 						</tr>
 						<tr th:if="${param.orderId}" th:each="productOfOrder : ${productsOfOrderList}">
 							<td  th:text="${productOfOrder.product.name}">name</td>
 							<td th:text="${productOfOrder.product.onStock}">on stock</td>
-							<td th:text="${productOfOrder.product.price}">price</td>
-							<td><img class="img-fluid" src="../static/images/kinfe.jpg" th:attr="src=@{${productOfOrder.product.pathToPicture}}"/></td>
+							<td th:text="${productOfOrder.product.price} + ' Ft'">price</td>
+							<td><img class="img-fluid productPic" th:attr="src=@{${productOfOrder.product.pathToPicture}}"/></td>
 							<td th:text="${productOfOrder.quantity}">amount</td>
+							<td><button th:attr="data-id=${productOfOrder.product.id}, data-name=${productOfOrder.product.name}, data-onStock=${productOfOrder.product.onStock},
+								data-price=${productOfOrder.product.price}, data-pathToPicture=${productOfOrder.product.pathToPicture}"
+								type="button" class="btn btn-dark productButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								<a class="delete Product" th:id="${productOfOrder.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
 						</tr>
 					</tbody>
 				</table>
@@ -143,7 +153,10 @@
 							<td th:text="${order.value} + ' Ft'">value</td>
 							<td><a th:href="@{/admin/deliveries(d,deliveryId=${order.delivery.id})}" th:text="${order.delivery.id}?'Kiszállítás':'Még nincs kiszállításon'">Kiszállítás</a></td>
 							<td><a th:href="@{/admin/products(p,orderId=${order.id})}">Termékek</a></td>
-							<td></td>
+							<td><button th:attr="data-id=${order.id}, data-userId=${order.user.id}, data-deadLine=${order.deadLine},
+								data-done=${order.done}, data-value=${order.value}"
+								type="button" class="btn btn-dark orderButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								<a class="delete Order" th:id="${order.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
 						</tr>
 					</tbody>
 				</table>
@@ -180,7 +193,7 @@
 							<button type="button" class="close" data-dismiss="modal">&times;</button>
 						</div>
 						<div class="modal-body">
-							<form th:replace="(${param.e} or ${param.u}? ~{modal :: user}:(${param.p}? ~{modal :: newProduct} : ~{modal :: t}))"></form>
+							<form th:replace="(${param.e} or ${param.u}? ~{modal :: user}:(${param.p}? ~{modal :: newProduct} : (${param.o}? ~{modal :: editOrder} : ~{modal :: t})))"></form>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -12,6 +12,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -28,12 +32,14 @@ public class Delivery implements Serializable{
 	private long Id;
 	@ManyToOne
 	@JoinColumn(name = "employee_id", nullable = false)
+	@JsonBackReference
 	private User user;
 	@Column(nullable = false)
 	private Date deliveryDate;
 	@Column(nullable = false)
 	private boolean done;
 	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonManagedReference
 	private Set<Order> ordersOfDelivery = new HashSet<Order>();
 	
 	public Delivery() {

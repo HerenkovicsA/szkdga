@@ -24,6 +24,8 @@ import javax.validation.constraints.Pattern;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "users")
 public class User implements Serializable{
@@ -36,6 +38,7 @@ public class User implements Serializable{
 	private long Id;
 	@ManyToOne
 	@JoinColumn(name = "role_id", nullable = false)
+	@JsonBackReference
 	private Role role;
 	@Column(nullable = false)
 	@Pattern(regexp = "(?U)[-.\\p{L}\\s]+", message = "A név csak unicode karaktereket tartalmazhat (számokat nem)")
@@ -66,8 +69,10 @@ public class User implements Serializable{
 	@Column(name = "house_number", nullable = false)
 	private int houseNumber;
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
+	@JsonBackReference
 	private Set<Order> ordersOfUser = new HashSet<Order>();
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
+	@JsonBackReference
 	private Set<Delivery> deliveriesOfEmployee = new HashSet<Delivery>();
 		
 	public User() {

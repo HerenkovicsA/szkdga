@@ -7,11 +7,14 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name="roles")
@@ -25,7 +28,8 @@ public class Role implements Serializable{
 	private long id;
 	@Column(nullable = false)
 	private String name;
-	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "role", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
+	@JsonBackReference
 	private Set<User> usersWithRole = new HashSet<User>();
 	
 	public Role() {
