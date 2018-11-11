@@ -41,7 +41,7 @@ public class Order implements Serializable{
 	@JsonManagedReference
 	private Set<ProductsToOrders> productsToOrder = new HashSet<ProductsToOrders>();
 	@ManyToOne
-	@JoinColumn(name = "deliver_id", nullable = false)
+	@JoinColumn(name = "deliver_id")
 	@JsonBackReference
 	private Delivery delivery;
 	@Column

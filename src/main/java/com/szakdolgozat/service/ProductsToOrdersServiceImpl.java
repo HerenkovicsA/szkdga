@@ -61,7 +61,8 @@ public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 		System.out.println(order.getProductsToOrder());
 	}
 	
-	private void removeProductsToOrdersFromProducts(ProductsToOrders ptoToRemove, Product product) {
+	@Override
+	public void removeProductsToOrdersFromProducts(ProductsToOrders ptoToRemove, Product product) {
 		System.out.println(product.getProductstoOrder());
 		Set<ProductsToOrders> ptoSet = product.getProductstoOrder();
 		if(ptoSet.contains(ptoToRemove)) {

@@ -5,8 +5,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +24,7 @@ import com.szakdolgozat.repository.RoleRepository;
 import com.szakdolgozat.service.UserDetailsImpl;
 import com.szakdolgozat.domain.Delivery;
 import com.szakdolgozat.domain.Order;
+import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.ProductsToOrders;
 import com.szakdolgozat.domain.Role;
 import com.szakdolgozat.domain.User;
@@ -34,6 +40,8 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	private final String USER_ROLE = "USER";
 	private final String ADMIN_ROLE = "ADMIN";
 	private final String EMPLOYEE_ROLE = "EMPLOYEE";
+	
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	public UserServiceImpl() {
 		
@@ -154,9 +162,11 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	}
 
 	@Override
+	@Transactional
 	public String deleteUser(long id) {
-		boolean exists = userRepo.findById(id).isPresent();
-		if(exists) {
+		Optional<User> userToRemove = userRepo.findById(id);
+		if(userToRemove.isPresent()) {
+			removeUserFromRoles(userToRemove.get());
 			userRepo.deleteById(id);
 			return "deleted";
 		}else {
@@ -172,5 +182,14 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 			users.put(user.getId(), user.getName());
 		}
 		return users;
+	}
+	
+	private void removeUserFromRoles(User userToRemove) {
+		Role role = userToRemove.getRole();
+		Set<User> userSet = role.getUsersWithRole();
+		if(userSet.contains(userToRemove)) {
+			userSet.remove(userToRemove);
+			role.setUsersWithRole(userSet);
+		} else log.error("User " + userToRemove.getName() + " does not have role: " + role.getName());
 	}
 }

@@ -11,4 +11,6 @@ public interface ProductsToOrdersRepository extends CrudRepository<ProductsToOrd
 	void deleteByOrderAndProduct(Order order, Product product);
 	
 	ProductsToOrders findByOrderAndProduct(Order order, Product product);
+
+	void deleteAllByOrder(Order order);
 }

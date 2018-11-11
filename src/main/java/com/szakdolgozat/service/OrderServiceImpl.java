@@ -4,11 +4,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,9 +25,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.szakdolgozat.components.ProductAndQuantityResponse;
+import com.szakdolgozat.domain.Delivery;
 import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.ProductsToOrders;
+import com.szakdolgozat.domain.Role;
 import com.szakdolgozat.domain.User;
 import com.szakdolgozat.repository.DeliveryRepository;
 import com.szakdolgozat.repository.OrderRepository;
@@ -41,11 +48,12 @@ public class OrderServiceImpl implements OrderService {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	public OrderServiceImpl(OrderRepository or, DeliveryRepository dr, UserRepository ur, ProductsToOrdersService ptos) {
+	public OrderServiceImpl(OrderRepository or, DeliveryRepository dr, UserRepository ur, ProductsToOrdersService ptos, ProductsToOrdersRepository ptor) {
 		this.or = or;
 		this.dr = dr;
 		this.ur	= ur;
 		this.ptos = ptos;
+		this.ptor = ptor;
 	}
 	
 	@Override
@@ -77,14 +85,65 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	@Transactional
 	public String deleteOrder(long id) {
-		boolean exists = or.findById(id).isPresent();
-		if(exists) {
+		Optional<Order> orderToRemove = or.findById(id);
+		if(orderToRemove.isPresent()) {
+			removeOrderFromUser(orderToRemove.get());
+			removeOrderFromDelivery(orderToRemove.get());
+			removeOrderFromProductsToOrders(orderToRemove.get());
 			or.deleteById(id);
 			return "deleted";
 		}else {
 			return "not exists";
 		}
+	}
+	
+	private void removeOrderFromProductsToOrders(Order order) {
+		Set<ProductsToOrders> ptoIterbale =  order.getProductsToOrder();
+		System.out.println(order.getProductsToOrder());
+		for (ProductsToOrders productsToOrders : ptoIterbale) {
+			ptos.removeProductsToOrdersFromProducts(productsToOrders, productsToOrders.getProduct());
+			ptor.delete(productsToOrders);
+		}
+		System.out.println(order.getProductsToOrder());
+	}
+
+	private void removeOrderFromUser(Order orderToRemove) {
+		User user = orderToRemove.getUser();
+		Set<Order> orderSet = user.getOrdersOfUser();
+		Set<Order> newOrderSet = new HashSet<Order>();
+		boolean hasChanged = false;
+		System.out.println(orderSet.size());
+		for (Order order : orderSet) {
+			if(!order.equals(orderToRemove)) {
+				newOrderSet.add(order);
+			}else {
+				hasChanged = true;
+			}
+		}
+		if(!hasChanged) {
+			log.error("Order with " + orderToRemove.getId() + " does not belong to user: " + user.getName());
+		}else {
+			user.clearOrdersOfUser();
+			for (Order order : newOrderSet) {
+				user.addToOrdersOfUser(order);
+			}
+			System.out.println(user.getOrdersOfUser().size());
+		}
+	}
+	
+	private void removeOrderFromDelivery(Order orderToRemove) {
+		Delivery delivery = orderToRemove.getDelivery();
+		if(delivery != null) {
+			Set<Order> orderSet = delivery.getOrdersOfDelivery();
+			System.out.println(delivery.getOrdersOfDelivery().size());
+			if(orderSet.contains(orderToRemove)) {
+				orderSet.remove(orderToRemove);
+				delivery.setOrdersOfDelivery(orderSet);
+			} else log.error("Order with " + orderToRemove.getId() + " does not belong to delivery with: " + delivery.getId() + " id");
+			System.out.println(delivery.getOrdersOfDelivery().size());
+		}		
 	}
 
 	@Override
@@ -128,6 +187,13 @@ public class OrderServiceImpl implements OrderService {
 					log.error(e.getMessage());
 				}
 				
+			}else {
+				Set<ProductsToOrders> productsToOrders = orderToEdit.getProductsToOrder();
+				for (ProductsToOrders productsToOrder : productsToOrders) {
+					if(productsToOrder.getProduct().getId() == Long.parseLong(productArrayInfo[0])) {
+						productsToOrder.setQuantity(Integer.parseInt(productArrayInfo[1]));
+					}
+				}
 			}
 		}
 		or.save(orderToEdit);

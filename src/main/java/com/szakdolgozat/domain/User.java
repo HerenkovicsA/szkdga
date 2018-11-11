@@ -195,6 +195,13 @@ public class User implements Serializable{
 		this.deliveriesOfEmployee = deliveriesOfEmployee;
 	}
 
+	public void clearOrdersOfUser() {
+		this.ordersOfUser.clear();
+	}
+	public void addToOrdersOfUser(Order order) {
+		this.ordersOfUser.add(order);
+	}
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;

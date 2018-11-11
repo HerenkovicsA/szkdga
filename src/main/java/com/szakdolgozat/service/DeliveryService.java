@@ -11,4 +11,6 @@ public interface DeliveryService {
 	public Delivery findDeliveryById(long deliveryId) throws Exception;
 
 	public List<Delivery> findAll() throws Exception;
+
+	public String deleteDelivery(long id);
 }

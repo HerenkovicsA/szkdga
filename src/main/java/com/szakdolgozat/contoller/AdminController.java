@@ -259,6 +259,12 @@ public class AdminController {
 		return os.deleteOrder(id);
     }
 	
+	@PostMapping(value = "/admin/deleteDelivery", params = "id")
+    public @ResponseBody String deleteDelivery(@RequestParam long id) {
+		
+		return ds.deleteDelivery(id);
+    }
+	
 	@PostMapping(value = "/getAllUser")
     public @ResponseBody Object getAllUser() {
 		try {
@@ -280,7 +286,7 @@ public class AdminController {
     }
 	
 	@PostMapping("/admin/editOrder")
-	public @ResponseBody Object editOrder(HttpServletRequest request) {
+	public String editOrder(HttpServletRequest request) {
 		ObjectMapper mapper = new ObjectMapper();
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		try {
@@ -288,9 +294,8 @@ public class AdminController {
 			os.editOrder(map);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-		} 
-		
-
-		return null;
+			return "FAIL";
+		}
+		return "admin";
 	}
 }

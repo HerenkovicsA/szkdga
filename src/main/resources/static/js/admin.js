@@ -90,7 +90,6 @@ function deleteFunc(event){
 	}
 	
 	var whatToDelete = anchor.attr('class');
-	
 	if(sure){
 		$.ajax({
 			
@@ -102,8 +101,8 @@ function deleteFunc(event){
 				if(response == 'deleted') {
 					window.location.reload();
 				} else {
-						alert("Error: " + id + " id-vel rendelkező termék nem létezik.");
-						window.location.reload();
+					alert("Error: " + id + " id-vel rendelkező termék nem létezik.");
+					window.location.reload();
 				}	
 			},
 			error : function(ex) {
@@ -231,11 +230,13 @@ function orderButton(event) {
 				$.each(response, function(number, value) {
 					orderTable.append(row.replace("{name}",value.name).replace("{price}",value.price)
 							.replace("{quantity}",value.quantity).replace(new RegExp("{id}","g"),value.id));
-					$( "." + value.id + ".price" ).change(function(event) {
-						  updateSummOnOrderModal();
+					$( "." + value.id + ".deleteBox" ).change(function(event) {
+						console.log("deletbox");
+						updateSummOnOrderModal(event);
 					});
 					$( "." + value.id + ".quantity" ).change(function(event) {
-						  updateSummOnOrderModal();
+						console.log("quantity");
+						updateSummOnOrderModal(event);
 					});
 				});
 				orderTable.append("</tbody>");
@@ -248,14 +249,34 @@ function orderButton(event) {
 }
 
 function updateSummOnOrderModal(){
+	var target = $(event.target);
 	var value = $('#value');
 	var summ = 0;
 	var prices = $('.price');
 	var quantities = $('.quantity');
+	var deleteBoxes = $('.deleteBox');
 	for(var i = 0; i < prices.length; i++){
+		if(target.hasClass("deleteBox")) {
+			console.log("\n------------------------------\n");console.log(target.attr("class"));
+			console.log("$(deleteBoxes["+i+"])");console.log($(deleteBoxes[i]).prop("checked"));
+			console.log("$(quantities["+i+"])");console.log($(quantities[i]).val());
+			if($(deleteBoxes[i]).prop("checked")) {
+				console.log("checked");
+				$(quantities[i]).val(0);
+			}else if($(quantities[i]).val() == 0){
+				console.log("not checked");
+				$(quantities[i]).val(1);
+			}
+		}else{
+			if(quantities[i].value == 0) {
+				$(deleteBoxes[i]).prop("checked",true);
+			}else {
+				$(deleteBoxes[i]).prop("checked",false);
+			}
+		}
 		summ += prices[i].value * quantities[i].value;
 	}
-	value.val(summ);
+	value.val(summ.toFixed(2));
 }
 
 function submitOrder(event){
@@ -268,16 +289,11 @@ function submitOrder(event){
     var deleteBoxes = $('.deleteBox');
     var quantities = $('.quantity');
     var products = [];
-    console.log("deleteBoxes");
-    console.log(deleteBoxes);
-    console.log("quantities");
-    console.log(quantities);
     
     for(var i = 0; i < quantities.length; i++) {
     	products[i] = $(quantities[i]).prop("class").charAt(0) + ";"
     		+ $(quantities[i]).val() + ";" + $(deleteBoxes[i]).prop("checked");
     }
-    console.log(products);
     
 	var toSend = {
 			"orderId" : $('#id').val(),
@@ -291,18 +307,14 @@ function submitOrder(event){
 	console.log(toSend);
 	
     $.ajax({
-		//TODO: finish order update
 		type : "POST",
 		url : "/admin/editOrder", 
 		data : "_csrf=" + token + "&json=" + JSON.stringify(toSend) ,
 		success : function(response) {
-			console.log("response");
-			console.log(response);
-			if(response.status == 'FAIL') {
-				showFormError(response.errorMessageList);
-			} else {
-					window.location.reload();
-			}	
+			if(response == 'FAIL') {
+				alert("Tranzakció sikertelen");
+			}
+			window.location.reload();
 		},
 		error : function(ex) {
 			console.log(ex);

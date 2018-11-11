@@ -151,7 +151,8 @@
 							<td th:text="${order.user.name}">user</td>
 							<td th:text="${order.done}?'kézbesítve':'várakozik'">done</td>
 							<td th:text="${order.value} + ' Ft'">value</td>
-							<td><a th:href="@{/admin/deliveries(d,deliveryId=${order.delivery.id})}" th:text="${order.delivery.id}?'Kiszállítás':'Még nincs kiszállításon'">Kiszállítás</a></td>
+							<td><a th:href="@{/admin/deliveries(d,deliveryId=${order.delivery != null && order.delivery.id != null}?${order.delivery.id}:'')}"
+								 th:text="${order.delivery != null && order.delivery.id != null}?'Kiszállítás':'Még nincs kiszállításon'">Kiszállítás</a></td>
 							<td><a th:href="@{/admin/products(p,orderId=${order.id})}">Termékek</a></td>
 							<td><button th:attr="data-id=${order.id}, data-userId=${order.user.id}, data-deadLine=${order.deadLine},
 								data-done=${order.done}, data-value=${order.value}"
@@ -170,6 +171,7 @@
 							<th scope="col">Kiszállítás napja</th>
 							<th scope="col">Teljesítve</th>
 							<th scope="col">Kiszállítandó megrendelések</th>
+							<th scope="col"></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -178,7 +180,10 @@
 							<td th:text="${#dates.format(delivery.deliveryDate, 'yyyy-MM-dd')}">N/A</td>
 							<td th:text="${delivery.done}?'Kész':'Várakozik'">N/A</td>
 							<td><a th:href="@{/admin/orders(o,deliveryId=${delivery.id})}">Megrendelések</a></td>
-							<td></td>
+							<td><button th:attr="data-id=${delivery.id}, data-employeeId=${delivery.employee.id}, data-deliveryDate=${delivery.deliveryDate},
+								data-done=${delivery.done}"
+								type="button" class="btn btn-dark deliveryButton" data-toggle="modal" data-target="#editModal">Edit</button>
+							<a class="delete Delivery" th:id="${delivery.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
 						</tr>
 					</tbody>
 				</table>
