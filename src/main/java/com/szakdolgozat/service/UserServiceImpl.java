@@ -175,9 +175,14 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	}
 
 	@Override
-	public Object getAllUserNameAndId() throws Exception {
+	public Object getAllUserNameAndId(boolean isUser) throws Exception {
 		Map<Long, String> users = new HashMap<Long, String>();
-		List<User> userList = findAllUsers();
+		List<User> userList;
+		if (isUser) {
+			userList = findAllUsers();
+		}else {
+			userList = findAllEmployees();
+		}		
 		for (User user : userList) {
 			users.put(user.getId(), user.getName());
 		}
@@ -191,5 +196,15 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 			userSet.remove(userToRemove);
 			role.setUsersWithRole(userSet);
 		} else log.error("User " + userToRemove.getName() + " does not have role: " + role.getName());
+	}
+
+	@Override
+	public User findUserById(long userId) throws Exception {
+		Optional<User> user = userRepo.findById(userId);
+		if(user.isPresent()) {
+			return user.get();
+		} else {
+			throw new Exception("Nincs felhasználó " + userId + " ezzel az id-vel");
+		}
 	}
 }

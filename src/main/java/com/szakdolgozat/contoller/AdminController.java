@@ -1,27 +1,19 @@
 package com.szakdolgozat.contoller;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -36,15 +28,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.szakdolgozat.components.ErrorMessage;
 import com.szakdolgozat.components.ValidationResponse;
 import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
-import com.szakdolgozat.domain.ProductsToOrders;
 import com.szakdolgozat.domain.User;
 import com.szakdolgozat.service.DeliveryService;
 import com.szakdolgozat.service.OrderService;
@@ -81,10 +70,10 @@ public class AdminController {
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
 	}
 
-	@GetMapping("/admin")
-	public String admin(){
-		return "admin";
-	}
+//	@GetMapping("/admin")
+//	public String admin(){
+//		return "admin";
+//	}
 	
 	@GetMapping("/admin/employees")
 	public String employees(Model model){
@@ -265,10 +254,10 @@ public class AdminController {
 		return ds.deleteDelivery(id);
     }
 	
-	@PostMapping(value = "/getAllUser")
-    public @ResponseBody Object getAllUser() {
+	@PostMapping(value = "/getAllUser", params = "user")
+    public @ResponseBody Object getAllUser(@RequestParam String user) {
 		try {
-			return us.getAllUserNameAndId();
+			return us.getAllUserNameAndId(Boolean.parseBoolean(user));
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return "error";
@@ -292,6 +281,41 @@ public class AdminController {
 		try {
 			map = mapper.readValue(request.getParameter("json"), new TypeReference<HashMap>(){});
 			os.editOrder(map);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return "FAIL";
+		}
+		return "admin";
+	}
+	
+	@PostMapping(value = "/getOrdersForModalTable", params="deliveryId")
+    public @ResponseBody Object getOrdersForModalTable(@RequestParam long deliveryId) {
+		try {
+			return ds.getOrderOfDelivery(deliveryId);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return e.getMessage();
+		}
+    }
+	
+	@RequestMapping(value = "/admin/user", params="userId")
+    public String getUserById(@RequestParam long userId, Model model) {
+		try {
+			model.addAttribute("userList",us.findUserById(userId));
+			model.addAttribute("user", new User());
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return "admin";
+    }
+	
+	@PostMapping("/admin/editDelivery")
+	public String editDelivery(HttpServletRequest request) {
+		ObjectMapper mapper = new ObjectMapper();
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		try {
+			map = mapper.readValue(request.getParameter("json"), new TypeReference<HashMap>(){});
+			ds.editDelivery(map);
 		} catch (Exception e) {
 			log.error(e.getMessage());
 			return "FAIL";

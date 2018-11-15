@@ -34,6 +34,8 @@ public interface UserService {
 
 	public String deleteUser(long id);
 
-	public Object getAllUserNameAndId() throws Exception;
+	public Object getAllUserNameAndId(boolean user) throws Exception;
+
+	public User findUserById(long userId) throws Exception;
 
 }

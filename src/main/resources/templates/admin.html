@@ -189,7 +189,7 @@
 				</table>
 			</div>
 			<div class="modal fade" id="editModal" role="dialog" >
-				<div class="modal-dialog">
+				<div class="modal-dialog modal-lg">
 				
 				<!-- Modal content-->
 			    	<div class="modal-content">
@@ -198,7 +198,7 @@
 							<button type="button" class="close" data-dismiss="modal">&times;</button>
 						</div>
 						<div class="modal-body">
-							<form th:replace="(${param.e} or ${param.u}? ~{modal :: user}:(${param.p}? ~{modal :: newProduct} : (${param.o}? ~{modal :: editOrder} : ~{modal :: t})))"></form>
+							<form th:replace="(${param.e} or ${param.u}? ~{modal :: user}:(${param.p}? ~{modal :: newProduct} : (${param.o}? ~{modal :: editOrder} : ~{modal :: editDelivery})))"></form>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -174,7 +174,7 @@ public class OrderServiceImpl implements OrderService {
 		int day = Integer.parseInt(fullDate[2]);
 		orderToEdit.setDeadLine(new Date(year-1900, month-1, day));
 		orderToEdit.setDone(Boolean.parseBoolean(map.get("done").toString()));
-		System.out.println(orderToEdit);
+		
 		ArrayList<String> productInfos = (ArrayList)map.get("products");
 		String[] productArrayInfo; // values are: productId, piece, delete?
 		for (String productInfo : productInfos) {

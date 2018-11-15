@@ -47,6 +47,14 @@ function bindListeners() {
 	$('.orderButton').click(function(event) {
 		orderButton(event)
 	});
+	
+	$('.deliveryButton').click(function(event) {
+		deliveryButton(event)
+	});
+	
+	$('#submitDelivery').click(function(event) {
+		submitDelivery(event);
+	});
 }
 	
 function clearErrorMessages() {
@@ -188,7 +196,7 @@ function orderButton(event) {
     
     $.ajax({			
 		type : "POST",
-		url : "/getAllUser", 
+		url : "/getAllUser?user=true", 
 		data : "_csrf=" + token,
 		success : function(response) {
 			if(response == 'error') {
@@ -257,9 +265,6 @@ function updateSummOnOrderModal(){
 	var deleteBoxes = $('.deleteBox');
 	for(var i = 0; i < prices.length; i++){
 		if(target.hasClass("deleteBox")) {
-			console.log("\n------------------------------\n");console.log(target.attr("class"));
-			console.log("$(deleteBoxes["+i+"])");console.log($(deleteBoxes[i]).prop("checked"));
-			console.log("$(quantities["+i+"])");console.log($(quantities[i]).val());
 			if($(deleteBoxes[i]).prop("checked")) {
 				console.log("checked");
 				$(quantities[i]).val(0);
@@ -281,11 +286,6 @@ function updateSummOnOrderModal(){
 
 function submitOrder(event){
 	event.preventDefault();
-	var orderId = $('#id').val();
-	var userId = $('#user').val();
-    var deadLine = $('#deadLine').val();
-    var value = $('#value').val();
-    var done = $('#done').prop('checked');
     var deleteBoxes = $('.deleteBox');
     var quantities = $('.quantity');
     var products = [];
@@ -320,4 +320,144 @@ function submitOrder(event){
 			console.log(ex);
 		}
 	});
+}
+
+function deliveryButton(event) {
+	var button = $(event.target);
+	var userSelect = $('#employee');
+	var orderTable = $('#orderTable');
+	$('#id').val(button.data('id'));
+    $('#deliveryDate').val(button.data('deliverydate').substring(0,10));
+    $('#employee').val(button.data('employeeid'));
+    $('#done').prop('checked', button.data('done'));
+    
+    $( "#done" ).change(function(event) {
+		deliveryAndOrderDone(event);
+	});
+    
+    $.ajax({			
+		type : "POST",
+		url : "/getAllUser?user=false", 
+		data : "_csrf=" + token,
+		success : function(response) {
+			if(response == 'error') {
+				userSelect.append($("option")
+	                    .attr("value",-2)
+	                    .addClass("form-control")
+	                    .text("Nincs felhasználó az adatbázisban"));
+				$('#submitOrder').hide();
+			} else {
+				userSelect.empty();
+				$.each(response, function(id, name) { 						
+					userSelect.append($("<option></option>")
+				                    .attr("value",id)
+				                    .text(name)); 
+				});
+				userSelect.val(button.data('employeeid'));
+			}	
+		},
+		error : function(ex) {
+			console.log(ex);
+		}
+	});
+
+	$.ajax({			
+		type : "POST",
+		url : "/getOrdersForModalTable?deliveryId="+button.data('id'), 
+		data : "_csrf=" + token,
+		success : function(response) {
+			if(typeof(response) == 'string') {
+				console.log(response);
+			} else {
+				orderTable.empty();
+				orderTable.append("<thead><tr><th class='modal-delivery-deadline' scope='col'>Határidő</th><th scope='col'>Kiszállítva</th><th>Vásárló</th><th>Érték</th><th>Törlés</th></tr></thead><tbody>");
+				var row = "<tr><td><input type='date' class='{id} deadLine form-control' value='{deadLine}'/></td>" +
+						"<td><input type='checkbox' class='{id} orderDone form-control'/></td>" +
+						"<td><a href='/admin/user?u&userId={userId}' class='{id} user'>{user}</a></td>" +
+						"<td><input type='number' class='{id} value form-control' value='{value}' disabled/></td>" +
+						"<td><input type='checkbox' class='{id} deleteBox form-control'/></td></tr>";
+				var email;
+				var id;
+				var checked;
+				$.each(response, function(key, order) {
+					userId = key.substring(key.indexOf("|")+1,key.lastIndexOf("|"));
+					email = key.substring(key.lastIndexOf("|")+1);
+					checked = (order.done == "true");
+					orderTable.append(row.replace("{deadLine}",fixTimeZone(order.deadLine)).replace("{user}",email)
+						.replace("{userId}",userId).replace("{value}",order.value).replace(new RegExp("{id}","g"),order.id));
+					
+					$( "." + order.id + ".orderDone" ).change(function(event) {
+						deliveryAndOrderDone(event);
+					});
+
+					console.log(fixTimeZone(order.deadLine));
+				});
+				orderTable.append("</tbody>");
+			}	
+		},
+		error : function(ex) {
+			console.log(ex);
+		}
+    });
+}
+
+function submitDelivery(event){
+	event.preventDefault();
+    var deleteBoxes = $('.deleteBox');
+    var deadLines = $('.deadLine');
+    var orderDone = $('.orderDone');
+    var orders = [];
+    
+    for(var i = 0; i < deleteBoxes.length; i++) {
+    	orders[i] = $(deleteBoxes[i]).prop("class").charAt(0) + ";" + $(deadLines[i]).val() + ";"
+    		+ $(orderDone[i]).prop("checked") + ";" + $(deleteBoxes[i]).prop("checked"); 
+    }
+    
+	var toSend = {
+			"deliveryId" : $('#id').val(),
+			"deliveryDate" : $('#deliveryDate').val(),
+		    "employeeId" : $('#employee').val(),
+		    "done" : $('#done').prop('checked'),
+		    "orders" : orders
+	};
+	
+    $.ajax({
+		type : "POST",
+		url : "/admin/editDelivery", 
+		data : "_csrf=" + token + "&json=" + JSON.stringify(toSend) ,
+		success : function(response) {
+			if(response == 'FAIL') {
+				alert("Tranzakció sikertelen");
+			}
+			window.location.reload();
+		},
+		error : function(ex) {
+			console.log(ex);
+		}
+	});
+}
+
+function deliveryAndOrderDone(event) {
+	var orderDone = $('.orderDone');
+	var deliveryDone = $('#done');
+	var target = $(event.target);
+	var allChecked;
+	if(target.hasClass("orderDone")) {
+		allChecked = true;
+		for (var i = 0; i < orderDone.length; i++) {
+			if(!$(orderDone[i]).prop("checked")) allChecked = false;
+		}
+		deliveryDone.prop("checked",allChecked);
+	} else {
+		for (var i = 0; i < orderDone.length; i++) {
+			$(orderDone[i]).prop("checked",deliveryDone.prop("checked"));
+		}
+	}
+}
+
+function fixTimeZone(date) {
+	helper = new Date(date);
+	var month = ("0" + (helper.getMonth()+1)).slice(-2);
+	var day = ("0" + helper.getDate()).slice(-2); 
+	return helper.getFullYear() + "-" + month + "-" + day;
 }
