@@ -31,20 +31,10 @@ public class HomeController {
 		return "index";
 	}
 	
-	@RequestMapping("/solution")
-	public String solution(Model model) {
-		model.addAttribute("solution", ds.getShortestRoute(false, 30, 500, addresses));
-		return "index";
-	}
-	
-	@RequestMapping("/employee")
-	public String employee(){
-		return "employee";
-	}
-	
-	@RequestMapping("/admin")
-	public String admin(){
-		return "admin";
-	}
+//	@RequestMapping("/solution")
+//	public String solution(Model model) {
+//		model.addAttribute("solution", ds.getShortestRoute(false, 30, 500, addresses));
+//		return "index";
+//	}
 	
 }

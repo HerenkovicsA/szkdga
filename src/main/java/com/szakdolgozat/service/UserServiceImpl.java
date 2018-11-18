@@ -207,4 +207,13 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 			throw new Exception("Nincs felhasználó " + userId + " ezzel az id-vel");
 		}
 	}
+	
+	public boolean hasActiveDelivery(User user) {
+		Set<Delivery> deliveryList = user.getDeliveriesOfEmployee();
+		if (deliveryList.isEmpty()) return false;
+		for (Delivery delivery : deliveryList) {
+			if(!delivery.isDone()) return true;
+		}
+		return false;
+	}
 }

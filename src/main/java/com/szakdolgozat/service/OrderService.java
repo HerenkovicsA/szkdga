@@ -22,4 +22,10 @@ public interface OrderService {
 	public List<ProductAndQuantityResponse> getProductsOfOrderList(long orderId) throws Exception;
 
 	public void editOrder(Map<Object, Object> map);
+
+	public List<Order> findOrdersForDelivery();
+
+	public Order getOrderById(long orderId);
+
+	public int setOrderDone(long orderId, boolean b);
 }

@@ -5,8 +5,11 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
+
+import com.szakdolgozat.domain.Order;
 
 public class Chromosome implements Comparable{
 
@@ -136,13 +139,14 @@ public class Chromosome implements Comparable{
 		}
 	}
 	
-	public String getTour(String[] cities) {
-		String result = "";
+	public List<Order> getTour(List<Order> orders) {
+		List<Order> result = new ArrayList<Order>();
 		for (Iterator iterator = chrom.iterator(); iterator.hasNext();) {
 			Gen gen = (Gen) iterator.next();
-			result += cities[gen.getAllele()]+" -> ";
+			result.add(orders.get(gen.getAllele()));
 		}
-		return result + cities[0];
+		result.add(orders.get(0));
+		return result;
 	}
 	
 }

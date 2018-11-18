@@ -8,10 +8,18 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.szakdolgozat.domain.Order;
+
+import javafx.util.Pair;
 
 public class GenAlgBusiness {
 	
@@ -19,20 +27,21 @@ public class GenAlgBusiness {
 	private int popSize;
 	private int iterationMax;
 	private int elitism;
-	private String cities[];
+	private List<Order> orders;
 	private int[][] citiesDistances;
 	
 	private Crossover xover = new Crossover();
+	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	public GenAlgBusiness(int popSize, int iterationMax, int elitism, String[] cities, int[][] citiesDistances) {
+	public GenAlgBusiness(int popSize, int iterationMax, int elitism, List<Order> orders, int[][] citiesDistances) {
 		this.popSize = popSize;
 		this.iterationMax = iterationMax;
 		this.elitism = elitism;
-		this.cities = cities;
+		this.orders = orders;
 		this.citiesDistances = citiesDistances;
 	}
 
-	public String go() {
+	public Pair<Double, List<Order>> go() {
 		long startTime = System.currentTimeMillis();
 		pop = new Population(this.popSize,citiesDistances);
 		Population  newPop;
@@ -70,9 +79,9 @@ public class GenAlgBusiness {
 			
 		}
 		long stopTime = System.currentTimeMillis();
-		long elapsedTime = stopTime - startTime;
+		log.info("Genetic algorithm took: " + (stopTime - startTime) + " ms");
 		
-		return pop.getBestChrom().getChromValue()/1000 +" km : " + pop.getBestChrom().getTour(cities);
+		return new Pair<Double, List<Order>>(pop.getBestChrom().getChromValue()/1000, pop.getBestChrom().getTour(orders));
 	}
 	
 }

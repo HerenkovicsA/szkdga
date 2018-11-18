@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<Order> findAll() throws Exception {
 		List<Order> orderList = new ArrayList<Order>();
-		for (Order order : or.findAll()) {
+		for (Order order : or.findAllByOrderByDeadLineAsc()) {
 			orderList.add(order);
 		}
 		if(orderList.isEmpty()) throw new Exception("No order found!");
@@ -197,6 +197,32 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 		or.save(orderToEdit);
+	}
+
+	@Override
+	public List<Order> findOrdersForDelivery() {
+		List<Order> orderList = or.findTop20ByDoneFalseAndDeliveryIsNullOrderByDeadLineAsc();
+		if(orderList == null || orderList.isEmpty()) return null;
+		return orderList;
+	}
+
+	@Override
+	public Order getOrderById(long orderId) {
+		Optional<Order> oOrder = or.findById(orderId);
+		if(oOrder.isPresent()) {
+			return oOrder.get();
+		}
+		return null;
+	}
+
+	@Override
+	public int setOrderDone(long orderId, boolean b) {
+		Order order= getOrderById(orderId);
+		if(order == null) return 0;
+		if(order.isDone() == b) return 0;
+		order.setDone(b);
+		or.save(order);
+		return 1;
 	}
 	
 

@@ -37,5 +37,7 @@ public interface UserService {
 	public Object getAllUserNameAndId(boolean user) throws Exception;
 
 	public User findUserById(long userId) throws Exception;
+	
+	public boolean hasActiveDelivery(User user);
 
 }

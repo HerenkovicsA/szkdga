@@ -3,4 +3,33 @@
 	max-height:40%;
 	width: auto;
 	height: auto;
+	top: 25%;
+}
+.deliv-truck-pic.all{
+	position: absolute;
+    left: 20%;
+}
+.deliv-truck-pic.new{
+	position: absolute;
+    right: 20%;
+}
+#allIsReady{
+	display:none;
+	float:right;
+}
+.mainPageButtons{
+	float:right;	
+}
+.alert{
+	text-align: center;
+	width:60%;
+}
+#employeeName{
+	font-family: serif;
+    font-weight: bold;
+    font-size: xx-large;
+    color: white;
+}
+.mainButtonsDiv{
+	text-align:middle;
 }

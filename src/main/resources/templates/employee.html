@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<html class="no-js"
-		lang="en"
-		xmlns="http://www.w3.org/1999/xhtml"
-		xmlns:th="http://www.thymleaf.org">
+<html class="no-js"  layout:decorator="layouts/main">
 <head>
 <meta charset="utf-8" />
 <title>Shop</title>
@@ -17,12 +14,125 @@
 
 </head>
 <body>
-<h1>Employee</h1>
-	<div><img class="deliv-truck-pic" id="past-deliveries" th:src="@{/images/delivery.png}"/>
-	<img class="deliv-truck-pic" id="new-delivery" th:src="@{/images/new_delivery.png}"/></div>
-	<!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
-	<div id="main">
-	  ...
+<div layout:fragment="everyContent">
+	<nav class="navbar navbar-dark bg-dark">
+		<span id="employeeName" th:text="${employeeName}"></span>
+		<div class="mainPageButtons">
+			<a th:href="'/employee'"><button class="btn btn-dark" >Főoldal</button></a>
+			<a href="javascript: document.logoutForm.submit()"><button class="btn btn-dark" >Kijelentkezés</button></a>
+		</div>
+	</nav>
+	<div class="mainButtonsDiv" th:if="${param.isEmpty()}">
+		<span id="employeeEmail" th:text="${employeeEmail}" hidden></span>
+		<div>
+			<a th:href="@{/employee/allDeliveries(ad,email=${employeeEmail})}">
+				<img class="deliv-truck-pic all" id="past-deliveries" th:src="@{/images/delivery.png}"/>
+			</a>
+			<a th:href="@{/employee/newDelivery(nd,email=${employeeEmail})}">
+				<img class="deliv-truck-pic new" id="new-delivery" th:src="@{/images/new_delivery.png}"/>
+			</a>
+		</div>
 	</div>
+	
+	
+<!-- 	  <iframe width="600" height="450" frameborder="0" style="border:0" -->
+<!-- 			src="https://www.google.com/maps/embed/v1/directions?origin=place_id:ChIJO3wy2t-_a0cRIxYEgO-OU9A&destination=Budapest%2C%20Andr%C3%A1ssy%20%C3%BAt%2C%20Magyarorsz%C3%A1g%2015&key=..."  -->
+<!-- 		allowfullscreen></iframe> -->
+
+	<div th:if="${param.nd} or ${param.d}">
+		<div th:if="${error} != null" th:text="${error}" class="alert alert-danger"></div>
+		<div th:if="${error} == null">
+			<h1 th:text="'Kiszállítás ' + (${distance})"></h1>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">Cím</th>
+						<th scope="col">Rendelés</th>
+						<th scope="col">Vevő</th>
+						<th scope="col">Kész</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="order : ${orderList}">
+						<td th:text="${order.user.fullAddress}">name</td>
+						<td><a  th:if="${order.deadLine} != null" th:href="@{/employee/orders(o,orderId=${order.id})}">Rendelés</a></td>
+						<td th:text="${order.user.name}">name</td>
+						<td><input th:if="${order.deadLine} != null" type="checkbox" th:checked="${order.done}" th:class="${order.id} + ' orderCheckDone form-control'"></td>					
+					</tr>
+				</tbody>
+			</table>
+			<input type="button" id="allIsReady" class="btn btn-dark" value="Minden kiszíállítva!"/>
+		</div>
+	</div>
+	<div th:if="${param.ad}">
+		<div th:if="${error} != null" th:text="${error}" class="alert alert-danger"></div>
+		<div th:if="${error} == null">
+			<h1>Kiszállítások</h1>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">Kiszállítás napja</th>
+						<th scope="col">Teljesítve</th>
+						<th scope="col"></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="delivery : ${deliveries}">
+						<td th:text="${#dates.format(delivery.deliveryDate, 'yyyy-MM-dd')}">N/A</td>
+						<td th:text="${delivery.done}?'Kész':'Várakozik'">N/A</td>
+						<td><a th:href="@{/employee/delivery(d,deliveryId=${delivery.id})}">Megrendeléshez</a></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div th:if="${param.o}">
+		<div th:if="${error} != null" th:text="${error}" class="alert alert-danger"></div>
+		<div th:if="${error} == null">
+			<h1>Kiszállítások</h1>
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th scope="col">Határidő</th>
+						<th scope="col">Vásárló</th>
+						<th scope="col">Teljesítve</th>
+						<th scope="col">Érték</th>
+						<th scope="col">Termékek</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td th:text="${#dates.format(order.deadLine, 'yyyy-MM-dd')}">deadLine</td>
+						<td th:text="${order.user.name}">user</td>
+						<td th:text="${order.done}?'kézbesítve':'várakozik'">done</td>
+						<td th:text="${order.value} + ' Ft'">value</td>
+						<td><button th:attr="data-id=${order.id}" type="button" 
+							class="btn btn-dark orderButton" data-toggle="modal" data-target="#editModal">Termékek</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<div th:if="${param.o}" class="modal fade" id="editModal" role="dialog" >
+		<div class="modal-dialog">
+		
+		<!-- Modal content-->
+	    	<div class="modal-content">
+				<div class="modal-header">
+					<h3>Termékek</h3>
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+				</div>
+				<div class="modal-body">
+					<table id="orderTable" class="table table-hover"></table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+	      
+		</div>			  
+	</div>
+</div>
 </body>
 </html>

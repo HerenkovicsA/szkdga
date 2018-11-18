@@ -70,10 +70,10 @@ public class AdminController {
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd"), true));
 	}
 
-//	@GetMapping("/admin")
-//	public String admin(){
-//		return "admin";
-//	}
+	@GetMapping("/admin")
+	public String admin(){
+		return "admin";
+	}
 	
 	@GetMapping("/admin/employees")
 	public String employees(Model model){

@@ -74,7 +74,8 @@ public class User implements Serializable{
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch=FetchType.EAGER)
 	@JsonBackReference
 	private Set<Delivery> deliveriesOfEmployee = new HashSet<Delivery>();
-		
+	private String fullAddress;
+	
 	public User() {
 		
 	}
@@ -198,8 +199,13 @@ public class User implements Serializable{
 	public void clearOrdersOfUser() {
 		this.ordersOfUser.clear();
 	}
+	
 	public void addToOrdersOfUser(Order order) {
 		this.ordersOfUser.add(order);
+	}
+	
+	public void addToDelvierisOfEmployee(Delivery delivery) {
+		this.deliveriesOfEmployee.add(delivery);
 	}
 	
 	@Override
@@ -291,7 +297,16 @@ public class User implements Serializable{
 				+ ordersOfUser + ", deliveriesOfEmployee=" + deliveriesOfEmployee + "]";
 	}
 
-	
+	private void initFullAddress() {
+		this.fullAddress = getPostCode() + ", " + getCity() + " " + getAddress() + " " + getHouseNumber();
+	}
 		
+	public void setFullAddress(String fullAddress) {
+		this.fullAddress = fullAddress;
+	}
 	
+	public String getFullAddress() {
+		if(this.fullAddress == null )initFullAddress();
+		return this.fullAddress;
+	}
 }

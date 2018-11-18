@@ -41,7 +41,11 @@ public class Delivery implements Serializable{
 	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference
 	private Set<Order> ordersOfDelivery = new HashSet<Order>();
-	
+	@Column(name= "delivery_order")
+	private String deliveryOrder;
+	@Column
+	private Double distance;
+
 	public Delivery() {
 	
 	}
@@ -85,6 +89,22 @@ public class Delivery implements Serializable{
 	public void setOrdersOfDelivery(Set<Order> ordersOfDelivery) {
 		this.ordersOfDelivery = ordersOfDelivery;
 	}
+	
+	public String getDeliveryOrder() {
+		return deliveryOrder;
+	}
+
+	public void setDeliveryOrder(String deliveryOrder) {
+		this.deliveryOrder = deliveryOrder;
+	}
+
+	public Double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
 
 	@Override
 	public int hashCode() {
@@ -92,6 +112,8 @@ public class Delivery implements Serializable{
 		int result = 1;
 		result = prime * result + (int) (Id ^ (Id >>> 32));
 		result = prime * result + ((deliveryDate == null) ? 0 : deliveryDate.hashCode());
+		result = prime * result + ((deliveryOrder == null) ? 0 : deliveryOrder.hashCode());
+		result = prime * result + ((distance == null) ? 0 : distance.hashCode());
 		result = prime * result + (done ? 1231 : 1237);
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
@@ -113,6 +135,16 @@ public class Delivery implements Serializable{
 				return false;
 		} else if (!deliveryDate.equals(other.deliveryDate))
 			return false;
+		if (deliveryOrder == null) {
+			if (other.deliveryOrder != null)
+				return false;
+		} else if (!deliveryOrder.equals(other.deliveryOrder))
+			return false;
+		if (distance == null) {
+			if (other.distance != null)
+				return false;
+		} else if (!distance.equals(other.distance))
+			return false;
 		if (done != other.done)
 			return false;
 		if (user == null) {
@@ -126,7 +158,8 @@ public class Delivery implements Serializable{
 	@Override
 	public String toString() {
 		return "Delivery [Id=" + Id + ", employeeId=" + user.getId() + ", deliveryDate=" + deliveryDate + ", done=" + done
-				+ ", ordersOfDelivery=" + ordersOfDelivery + "]";
+				+ ", ordersOfDelivery=" + ordersOfDelivery + ", deliveryOrder=" + deliveryOrder + ",distance="
+				+ distance + "]";
 	}
 	
 	

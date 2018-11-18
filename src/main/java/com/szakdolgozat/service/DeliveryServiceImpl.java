@@ -3,6 +3,7 @@ package com.szakdolgozat.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -25,25 +26,30 @@ import com.szakdolgozat.geneticAlg.GenAlgBusiness;
 import com.szakdolgozat.repository.DeliveryRepository;
 import com.szakdolgozat.repository.UserRepository;
 
+import javafx.util.Pair;
+
 @Service
 public class DeliveryServiceImpl implements DeliveryService{
 
 	private GoogleService gs;
 	private DeliveryRepository dr;
-	private UserRepository ur;
+	private UserService us;
 	private OrderService os;
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	
-	public GoogleService getGs() {
-		return gs;
-	}
+	private final String COMPANYS_ADDRESS = "9026, Győr, Egyetem tér 1.";
+	private final String TEST_STRING = "330.194 km : 9026, Győr, Egyetem tér 1. -> 1064, Budapest Andrássy út 5 -> 1064, Budapest Andrássy út 5 ->"
+			+ " 9099, Pér Szent Imer utca 46 -> 9084, Győrság Ország út 29 -> 9082, Nyúl Táncsics Mihály utca 139 -> 9081, Győrújbarát Veres Péter utca 33 -> "
+			+ "9012, Győr Hegyalja utca 12 -> 9024, Győr Cuha utca 8 -> 9028, Győr József Attila utca 175 -> 9027, Győr Gömb utca 16 -> 9022, Győr Bisinger setany 13 -> "
+			+ "9022, Győr Bisinger setany 13 -> 9022, Győr Bisinger setany 13 -> 9184, Kunsziget Ifjúság utca 13 -> 9153, Öttevény Kossuth utca 23 -> "
+			+ "9152, Börcs Rákóczi Ferenc utca 1 -> 9151, Abda Árpád utca 35 -> 9151, Abda Szent Imre utca 40 -> 9025, Győr Haladás utca 26 -> 9025, Győr Botond utca 5 -> "
+			+ "9026, Győr, Egyetem tér 1.";
 	
 	@Autowired
-	public void setGoogleService(GoogleService gs, DeliveryRepository dr, UserRepository ur, OrderService os) {
+	public DeliveryServiceImpl(GoogleService gs, DeliveryRepository dr, UserService us, OrderService os) {
 		this.gs = gs;
 		this.dr = dr;
-		this.ur = ur;
+		this.us = us;
 		this.os = os;
 	}
 	
@@ -52,7 +58,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 		
 		for (int i = 0; i < addresses.length; i++) {
 			for (int j = 0; j < addresses.length; j++) {
-				if(i==j) {
+				if(i==j || addresses[i].equalsIgnoreCase(addresses[j])) {
 					distanceMatrix[i][j] = 0 ;
 				}else {
 					distanceMatrix[i][j] = gs.getDistance(askGoogle, addresses[i], addresses[j]);
@@ -64,9 +70,14 @@ public class DeliveryServiceImpl implements DeliveryService{
 		return new CandD(distanceMatrix, addresses);
 	}
 	
-	public String getShortestRoute(boolean askGoogle, int popSize, int iterationMax, String[] addresses) {
+	private Pair<Double, List<Order>> getShortestRoute(boolean askGoogle,String[] addresses, List<Order> orders) {
+		long startTime = System.currentTimeMillis();
 		CandD cd = createCandD(askGoogle, addresses);
-		GenAlgBusiness gab = new GenAlgBusiness(popSize, iterationMax, popSize/10, cd.getCities(), cd.getDistances());
+		long stopTime = System.currentTimeMillis();
+		log.info("Getting data from Google API took: " + (stopTime - startTime) + " ms");
+		 int popSize = addresses.length * 5;
+		 int iterationMax = addresses.length * addresses.length;
+		GenAlgBusiness gab = new GenAlgBusiness(popSize, iterationMax, popSize/10, orders, cd.getDistances());
 
 		return gab.go();
 	}
@@ -137,15 +148,17 @@ public class DeliveryServiceImpl implements DeliveryService{
 
 	@Override
 	public void editDelivery(Map<Object, Object> map) {
-		System.out.println("map");
-		System.out.println(map);
-		System.out.println("----------------");
 		if(map.isEmpty()) log.error("Map is empty");
 		Delivery deliveryToEdit = dr.findById(Long.valueOf(map.get("deliveryId").toString())).get();
 		deliveryToEdit.setDone(Boolean.parseBoolean(map.get("done").toString()));
 		if(deliveryToEdit.getEmployee().getId() != Long.parseLong(map.get("employeeId").toString())) {
-			User newEmployee = ur.findById(Long.parseLong(map.get("employeeId").toString())).get();
-			deliveryToEdit.setEmployee(newEmployee);
+			User newEmployee;
+			try {
+				newEmployee = us.findUserById(Long.parseLong(map.get("employeeId").toString()));
+				deliveryToEdit.setEmployee(newEmployee);
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}			
 		}
 		String[] fullDate = map.get("deliveryDate").toString().split("-");
 		int year = Integer.parseInt(fullDate[0]);
@@ -182,5 +195,109 @@ public class DeliveryServiceImpl implements DeliveryService{
 		}
 		dr.save(deliveryToEdit);	
 	}
+
+	@Override
+	public Pair<Double, List<Order>> getNewDeliveryForEmployee(String email) throws Exception {
+		User employee = us.findByEmail(email);
+		if(employee == null) {
+			log.error("Employee is not found with email address: " + email);
+			throw new Exception("Employee is not found with email address: " + email);
+		}
+		if(us.hasActiveDelivery(employee)) {
+			log.error("Employee has active delivery");
+			throw new Exception("Employee has active delivery");
+		}
+		List<Order> orders = os.findOrdersForDelivery();
+		if(orders.isEmpty()) {
+			log.error("No free order for delivery");
+			throw new Exception("No free order");
+		}
+		
+		orders.add(0, getFakeOrder());
+		
+		String[] addresses = new String[orders.size()];
+		for (int i = 0; i < orders.size(); i++) {
+			addresses[i] = orders.get(i).getUser().getFullAddress();
+		}
+		Pair<Double, List<Order>> resultPair = getShortestRoute(true, addresses, orders);	
+		createNewDelivery(orders,employee,resultPair.getKey(),createOrderStringForDelivery(resultPair.getValue()));
+		return resultPair;
+	}
+
+	private void createNewDelivery(List<Order> orders, User employee, Double distance, String deliverOrder) {
+		orders.remove(0);
+		long startTime = System.currentTimeMillis();
+		Delivery newDelivery = new Delivery();
+		newDelivery.setEmployee(employee);
+		employee.addToDelvierisOfEmployee(newDelivery);
+		Date earliestDate = new Date(5000,1,1);
+		Set<Order> orderSet = new HashSet<Order>();
+		for (Order order : orders) {
+			order.setDelivery(newDelivery);
+			orderSet.add(order);
+			if(order.getDeadLine().before(earliestDate)) earliestDate = order.getDeadLine();
+		}
+		newDelivery.setDeliveryDate(earliestDate);
+		newDelivery.setOrdersOfDelivery(orderSet);
+		newDelivery.setDone(false);
+		newDelivery.setDistance(distance);
+		newDelivery.setDeliveryOrder(deliverOrder);
+		dr.save(newDelivery);
+		long stopTime = System.currentTimeMillis();
+		log.info("createNewDelivery took: " + (stopTime - startTime) + " ms");
+	}
 	
+	private String createOrderStringForDelivery(List<Order> finalList) {
+		String result = "";
+		for (Order order : finalList) {
+			result += order.getId() + ";";
+		}
+		return result.substring(0, result.length() - 1);
+	}
+
+	@Override
+	public Set<Delivery> getAllDeliveryForEmployee(String email) {
+		User employee = us.findByEmail(email);
+		return employee.getDeliveriesOfEmployee();
+	}
+
+	@Override
+	public Pair<Pair<Double, Date>, List<Order>> getDeliveryForEmployee(long deliveryId) throws Exception {
+		Delivery delivery = findDeliveryById(deliveryId);
+		List<Order> newOrderList = new ArrayList<Order>();
+		Set<Order> orderSet = delivery.getOrdersOfDelivery();
+		String[] orderedOrderIds = delivery.getDeliveryOrder().split(";");
+		for (String orderId : orderedOrderIds) {
+			newOrderList.add(getOrderFromSetById(orderSet, Long.parseLong(orderId)));
+		}
+		return new Pair<Pair<Double, Date>, List<Order>>(new Pair<Double, Date>(delivery.getDistance(),
+				delivery.getDeliveryDate()),newOrderList);
+	}
+	
+	private Order getFakeOrder() {
+		User fakeUserForStart = new User();
+		fakeUserForStart.setFullAddress(COMPANYS_ADDRESS);
+		Order fakeOrderForStart = new Order();
+		fakeOrderForStart.setUser(fakeUserForStart);
+		return fakeOrderForStart;
+	}
+	
+	private Order getOrderFromSetById(Set<Order> orderSet, long id) throws Exception {
+		if(id == 0 ) {
+			return getFakeOrder();
+		} else {
+			for (Order order : orderSet) {
+				if(order.getId() == id) return order;
+			}
+		}
+		log.error("Order is not found (id=" + id +")");
+		throw new Exception("Order is not found");
+	}
+
+	@Override
+	public void setDeliveryToDone(long deliveryId) {
+		Delivery delivery = findDeliveryById(deliveryId);
+		delivery.setDone(true);
+		dr.save(delivery);
+	}
 }

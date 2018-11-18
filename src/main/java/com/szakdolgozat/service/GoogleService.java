@@ -1,5 +1,7 @@
 package com.szakdolgozat.service;
 
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -113,7 +115,10 @@ public class GoogleService {
 	}
 
 	private String formAddressForUrl(String address) throws UnsupportedEncodingException {
-		return URLEncoder.encode(address, "UTF-8");
+		if(address != null)
+			return URLEncoder.encode(address, "UTF-8");
+		System.out.println(address);
+		return "problem";
 	}
 	
 }
