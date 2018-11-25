@@ -17,18 +17,9 @@
 	display:none;
 	float:right;
 }
-.mainPageButtons{
-	float:right;	
-}
 .alert{
 	text-align: center;
 	width:60%;
-}
-#employeeName{
-	font-family: serif;
-    font-weight: bold;
-    font-size: xx-large;
-    color: white;
 }
 .mainButtonsDiv{
 	text-align:middle;

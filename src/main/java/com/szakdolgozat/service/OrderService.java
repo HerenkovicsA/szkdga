@@ -1,5 +1,6 @@
 package com.szakdolgozat.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -8,6 +9,8 @@ import com.szakdolgozat.components.ProductAndQuantityResponse;
 import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.ProductsToOrders;
+
+import javafx.util.Pair;
 
 public interface OrderService {
 
@@ -28,4 +31,8 @@ public interface OrderService {
 	public Order getOrderById(long orderId);
 
 	public int setOrderDone(long orderId, boolean b);
+
+	public String makeAnOrder(String email, HashMap<Product, Integer> items);
+
+	public List<Pair<Product, Integer>> getProductsOfOrder(long orderId);
 }

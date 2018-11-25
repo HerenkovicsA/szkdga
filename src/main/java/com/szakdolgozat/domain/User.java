@@ -16,15 +16,18 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.szakdolgozat.components.ShoppingCart;
 
 @Entity
 @Table(name = "users")
@@ -207,7 +210,7 @@ public class User implements Serializable{
 	public void addToDelvierisOfEmployee(Delivery delivery) {
 		this.deliveriesOfEmployee.add(delivery);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;

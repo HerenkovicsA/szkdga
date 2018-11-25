@@ -2,6 +2,8 @@ package com.szakdolgozat.service;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.szakdolgozat.domain.Product;
 
 public interface ProductService {
@@ -11,5 +13,13 @@ public interface ProductService {
 	void addOrEditProduct(Product product, String pathToFile);
 
 	String deleteProduct(long id);
+
+	void addOrEditProduct(Product product, MultipartFile file);
+	
+	Product getProductById(long id);
+
+	Product getProductForCart(long productId);
+	
+	void saveProduct(Product product);
 
 }

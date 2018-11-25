@@ -76,11 +76,11 @@ public class Population {
 		return "Population " + pop;
 	}
 	
-	public String toString(String[] cities) {
-		String result = "";
-		for (Chromosome chromosome : pop) {
-			result += "\n" + chromosome.getTour(cities);
-		}
-		return result;
-	}
+//	public String toString(String[] cities) {
+//		String result = "";
+//		for (Chromosome chromosome : pop) {
+//			result += "\n" + chromosome.getTour(cities);
+//		}
+//		return result;
+//	}
 }

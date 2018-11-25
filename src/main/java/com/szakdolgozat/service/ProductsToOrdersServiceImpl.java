@@ -71,4 +71,9 @@ public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 		} else log.error("ProductsToOrders with " + ptoToRemove.getId() + " id is not belongs to order with " + product.getId() + " id");
 		System.out.println(product.getProductstoOrder());
 	}
+
+	@Override
+	public void deletePtO(ProductsToOrders productsToOrders) {
+		ptor.delete(productsToOrders);		
+	}
 }

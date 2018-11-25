@@ -1,27 +1,189 @@
 <!DOCTYPE html>
-<html class="no-js"
-		lang="en"
-		xmlns:th="http://www.thymleaf.org"
-		layout:decorator="layouts/main">
+<html layout:decorator="layouts/main">
 		
 <head>
 <meta charset="utf-8" />
 <title>Shop</title>
-<meta name="description" content="Holiday Manager">
-<meta name="viewport" content="width=device-width">
-
-
+<script type="text/javascript" th:src="@{/js/index.js}"></script>
 </head>
 <body>
 	<div layout:fragment="everyContent">
-		<h1 class='col-xs-offset-5'>Shop</h1>
+		<nav class="navbar navbar-dark bg-dark">
+			<span id="h1" th:text="${userName}"></span>
+			<div class="mainPageButtons">
+				<a th:href="'/'">Főoldal</a>
+				<a th:href="@{/user/cart(c)}"><img id="shopCarPic" class="navPic" th:src="@{/images/shopping_cart.png}"></a>
+				<a th:href="@{/user/orders(o)}">Rendelések</a>
+				<a th:href="@{/user(u)}"><img id="profilePic" class="navPic" th:src="@{/images/profile.jpg}"></a>
+				<a href="javascript: document.logoutForm.submit()">Kijelentkezés</a>
+			</div>
+		</nav>
 	
-		<div class="btn-group-vertical col-xs-4 col-xs-offset-4">
-			<a href="http://localhost:8080/solution" class="btn btn-primary main-login-btn" id="playerMainBtn">NOOOO</a>
-			<a href="http://localhost:8080/admin" class="btn btn-danger main-login-btn" id="operatorMainBtn">Admin</a>
-			<p th:text="${solution}">Solution's gonna be here</p>
+		<div id="main">
+			<div th:if="${param.isEmpty()}">
+				<div id="err" th:if="${productError}" th:text="${productError}" class="alert alert-danger">Error message</div>
+				<div class="item" th:each="product : ${products}">
+					<div class="itemBox">
+						<img class="img-fluid productPic" th:src="@{${product.pathToPicture}}"/>
+						<span th:text="${product.name}"></span>
+						<span th:text="${product.price} + ' Ft'"></span>
+						<a class="addToCart" th:href="@{/user/addToCart(productId=${product.id})}">Kosárba</a>
+					</div>
+					
+				</div>
+			</div>
+			<div th:if="${param.u}">
+				<form id="userEditForm" name="editUser" th:action="@{/user(u)}" th:object="${user}" method="post" class="form-signin">
+					<h2 class="form-signin-heading">Szerkesztés</h2>
+					<div id="err" th:if="${emailError}" th:text="${emailError}" class="alert alert-danger">Error message</div>
+					<div id="err" th:if="${postCodeError}" th:text="${postCodeError}" class="alert alert-danger">Error message</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Email cím: </label>
+						<div class="col-sm-10">
+							<input type="text" th:field="*{email}" class="form-control" placeholder="E-mail cím" required/>
+							<div style="color: red" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Jelszó:  </label>
+						<div class="col-sm-10">
+							<input type="password" th:field="*{password}"  class="form-control"  placeholder="Hagyja üresen, ha nem akarja megváltoztatni"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Teljes név:  </label>
+						<div class="col-sm-10">
+							<input type="text" th:field="*{name}" class="form-control" placeholder="Teljes név" required />
+							<div style="color: red" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Születésnap:  </label>
+						<div class="col-sm-10">
+							<input type="date" th:field="*{birthday}" class="form-control" required/>
+							<div style="color: red" th:if="${#fields.hasErrors('birthday')}" th:errors="*{birthday}"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Telefonszám:  </label>
+						<div class="col-sm-10">
+							<input type="text" th:field="*{phoneNumber}" class="form-control" placeholder="Telefon szám (301234567)" required />
+							<div style="color: red" th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Nem: </label>
+						<div class="col-sm-10">
+							<select th:field="*{sex}"  class="form-control" required>
+								<option th:value="0" th:text="Férfi"></option>
+								<option th:value="1" th:text="Nő"></option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Irányítószám:  </label>
+						<div class="col-sm-10">
+							<input type="text" th:field="*{postCode}" class="form-control" placeholder="Irányítószám" required />
+							<div style="color: red" th:if="${#fields.hasErrors('postCode')}" th:errors="*{postCode}"/>
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Város:  </label>
+						<div class="col-sm-10">
+							<input type="text" th:field="*{city}" class="form-control" placeholder="Település" required />
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Cím (utca/tér/stb.):  </label>
+						<div class="col-sm-10">
+							<input type="text" th:field="*{address}" class="form-control" placeholder="Cím" required />
+						</div>
+					</div>
+					<div class="form-group row">	
+						<label class="col-sm-2 col-form-label">Ház szám:  </label>
+						<div class="col-sm-10">
+							<input type="text" th:field="*{houseNumber}" class="form-control" required/>
+						</div>
+					</div>
+					<input type="number" th:field="*{id}" hidden/>
+					<button class="btn btn-lg btn-dark btn-block" type="submit">Mentés</button>
+				</form>
+			</div>
+			<div th:if="${param.c}">
+				<div >
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th scope="col"></th>
+								<th scope="col">Termék</th>
+								<th scope="col">Ár</th>
+								<th scope="col">Mennyiség</th>
+								<th scope="col"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="item : ${cart.items.keySet()}">
+								<td><img class="img-fluid itemPic" th:src="@{${item.pathToPicture}}"/></td>
+								<td th:text="${item.name}"></td>
+								<td th:class="${item.id} + ' price'" th:text="${item.price} + ' Ft'"></td>
+								<td>
+									<input type="number" th:class="${item.id} + ' quantity form-control'" th:value="${cart.items.get(item)}" />
+								</td>
+								<td><a class="removeFromCart" th:id="${item.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="sum">
+						<p>Végösszeg: <span id="sum"></span> Ft</p>
+						<button id="buy" class="btn btn-dark">Rendel</button>
+					</div>
+				</div>
+			</div>
+			<div th:if="${param.o}">
+				<h1>Rendelések</h1>
+				<div id="err" th:if="${error}" th:text="${error}" class="alert alert-danger"></div>
+				<table th:unless="${error}" class="table table-hover">
+					<thead>
+						<tr>
+							<th scope="col">Határidő</th>
+							<th scope="col">Teljesítve</th>
+							<th scope="col">Érték</th>
+							<th scope="col">Termékek</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="order : ${orderList}">
+							<td th:text="${#dates.format(order.deadLine, 'yyyy-MM-dd')}">deadLine</td>
+							<td th:class="${order.id} + ' done'" th:text="${order.done}?'kézbesítve':'várakozik'">done</td>
+							<td th:text="${order.value} + ' Ft'">value</td>
+							<td><a class="showOrder" th:href="@{/user/products(orderId=${order.id})}" data-toggle="modal" data-target="#editModal">Termékek</a></td>
+							<td><a class=" deleteOrder" th:href="@{/cancelOrder(orderId=${order.id})}">Lemondás</a></td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="modal fade" id="editModal" role="dialog" >
+				<div class="modal-dialog modal-lg">
+				
+				<!-- Modal content-->
+			    	<div class="modal-content">
+						<div class="modal-header">
+							<h3>Termékek</h3>
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+						</div>
+						<div class="modal-body">
+							<div class="form-group row">
+								<table id="orderTable" class="table table-hover"></table>
+							</div>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+			      
+				</div>			  
+			</div>
+			</div>
 		</div>
-		
 	</div>
 </body>
 </html>

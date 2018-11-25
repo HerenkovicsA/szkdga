@@ -10,8 +10,8 @@
 	<title>Bolt</title>
 	
 <!-- 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" /> -->
-	<link rel="stylesheet" type="text/css" th:href="@{/css/bootstrap.min.css}" href="../static/css/bootstrap.min.css"/>
-	<link rel="stylesheet" type="text/css" th:href="@{/css/side-bar.css}" href="../static/css/side-bar.css"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/lib/bootstrap/bootstrap.min.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
 	
 
 	<script type="text/javascript" th:src="@{/js/lib/jquery-2.0.3.min.js}"></script>
@@ -26,12 +26,10 @@
 	<div class="container">
 		<div layout:fragment="everyContent">
 		</div>
-
-
-		<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>		
-		<footer>
+	
+		<div class="footer navbar-fixed-bottom bg-dark">
 			<p>Bolt, minden egy helyen!</p>
-		</footer>
+		</div>
 	
 	</div>
 </body>

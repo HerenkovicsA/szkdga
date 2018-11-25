@@ -1,5 +1,7 @@
 package com.szakdolgozat.service;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,24 +38,26 @@ import com.szakdolgozat.repository.OrderRepository;
 import com.szakdolgozat.repository.ProductsToOrdersRepository;
 import com.szakdolgozat.repository.UserRepository;
 
+import javafx.util.Pair;
+
 @Service
 public class OrderServiceImpl implements OrderService {
 
 	private OrderRepository or;
 	private DeliveryRepository dr;
-	private UserRepository ur;
+	private UserService us;
 	private ProductsToOrdersService ptos;
-	private ProductsToOrdersRepository ptor;
+	private ProductService ps;
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	public OrderServiceImpl(OrderRepository or, DeliveryRepository dr, UserRepository ur, ProductsToOrdersService ptos, ProductsToOrdersRepository ptor) {
+	public OrderServiceImpl(OrderRepository or, DeliveryRepository dr, UserService us, ProductsToOrdersService ptos, ProductService ps) {
 		this.or = or;
 		this.dr = dr;
-		this.ur	= ur;
+		this.us	= us;
 		this.ptos = ptos;
-		this.ptor = ptor;
+		this.ps = ps;
 	}
 	
 	@Override
@@ -101,12 +105,10 @@ public class OrderServiceImpl implements OrderService {
 	
 	private void removeOrderFromProductsToOrders(Order order) {
 		Set<ProductsToOrders> ptoIterbale =  order.getProductsToOrder();
-		System.out.println(order.getProductsToOrder());
 		for (ProductsToOrders productsToOrders : ptoIterbale) {
 			ptos.removeProductsToOrdersFromProducts(productsToOrders, productsToOrders.getProduct());
-			ptor.delete(productsToOrders);
+			ptos.deletePtO(productsToOrders);
 		}
-		System.out.println(order.getProductsToOrder());
 	}
 
 	private void removeOrderFromUser(Order orderToRemove) {
@@ -114,7 +116,6 @@ public class OrderServiceImpl implements OrderService {
 		Set<Order> orderSet = user.getOrdersOfUser();
 		Set<Order> newOrderSet = new HashSet<Order>();
 		boolean hasChanged = false;
-		System.out.println(orderSet.size());
 		for (Order order : orderSet) {
 			if(!order.equals(orderToRemove)) {
 				newOrderSet.add(order);
@@ -129,7 +130,6 @@ public class OrderServiceImpl implements OrderService {
 			for (Order order : newOrderSet) {
 				user.addToOrdersOfUser(order);
 			}
-			System.out.println(user.getOrdersOfUser().size());
 		}
 	}
 	
@@ -137,12 +137,10 @@ public class OrderServiceImpl implements OrderService {
 		Delivery delivery = orderToRemove.getDelivery();
 		if(delivery != null) {
 			Set<Order> orderSet = delivery.getOrdersOfDelivery();
-			System.out.println(delivery.getOrdersOfDelivery().size());
 			if(orderSet.contains(orderToRemove)) {
 				orderSet.remove(orderToRemove);
 				delivery.setOrdersOfDelivery(orderSet);
 			} else log.error("Order with " + orderToRemove.getId() + " does not belong to delivery with: " + delivery.getId() + " id");
-			System.out.println(delivery.getOrdersOfDelivery().size());
 		}		
 	}
 
@@ -164,8 +162,13 @@ public class OrderServiceImpl implements OrderService {
 		if(map.isEmpty()) log.error("Map is empty");
 		Order orderToEdit = or.findById(Long.valueOf(map.get("orderId").toString())).get();
 		if(orderToEdit.getUser().getId() != Long.parseLong(map.get("userId").toString())) {
-			User newUser = ur.findById(Long.parseLong(map.get("userId").toString())).get();
-			orderToEdit.setUser(newUser);
+			User newUser;
+			try {
+				newUser = us.findUserById(Long.parseLong(map.get("userId").toString()));
+				orderToEdit.setUser(newUser);
+			} catch (Exception e) {
+				log.error(e.getMessage());
+			}
 		}
 		orderToEdit.setValue(Double.parseDouble(map.get("value").toString()));
 		String[] fullDate = map.get("deadLine").toString().split("-");
@@ -223,6 +226,50 @@ public class OrderServiceImpl implements OrderService {
 		order.setDone(b);
 		or.save(order);
 		return 1;
+	}
+
+	@Override
+	public String makeAnOrder(String email, HashMap<Product, Integer> items) {
+		User user = us.findByEmail(email);
+		Order order = new Order();
+		Date deadLine = new Date();
+		deadLine.setMonth(deadLine.getMonth()+1);
+		order.setDeadLine(deadLine);
+		order.setUser(user);
+		Set<ProductsToOrders> ptoSet = new HashSet<ProductsToOrders>();
+		double value = 0;
+		int amount;
+		for (Product product : items.keySet()) {
+			amount = items.get(product);
+			if((product.getOnStock() - amount) >= 0) {
+				ptoSet.add(new ProductsToOrders(product, order, amount));
+				value +=  amount * product.getPrice();
+				product.setOnStock(product.getOnStock() - amount);
+			} else {
+				return product.getName() + " termékből csak " + product.getOnStock() + " db van.";
+			}
+		}
+		for (Product product : items.keySet()) {
+			ps.saveProduct(product);
+		}
+		order.setValue(value);
+		order.setProductsToOrder(ptoSet);
+		order.setDone(false);
+		or.save(order);
+		return "ok";
+	}
+
+	@Override
+	public List<Pair<Product, Integer>> getProductsOfOrder(long orderId) {
+		Order order = getOrderById(orderId);
+		if (order == null) return null;
+		List<Pair<Product, Integer>> resultList = new ArrayList<Pair<Product, Integer>>();
+		Set<ProductsToOrders> ptoSet = order.getProductsToOrder();
+		if(ptoSet.isEmpty()) return null;
+		for (ProductsToOrders pto : ptoSet) {
+			resultList.add(new Pair<Product, Integer>(pto.getProduct(),pto.getQuantity()));
+		}
+		return resultList;
 	}
 	
 

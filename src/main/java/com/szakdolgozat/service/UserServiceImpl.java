@@ -1,6 +1,7 @@
 package com.szakdolgozat.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.comparator.Comparators;
 
 import com.szakdolgozat.repository.RoleRepository;
 import com.szakdolgozat.service.UserDetailsImpl;
@@ -101,12 +103,9 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 
 	@Override
 	public void encodeExistingUserPassword() {
-		System.out.println("----------------------------\nPASSWORD EDIT");
 		Iterable<User> users = userRepo.findAll();
 		for (User user : users) {
-			System.out.print(user.getName() + " :  " + user.getPassword());
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
-			System.out.println("     encoded:  " + user.getPassword()) ;
 			userRepo.save(user);
 		}
 	}
@@ -129,7 +128,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	public Set<Order> findOrdersOfUser(long userId) throws Exception {
 		User user = userRepo.findById(userId).get();
 		Set<Order> ordersOfUserSet = user.getOrdersOfUser();
-		if(ordersOfUserSet.isEmpty()) throw new Exception("No orders to user");
+		if(ordersOfUserSet.isEmpty()) throw new Exception("No orders for user");
 		return ordersOfUserSet;
 	}
 
@@ -145,7 +144,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	public void editUser(User userToEdit) throws Exception{
 		User user = userRepo.findById(userToEdit.getId()).get();
 		if( !user.getEmail().equals(userToEdit.getEmail()) && userRepo.findByEmail(userToEdit.getEmail())!=null)
-			throw new Exception("Az email cím már foglalt.");
+			throw new Exception("Az email cím (" + userToEdit.getEmail() + ") már foglalt.");
 		if(!userToEdit.getPassword().isEmpty()) 
 			user.setPassword(passwordEncoder.encode(userToEdit.getPassword()));
 		user.setAddress(userToEdit.getAddress());
@@ -156,7 +155,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 		user.setName(userToEdit.getName());
 		user.setPhoneNumber(userToEdit.getPhoneNumber());
 		user.setPostCode(userToEdit.getPostCode());
-		user.setRole(userToEdit.getRole());
+		if(userToEdit.getRole() != null)user.setRole(userToEdit.getRole());
 		user.setSex(userToEdit.getSex());
 		userRepo.save(user);
 	}
@@ -215,5 +214,19 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 			if(!delivery.isDone()) return true;
 		}
 		return false;
+	}
+
+	@Override
+	public List<Order> findOrdersOfUser(String email) {
+		User user = findByEmail(email);
+		List<Order> orderList = new ArrayList<Order>();
+		try {
+			orderList.addAll(findOrdersOfUser(user.getId()));
+			orderList.sort((Order o1, Order o2) -> (int)(o2.getDeadLine().getTime()-o1.getDeadLine().getTime()));
+			return orderList;
+		} catch (Exception e) {
+			log.warn(e.getMessage());
+			return null;
+		}
 	}
 }

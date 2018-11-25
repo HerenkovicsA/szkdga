@@ -38,6 +38,12 @@ public class ProductsToOrders implements Serializable{
 
 	}
 
+	public ProductsToOrders(Product product, Order order, int quantity) {
+		this.product = product;
+		this.order = order;
+		this.quantity = quantity;
+	}
+
 	public long getId() {
 		return Id;
 	}

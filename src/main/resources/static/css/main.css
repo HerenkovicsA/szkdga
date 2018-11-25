@@ -1,0 +1,67 @@
+#h1{
+	font-family: serif;
+    font-weight: bold;
+    font-size: xx-large;
+    color: white;
+}
+.white{
+	color: white;
+}
+.navPic{
+	max-width:7%;
+	max-height:7%;
+	width: auto;
+	height: auto;
+}
+.mainPageButtons{
+	text-align: right;
+}
+img.productPic{
+	max-width:100pt;
+	max-height:100pt;
+	width: auto;
+	height: auto;
+}
+.item
+{
+	float: left;
+	padding: 10pt;
+	width: min-content;
+	height: 200pt;
+	margin: 7pt;
+}
+.itemBox{
+	height: inherit;
+	display: grid;
+	text-align: center;
+}
+.footer {
+    height: 20pt;
+	position: fixed;
+	bottom: 0;
+	color: white;
+	text-align: center;
+}
+img.deletePic{
+	height:20%;
+	width:20%;
+}
+img.itemPic{
+  max-width:30%;
+  max-height:30%;
+  width: auto;
+  height: auto;
+}
+.sum{
+	float:right;
+	text-align: right;
+}
+.mainPageButtons > a:link,.mainPageButtons > a:visited,.mainPageButtons > a:active {
+	color: white;
+}
+.modalTablePic{
+	max-width:50pt;
+	max-height:50pt;
+	width: auto;
+	height: auto;
+}

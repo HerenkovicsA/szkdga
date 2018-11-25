@@ -222,11 +222,7 @@ public class AdminController {
 	
 	@PostMapping("/admin/addOrEditProduct")
     public String addOrEditProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile file) {
-		if(!product.getPathToPicture().isEmpty()) {
-			ps.addOrEditProduct(product, null);
-		}else {
-			ps.addOrEditProduct(product, sfs.store(file));
-		}
+		ps.addOrEditProduct(product, file);
         return "redirect:/admin/products?p";
     }
 

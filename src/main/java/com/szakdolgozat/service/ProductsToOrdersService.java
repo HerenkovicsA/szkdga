@@ -10,4 +10,6 @@ public interface ProductsToOrdersService {
 	ProductsToOrders findByOrderAndProduct(long orderId, long productId) throws Exception;
 
 	void removeProductsToOrdersFromProducts(ProductsToOrders ptoToRemove, Product product);
+
+	void deletePtO(ProductsToOrders productsToOrders);
 }

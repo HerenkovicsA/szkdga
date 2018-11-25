@@ -40,4 +40,6 @@ public interface UserService {
 	
 	public boolean hasActiveDelivery(User user);
 
+	public List<Order> findOrdersOfUser(String email);
+
 }

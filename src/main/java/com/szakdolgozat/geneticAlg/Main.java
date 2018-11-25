@@ -20,10 +20,10 @@ public class Main {
 		ExecutorService executor = Executors.newCachedThreadPool();
 		
 		for(int j = 0; j < 3; j++) {
-			GenAlgBusiness gag = new GenAlgBusiness(100,500,10,CandD.c2,CandD.cd2);
+			//GenAlgBusiness gag = new GenAlgBusiness(100,500,10,CandD.c2,CandD.cd2);
 			executor.submit(new Runnable() {
 				public void run() {
-					gag.go();
+					//gag.go();
 				}
 			});
 		}
