@@ -65,3 +65,7 @@ img.itemPic{
 	width: auto;
 	height: auto;
 }
+.checkBoxHeader{
+    display: flex;
+    align-items: center;	
+}

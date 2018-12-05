@@ -208,6 +208,51 @@ public class OrderServiceImpl implements OrderService {
 		if(orderList == null || orderList.isEmpty()) return null;
 		return orderList;
 	}
+	
+	/**
+	 * Only call this if there is enough order for a delivery.
+	 * @param cargoSize
+	 * @param cargoLimit
+	 * @param delivery : the {@link Delivery} which the orders will belong to
+	 * @return
+	 * Not sorted list of Orders for the delivery in param
+	 */
+	@Override //TODO make creating an order a limit to take it into more orders if its too big
+	public List<Order> findOrdersForDelivery2(Double cargoSize, double cargoLimit, Delivery delivery) {
+		double spaceLeft = cargoSize.doubleValue();
+		double limit = spaceLeft * cargoLimit;
+		boolean over = false;
+		List<Order> finalOrderList = new ArrayList<Order>();
+		List<Order> orderList;
+		List<Order> lastList = new ArrayList<Order>();
+		while(limit >= (cargoSize - spaceLeft) && !over) {
+			orderList = or.findTop20ByDoneFalseAndDeliveryIsNullOrderByDeadLineAsc();
+			//exit if there is no more order in db or the actual list is the same as the last one was
+			if(orderList == null || orderList.isEmpty() || lastList.containsAll(orderList)) {
+				over = true;
+			} else {
+				for (Order order : orderList) {
+					order.countVolume();
+					if( spaceLeft - order.getVolume() >= 0  && !over) {
+						spaceLeft -= order.getVolume();
+						finalOrderList.add(order);
+						order.setDelivery(delivery);
+						if(spaceLeft <= cargoSize*0.1 ) over = true;
+					}
+				}
+				lastList.clear();
+				lastList.addAll(orderList);
+				updateListOfOrders(finalOrderList);
+			}
+		}
+		
+		return finalOrderList;
+	}
+
+	private void updateListOfOrders(List<Order> finalOrderList) {
+		or.saveAll(finalOrderList);
+		
+	}
 
 	@Override
 	public Order getOrderById(long orderId) {
@@ -271,7 +316,5 @@ public class OrderServiceImpl implements OrderService {
 		}
 		return resultList;
 	}
-	
-
 
 }

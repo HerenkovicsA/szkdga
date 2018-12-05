@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -115,7 +116,7 @@ public class AdminController {
 			model.addAttribute("orderList", us.findOrdersOfUser(userId));
 			model.addAttribute("editedOrder", new Order());
 		} catch (Exception e) {
-			model.addAttribute("orderList", "");
+			model.addAttribute("orderList", new HashSet());
 			log.error(e.getMessage());
 		}
 		return "admin";
@@ -162,6 +163,7 @@ public class AdminController {
 		try {
 			model.addAttribute("deliveryList", us.findDeliveriesOfEmployee(employeeId));
 		} catch (Exception e) {
+			model.addAttribute("deliveryList", null);
 			log.error(e.getMessage());
 		}
 		return "admin";

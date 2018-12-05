@@ -73,6 +73,9 @@ public class ProductServiceImpl implements ProductService {
 			productToSave = new Product();
 			productToSave.setPathToPicture(sfs.store(file, false));
 		}
+		productToSave.setHeight(product.getHeight());
+		productToSave.setWidth(product.getWidth());
+		productToSave.setLength(product.getLength());
 		productToSave.setName(product.getName());
 		productToSave.setOnStock(product.getOnStock());
 		productToSave.setPrice(product.getPrice());

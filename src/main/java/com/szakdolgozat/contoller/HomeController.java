@@ -112,7 +112,9 @@ public class HomeController {
 	
 	@GetMapping("/user/cart")
 	public String goToCart(Model model, Authentication auth) {
+		User user = us.findByEmail(auth.getName());
 		model.addAttribute("cart", scs.getCart(auth.getName()));
+		model.addAttribute("userName",user.getName());
 		return "index";
 	}
 	
@@ -147,12 +149,14 @@ public class HomeController {
 	
 	@GetMapping("/user/orders")
 	public String getOrders(Authentication auth, Model model) {
+		User user = us.findByEmail(auth.getName());
 		List<Order> orderList = us.findOrdersOfUser(auth.getName());
-		if(!orderList.isEmpty()) {
+		if(orderList != null && !orderList.isEmpty()) {
 			model.addAttribute("orderList", orderList);
 		} else {
 			model.addAttribute("error", "Nincsenek még rendelései");
 		}
+		model.addAttribute("userName", user.getName());
 		return "index";
 	}
 	

@@ -45,6 +45,8 @@ public class Delivery implements Serializable{
 	private String deliveryOrder;
 	@Column
 	private Double distance;
+	@Column
+	private Integer priority;
 
 	public Delivery() {
 	
@@ -106,6 +108,26 @@ public class Delivery implements Serializable{
 		this.distance = distance;
 	}
 
+	public User getUser() {
+		return user;
+	}
+
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public Integer getPriority() {
+		return priority;
+	}
+
+	public void setPriority(Integer priority) {
+		this.priority = priority;
+	}
+
+	public void setDistance(Double distance) {
+		this.distance = distance;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -115,6 +137,7 @@ public class Delivery implements Serializable{
 		result = prime * result + ((deliveryOrder == null) ? 0 : deliveryOrder.hashCode());
 		result = prime * result + ((distance == null) ? 0 : distance.hashCode());
 		result = prime * result + (done ? 1231 : 1237);
+		result = prime * result + ((priority == null) ? 0 : priority.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		return result;
 	}
@@ -146,6 +169,11 @@ public class Delivery implements Serializable{
 		} else if (!distance.equals(other.distance))
 			return false;
 		if (done != other.done)
+			return false;
+		if (priority == null) {
+			if (other.priority != null)
+				return false;
+		} else if (!priority.equals(other.priority))
 			return false;
 		if (user == null) {
 			if (other.user != null)

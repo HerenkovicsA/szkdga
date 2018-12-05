@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.szakdolgozat.components.ProductAndQuantityResponse;
+import com.szakdolgozat.domain.Delivery;
 import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.ProductsToOrders;
@@ -27,6 +28,8 @@ public interface OrderService {
 	public void editOrder(Map<Object, Object> map);
 
 	public List<Order> findOrdersForDelivery();
+	
+	public List<Order> findOrdersForDelivery2(Double cargoSize, double cargoLimit, Delivery delivery);
 
 	public Order getOrderById(long orderId);
 

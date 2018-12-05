@@ -15,4 +15,6 @@ public interface ShoppingCartService {
 	String changeAmount(long productId, int quantity, String email);
 
 	String makeAnOrder(String name);
+
+	String asyncMakeAnOrder(String email);
 }

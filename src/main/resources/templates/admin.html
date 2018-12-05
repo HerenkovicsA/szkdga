@@ -103,6 +103,7 @@
 							<th scope="col">Név</th>
 							<th scope="col">Raktáron (db)</th>
 							<th scope="col">Ár</th>
+							<th scope="col">Méretek (MxSzxH)</th>
 							<th scope="col">Kép</th>
 							<th th:if="${param.orderId}">Mennyiség</th>
 							<th scope="col"></th>
@@ -113,8 +114,10 @@
 							<td  th:text="${product.name}">name</td>
 							<td th:text="${product.onStock}">on stock</td>
 							<td th:text="${product.price} + ' Ft'">price</td>
+							<td th:text="${product.height} + 'x' + ${product.width} + 'x' + ${product.length}">size</td>
 							<td><img class="img-fluid productPic" th:attr="src=@{${product.pathToPicture}}"/></td>
 							<td><button th:attr="data-id=${product.id}, data-name=${product.name}, data-onStock=${product.onStock},
+								data-length=${product.length},data-height=${product.height},data-width=${product.width},
 								data-price=${product.price}, data-pathToPicture=${product.pathToPicture}"
 								type="button" class="btn btn-dark productButton" data-toggle="modal" data-target="#editModal">Edit</button>
 								<a class="delete Product" th:id="${product.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
@@ -122,11 +125,13 @@
 						<tr th:if="${param.orderId}" th:each="productOfOrder : ${productsOfOrderList}">
 							<td  th:text="${productOfOrder.product.name}">name</td>
 							<td th:text="${productOfOrder.product.onStock}">on stock</td>
+							<td th:text="${productOfOrder.product.height} + 'x' + ${productOfOrder.product.width} + 'x' + ${productOfOrder.product.length}">size</td>
 							<td th:text="${productOfOrder.product.price} + ' Ft'">price</td>
 							<td><img class="img-fluid productPic" th:attr="src=@{${productOfOrder.product.pathToPicture}}"/></td>
 							<td th:text="${productOfOrder.quantity}">amount</td>
-							<td><button th:attr="data-id=${productOfOrder.product.id}, data-name=${productOfOrder.product.name}, data-onStock=${productOfOrder.product.onStock},
-								data-price=${productOfOrder.product.price}, data-pathToPicture=${productOfOrder.product.pathToPicture}"
+							<td><button th:attr="data-id=${productOfOrder.product.id}, data-name=${productOfOrder.product.name}, 
+								data-onStock=${productOfOrder.product.onStock},data-length=${productOfOrder.product.length},data-height=${productOfOrder.product.height},
+								data-width=${productOfOrder.product.width},data-price=${productOfOrder.product.price}, data-pathToPicture=${productOfOrder.product.pathToPicture}"
 								type="button" class="btn btn-dark productButton" data-toggle="modal" data-target="#editModal">Edit</button>
 								<a class="delete Product" th:id="${productOfOrder.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
 						</tr>
@@ -134,7 +139,10 @@
 				</table>
 			</div>
 			<div th:if="${param.o}">
-				<h1 th:text="(${param.deliveryId}?'Kiszállítás '+${param.deliveryId}+' megrendelései':(${param.userId}?${orderList[0].user.name}+' rendelési':'Rendelések'))">Megrendelések</h1>
+				
+				<h1 th:if="${param.deliveryId}" th:text="'Kiszállítás '+${param.deliveryId}+' megrendelései'"></h1>
+				<h1 th:if="${param.userId} and not ${orderList.isEmpty()}" th:text="${orderList[0].user.name}+' rendelési'"></h1>
+				<h1 th:unless="${param.deliveryId} or ${param.userId}">Rendelések</h1>
 				<table class="table table-hover">
 					<thead>
 						<tr>
@@ -164,30 +172,33 @@
 				</table>
 			</div>
 			<div th:if="${param.d}">
-				<h1 th:text="(${param.employeeId}?${deliveryList[0].employee.name}+' kiszállításai':'Kiszállítások')">Kiszállítások</h1>
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th scope="col">Alkalmazott</th>
-							<th scope="col">Kiszállítás napja</th>
-							<th scope="col">Teljesítve</th>
-							<th scope="col">Kiszállítandó megrendelések</th>
-							<th scope="col"></th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="delivery : ${deliveryList}">
-							<td th:text="${delivery.employee.name}">user</td>
-							<td th:text="${#dates.format(delivery.deliveryDate, 'yyyy-MM-dd')}">N/A</td>
-							<td th:text="${delivery.done}?'Kész':'Várakozik'">N/A</td>
-							<td><a th:href="@{/admin/orders(o,deliveryId=${delivery.id})}">Megrendelések</a></td>
-							<td><button th:attr="data-id=${delivery.id}, data-employeeId=${delivery.employee.id}, data-deliveryDate=${delivery.deliveryDate},
-								data-done=${delivery.done}"
-								type="button" class="btn btn-dark deliveryButton" data-toggle="modal" data-target="#editModal">Edit</button>
-							<a class="delete Delivery" th:id="${delivery.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
-						</tr>
-					</tbody>
-				</table>
+				<div th:if="${deliveryList} != null">
+					<h1 th:text="(${param.employeeId}?${deliveryList[0].employee.name}+' kiszállításai':'Kiszállítások')">Kiszállítások</h1>
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th scope="col">Alkalmazott</th>
+								<th scope="col">Kiszállítás napja</th>
+								<th scope="col">Teljesítve</th>
+								<th scope="col">Kiszállítandó megrendelések</th>
+								<th scope="col"></th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="delivery : ${deliveryList}">
+								<td th:text="${delivery.employee.name}">user</td>
+								<td th:text="${#dates.format(delivery.deliveryDate, 'yyyy-MM-dd')}">N/A</td>
+								<td th:text="${delivery.done}?'Kész':'Várakozik'">N/A</td>
+								<td><a th:href="@{/admin/orders(o,deliveryId=${delivery.id})}">Megrendelések</a></td>
+								<td><button th:attr="data-id=${delivery.id}, data-employeeId=${delivery.employee.id}, data-deliveryDate=${delivery.deliveryDate},
+									data-done=${delivery.done}"
+									type="button" class="btn btn-dark deliveryButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								<a class="delete Delivery" th:id="${delivery.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div th:if="${deliveryList} == null"><h1>Nincsenek még kiszállítások!</h1></div>
 			</div>
 			<div class="modal fade" id="editModal" role="dialog" >
 				<div class="modal-dialog modal-lg">

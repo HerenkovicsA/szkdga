@@ -31,6 +31,9 @@ import javafx.util.Pair;
 @Service
 public class DeliveryServiceImpl implements DeliveryService{
 
+	private final Double CARGO_SIZE = 14900000D;
+	private final double CARGO_LIMIT = 0.7; 
+	
 	private GoogleService gs;
 	private DeliveryRepository dr;
 	private UserService us;
@@ -196,7 +199,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 		dr.save(deliveryToEdit);	
 	}
 
-	@Override
+	@Override//TODO delete
 	public Pair<Double, List<Order>> getNewDeliveryForEmployee(String email) throws Exception {
 		User employee = us.findByEmail(email);
 		if(employee == null) {
@@ -223,13 +226,104 @@ public class DeliveryServiceImpl implements DeliveryService{
 		createNewDelivery(orders,employee,resultPair.getKey(),createOrderStringForDelivery(resultPair.getValue()));
 		return resultPair;
 	}
+	
+	/**
+	 * Makes a new delivery which doesn't belong to any employee yet 
+	 * @throws Exception if there is nor order to deliver
+	 */
+	@Override
+	public void makeNewDelivery() throws Exception {
+		Delivery newDelivery = new Delivery();
+		List<Order> orders = os.findOrdersForDelivery2(CARGO_SIZE, CARGO_LIMIT, newDelivery);
+		if(orders == null || orders.isEmpty()) {
+			log.error("No free order for delivery");
+			throw new Exception("No free order");
+		}
+		
+		orders.add(0, getFakeOrder());
+		
+		String[] addresses = new String[orders.size()];
+		for (int i = 0; i < orders.size(); i++) {
+			addresses[i] = orders.get(i).getUser().getFullAddress();
+		}
+		Pair<Double, List<Order>> resultPair = getShortestRoute(true, addresses, orders);	
+		createNewDelivery(orders,resultPair.getKey(),createOrderStringForDelivery(resultPair.getValue()), newDelivery);
+	}
+	
+	/**
+	 * Adds a delivery to the employee.
+	 * Returns a delivery order with distance.<br/>
+	 */
+	@Override
+	public Pair<Double, List<Order>> newDeliveryForEmployee(String email) throws Exception {
+		User employee = us.findByEmail(email);
+		if(employee == null) {
+			log.error("Employee is not found with email address: " + email);
+			throw new Exception("Employee is not found with email address: " + email);
+		}
+		if(us.hasActiveDelivery(employee)) {
+			log.error("Employee has active delivery");
+			throw new Exception("Employee has active delivery");
+		}
+		Delivery delivery = findDeliveryForEmployee();
+		if(delivery != null) {
+			employee.addToDelvierisOfEmployee(delivery);
+			Pair<Pair<Double, Date>, List<Order>> tmp = getDeliveryForEmployee(delivery.getId());
+			return new Pair<Double, List<Order>>(tmp.getKey().getKey(), tmp.getValue());
+		}
+		return null;
+	}
 
+	/**
+	 * 
+	 * @return 
+	 * A delivery entity or <b>null</b> if there is no delivery in db
+	 */
+	private Delivery findDeliveryForEmployee() {
+		Optional<Delivery> optDelivery = dr.findTop1ByUserIsNullAndPriorityIsNotNullOrderByPriorityDesc();
+		if(optDelivery.isPresent()) return optDelivery.get();
+		optDelivery = dr.findTop1ByUserIsNullOrderByDeliveryDateAsc();
+		if(optDelivery.isPresent()) return optDelivery.get();
+		return null;
+	}
+
+	/**
+	 * Edits and saves the new delivery from the params with no employee
+	 * @param orders : list of orders to give to the delivery
+	 * @param distance
+	 * @param deliverOrder :  order to follow when delivering the orders
+	 * @param newDelivery : the delivery to be saved
+	 */
+	private void createNewDelivery(List<Order> orders, Double distance, String deliverOrder, Delivery newDelivery) {
+		createNewDelivery(orders, null, distance, deliverOrder, newDelivery);
+	}
+	
+	/**
+	 * Creates the new delivery from the params
+	 * @param orders : list of orders to give to the delivery
+	 * @param employee
+	 * @param distance
+	 * @param deliverOrder :  order to follow when delivering the orders
+	 */
 	private void createNewDelivery(List<Order> orders, User employee, Double distance, String deliverOrder) {
+		createNewDelivery(orders, employee, distance, deliverOrder, new Delivery());
+	}
+	
+	/**
+	 * Edits and saves the new delivery from the params
+	 * @param orders : list of orders to give to the delivery
+	 * @param employee
+	 * @param distance 
+	 * @param deliverOrder : order to follow when delivering the orders
+	 * @param newDelivery : the delivery to be saved
+	 */
+	private void createNewDelivery(List<Order> orders, User employee, Double distance, String deliverOrder,Delivery newDelivery) {
 		orders.remove(0);
 		long startTime = System.currentTimeMillis();
-		Delivery newDelivery = new Delivery();
 		newDelivery.setEmployee(employee);
-		employee.addToDelvierisOfEmployee(newDelivery);
+		if(employee != null) {
+			employee.addToDelvierisOfEmployee(newDelivery);
+		}		
 		Date earliestDate = new Date(5000,1,1);
 		Set<Order> orderSet = new HashSet<Order>();
 		for (Order order : orders) {
@@ -261,6 +355,10 @@ public class DeliveryServiceImpl implements DeliveryService{
 		return employee.getDeliveriesOfEmployee();
 	}
 
+	/**
+	 * @return
+	 * The ordered list of orders for delivery in Pair with distance/deadline
+	 */
 	@Override
 	public Pair<Pair<Double, Date>, List<Order>> getDeliveryForEmployee(long deliveryId) throws Exception {
 		Delivery delivery = findDeliveryById(deliveryId);

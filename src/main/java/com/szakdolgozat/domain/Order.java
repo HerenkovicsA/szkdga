@@ -1,5 +1,7 @@
 package com.szakdolgozat.domain;
 
+import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashSet;
@@ -16,6 +18,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -47,6 +50,8 @@ public class Order implements Serializable{
 	private Delivery delivery;
 	@Column
 	private double value;
+	@Transient
+	private double volume;
 	
 	public Order() {
 		
@@ -113,7 +118,26 @@ public class Order implements Serializable{
 		this.productsToOrder = productsToOrder;
 	}
 
+	public double getVolume() {
+		return volume;
+	}
 	
+	public void countVolume() {
+		this.volume = 0;
+		if(!this.productsToOrder.isEmpty()) {
+			for (ProductsToOrders pto : this.productsToOrder) {
+				this.volume += pto.getProduct().getVolume() * pto.getQuantity(); 
+			}
+		}
+	}
+
+	public void setVolume(double volume) {
+		this.volume = volume;
+	}
+
+	public void setId(long id) {
+		Id = id;
+	}
 
 	@Override
 	public int hashCode() {

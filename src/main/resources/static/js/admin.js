@@ -22,6 +22,7 @@ function bindListeners() {
 	$('#addProduct').click(function(event) {
 		event.preventDefault();
 		$('#editModal').modal('toggle');
+		addProduct(event);
 	});
 	
 	$('.delete').click(function(event) {
@@ -173,12 +174,30 @@ function submitUser(event) {
 	});
 }
 
+function addProduct(event){
+	var button = $(event.target);
+	$('#id').val(-1);
+	$('#name').val('');
+	$('#onStock').val(0);
+	$('#price').val(0.0);
+	$('#height').val(0);
+	$('#length').val(0);
+	$('#width').val(0);
+	$('#pathToPicture').val('');
+	$('#picture').attr('required','required');
+	$('#submitAddProduct').val('Hozzáad');
+	$('#infoPicEdit').attr('hidden','hidden');
+}
+
 function productButton(event){
 	var button = $(event.target);
 	$('#id').val(button.data('id'));
 	$('#name').val(button.data('name'));
 	$('#onStock').val(button.data('onstock'));
 	$('#price').val(button.data('price'));
+	$('#height').val(button.data('height'));
+	$('#length').val(button.data('length'));
+	$('#width').val(button.data('width'));
 	$('#pathToPicture').val(button.data('pathtopicture'));
 	$('#picture').removeAttr('required');
 	$('#submitAddProduct').val('Módosít');

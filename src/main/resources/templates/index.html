@@ -117,6 +117,7 @@
 								<th scope="col"></th>
 								<th scope="col">Termék</th>
 								<th scope="col">Ár</th>
+								<th scope="col">Méret(cm)</th>
 								<th scope="col">Mennyiség</th>
 								<th scope="col"></th>
 							</tr>
@@ -126,6 +127,7 @@
 								<td><img class="img-fluid itemPic" th:src="@{${item.pathToPicture}}"/></td>
 								<td th:text="${item.name}"></td>
 								<td th:class="${item.id} + ' price'" th:text="${item.price} + ' Ft'"></td>
+								<td th:text="${item.height} + 'x' + ${item.width} + 'x' + ${item.length}"></td>
 								<td>
 									<input type="number" th:class="${item.id} + ' quantity form-control'" th:value="${cart.items.get(item)}" />
 								</td>

@@ -30,4 +30,8 @@ public interface DeliveryService {
 	public Pair<Pair<Double, Date>, List<Order>> getDeliveryForEmployee(long deliveryId) throws Exception;
 
 	public void setDeliveryToDone(long deliveryId);
+
+	public Pair<Double, List<Order>> newDeliveryForEmployee(String email) throws Exception;
+
+	public void makeNewDelivery() throws Exception;
 }

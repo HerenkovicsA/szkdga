@@ -16,6 +16,10 @@ function bindListeners() {
 		orderCheckDone(event);
 	});
 	
+	$('.makeAllDone').change(function(event) {
+		makeAllDone(event);
+	});
+	
 	$('.orderButton').click(function(event) {
 		orderButton(event);
 	});
@@ -58,8 +62,10 @@ function checkIfAllIsDone() {
 	}
 	if(isAllDone){
 		$("#allIsReady").show();
+		$('.makeAllDone').prop("checked",true);
 	} else {
 		$("#allIsReady").hide();
+		$('.makeAllDone').prop("checked",false);
 	}
 }
 
@@ -106,4 +112,20 @@ function getUrlParameter(sParam) {
             return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
         }
     }
+}
+
+function makeAllDone(event){
+	var orderCheckBoxes = $('.orderCheckDone');
+	var checked = $(event.target).prop("checked");
+	var id;
+	for(var i = 0; i < orderCheckBoxes.length; i++){
+		$(orderCheckBoxes[i]).prop("checked",checked);
+		id = $(orderCheckBoxes[i]).prop("class").substring(0,2).trim();
+		$.post("/employee/orderIsDone?orderId=" + id + "&b=" + checked, "_csrf=" + token);
+	}
+	if(checked){
+		$("#allIsReady").show();
+	} else {
+		$("#allIsReady").hide();
+	}
 }

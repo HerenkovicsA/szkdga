@@ -14,6 +14,7 @@ import com.szakdolgozat.domain.Product;
 public class ShoppingCart {
 
 	private HashMap<Product, Integer> items;
+	private double summOfVolume;
 
 	public ShoppingCart() {
 		this.items = new HashMap<Product, Integer>();
@@ -25,6 +26,33 @@ public class ShoppingCart {
 
 	public void setItems(HashMap<Product, Integer> cart) {
 		this.items = cart;
+	}
+	
+	public double getSummOfVolume() {
+		return summOfVolume;
+	}
+
+	public void setSummOfVolume(double summOfVolume) {
+		this.summOfVolume = summOfVolume;
+	}
+	
+	public double sumVolume() {
+		summOfVolume = 0;
+		for(Product key : items.keySet()) {
+			summOfVolume += key.getVolume() * items.get(key);
+		}
+		return summOfVolume;
+	}
+
+	public double getVolumeOfProduct(Product product) {
+		double result = 0;
+		for(Product prod : items.keySet()) {
+			if(prod.equals(product)) {
+				result = prod.getVolume() * items.get(prod);
+				break;
+			}
+		}
+		return result;
 	}
 	
 	public void addToCart(Product product) {

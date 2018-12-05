@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -38,7 +39,13 @@ public class Product implements Serializable{
 	private Set<ProductsToOrders> productsToOrder = new HashSet<ProductsToOrders>();
 	@Column(length = 2000, nullable = false)
 	private String pathToPicture;
-
+	@Column//(nullable = false)
+	private Double width;
+	@Column//(nullable = false)
+	private Double height;
+	@Column//(nullable = false)
+	private Double length;
+//TODO x,y,z everywhere!!!!!!!!!!
 	public Product() {
 	}
 
@@ -90,16 +97,51 @@ public class Product implements Serializable{
 		this.productsToOrder = productsToOrder;
 	}
 
+	public Double getWidth() {
+		return width;
+	}
+
+	public void setWidth(Double width) {
+		this.width = width;
+	}
+
+	public Double getHeight() {
+		return height;
+	}
+
+	public void setHeight(Double height) {
+		this.height = height;
+	}
+
+	public Double getLength() {
+		return length;
+	}
+
+	public void setLength(Double length) {
+		this.length = length;
+	}
+	
+	@Transient
+	public double getVolume() {
+		return height * length * width;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (Id ^ (Id >>> 32));
+		long temp;
+		temp = Double.doubleToLongBits(height);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + onStock;
 		result = prime * result + ((pathToPicture == null) ? 0 : pathToPicture.hashCode());
-		long temp;
 		temp = Double.doubleToLongBits(price);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(length);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(width);
 		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
@@ -115,6 +157,8 @@ public class Product implements Serializable{
 		Product other = (Product) obj;
 		if (Id != other.Id)
 			return false;
+		if (Double.doubleToLongBits(height) != Double.doubleToLongBits(other.height))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
@@ -128,6 +172,10 @@ public class Product implements Serializable{
 		} else if (!pathToPicture.equals(other.pathToPicture))
 			return false;
 		if (Double.doubleToLongBits(price) != Double.doubleToLongBits(other.price))
+			return false;
+		if (Double.doubleToLongBits(length) != Double.doubleToLongBits(other.length))
+			return false;
+		if (Double.doubleToLongBits(width) != Double.doubleToLongBits(other.width))
 			return false;
 		return true;
 	}
