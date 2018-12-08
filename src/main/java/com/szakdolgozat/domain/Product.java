@@ -131,18 +131,11 @@ public class Product implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (Id ^ (Id >>> 32));
-		long temp;
-		temp = Double.doubleToLongBits(height);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((height == null) ? 0 : height.hashCode());
+		result = prime * result + ((length == null) ? 0 : length.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + onStock;
 		result = prime * result + ((pathToPicture == null) ? 0 : pathToPicture.hashCode());
-		temp = Double.doubleToLongBits(price);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(length);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
-		temp = Double.doubleToLongBits(width);
-		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + ((width == null) ? 0 : width.hashCode());
 		return result;
 	}
 
@@ -157,25 +150,30 @@ public class Product implements Serializable{
 		Product other = (Product) obj;
 		if (Id != other.Id)
 			return false;
-		if (Double.doubleToLongBits(height) != Double.doubleToLongBits(other.height))
+		if (height == null) {
+			if (other.height != null)
+				return false;
+		} else if (!height.equals(other.height))
+			return false;
+		if (length == null) {
+			if (other.length != null)
+				return false;
+		} else if (!length.equals(other.length))
 			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
 			return false;
-		if (onStock != other.onStock)
-			return false;
 		if (pathToPicture == null) {
 			if (other.pathToPicture != null)
 				return false;
 		} else if (!pathToPicture.equals(other.pathToPicture))
 			return false;
-		if (Double.doubleToLongBits(price) != Double.doubleToLongBits(other.price))
-			return false;
-		if (Double.doubleToLongBits(length) != Double.doubleToLongBits(other.length))
-			return false;
-		if (Double.doubleToLongBits(width) != Double.doubleToLongBits(other.width))
+		if (width == null) {
+			if (other.width != null)
+				return false;
+		} else if (!width.equals(other.width))
 			return false;
 		return true;
 	}

@@ -29,6 +29,14 @@ public interface OrderService {
 
 	public List<Order> findOrdersForDelivery();
 	
+	/**
+	 * Only call this if there is enough order for a delivery.
+	 * @param cargoSize
+	 * @param cargoLimit
+	 * @param delivery : the {@link Delivery} which the orders will belong to
+	 * @return
+	 * Not sorted list of Orders for the delivery in param
+	 */
 	public List<Order> findOrdersForDelivery2(Double cargoSize, double cargoLimit, Delivery delivery);
 
 	public Order getOrderById(long orderId);
@@ -38,4 +46,11 @@ public interface OrderService {
 	public String makeAnOrder(String email, HashMap<Product, Integer> items);
 
 	public List<Pair<Product, Integer>> getProductsOfOrder(long orderId);
+
+	public List<Pair<Product, Integer>> getMissingProductList(HashMap<Product, Integer> subCart);
+
+	/**
+	 * @return if there is enough order to make a delivery or not 
+	 */
+	public boolean hasEnoughForOneDelivery(double cargoSize);
 }

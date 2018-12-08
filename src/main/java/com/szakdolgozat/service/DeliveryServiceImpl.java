@@ -123,11 +123,13 @@ public class DeliveryServiceImpl implements DeliveryService{
 	
 	private void removedDeliveryFromEmployee(Delivery deliveryToRemove) {
 		User employee = deliveryToRemove.getEmployee();
-		Set<Delivery> deliverySet = employee.getDeliveriesOfEmployee();
-		if(deliverySet.contains(deliveryToRemove)) {
-			deliverySet.remove(deliveryToRemove);
-			employee.setDeliveriesOfEmployee(deliverySet);
-		} else log.error("Delivery with " + deliveryToRemove.getId() + " id does not belongs to employee " + employee.getName());
+		if(employee != null) {
+			Set<Delivery> deliverySet = employee.getDeliveriesOfEmployee();
+			if(deliverySet.contains(deliveryToRemove)) {
+				deliverySet.remove(deliveryToRemove);
+				employee.setDeliveriesOfEmployee(deliverySet);
+			} else log.error("Delivery with " + deliveryToRemove.getId() + " id does not belongs to employee " + employee.getName());
+		}
 	}
 
 	@Override
@@ -227,17 +229,14 @@ public class DeliveryServiceImpl implements DeliveryService{
 		return resultPair;
 	}
 	
-	/**
-	 * Makes a new delivery which doesn't belong to any employee yet 
-	 * @throws Exception if there is nor order to deliver
-	 */
 	@Override
-	public void makeNewDelivery() throws Exception {
+	public void makeNewDelivery() {
 		Delivery newDelivery = new Delivery();
+		dr.save(newDelivery);
 		List<Order> orders = os.findOrdersForDelivery2(CARGO_SIZE, CARGO_LIMIT, newDelivery);
 		if(orders == null || orders.isEmpty()) {
 			log.error("No free order for delivery");
-			throw new Exception("No free order");
+			return;
 		}
 		
 		orders.add(0, getFakeOrder());
@@ -250,10 +249,6 @@ public class DeliveryServiceImpl implements DeliveryService{
 		createNewDelivery(orders,resultPair.getKey(),createOrderStringForDelivery(resultPair.getValue()), newDelivery);
 	}
 	
-	/**
-	 * Adds a delivery to the employee.
-	 * Returns a delivery order with distance.<br/>
-	 */
 	@Override
 	public Pair<Double, List<Order>> newDeliveryForEmployee(String email) throws Exception {
 		User employee = us.findByEmail(email);
@@ -268,6 +263,8 @@ public class DeliveryServiceImpl implements DeliveryService{
 		Delivery delivery = findDeliveryForEmployee();
 		if(delivery != null) {
 			employee.addToDelvierisOfEmployee(delivery);
+			delivery.setEmployee(employee);
+			dr.save(delivery);
 			Pair<Pair<Double, Date>, List<Order>> tmp = getDeliveryForEmployee(delivery.getId());
 			return new Pair<Double, List<Order>>(tmp.getKey().getKey(), tmp.getValue());
 		}
@@ -355,10 +352,6 @@ public class DeliveryServiceImpl implements DeliveryService{
 		return employee.getDeliveriesOfEmployee();
 	}
 
-	/**
-	 * @return
-	 * The ordered list of orders for delivery in Pair with distance/deadline
-	 */
 	@Override
 	public Pair<Pair<Double, Date>, List<Order>> getDeliveryForEmployee(long deliveryId) throws Exception {
 		Delivery delivery = findDeliveryById(deliveryId);
@@ -398,4 +391,5 @@ public class DeliveryServiceImpl implements DeliveryService{
 		delivery.setDone(true);
 		dr.save(delivery);
 	}
+
 }

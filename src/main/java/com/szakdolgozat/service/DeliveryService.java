@@ -27,11 +27,23 @@ public interface DeliveryService {
 
 	public Set<Delivery> getAllDeliveryForEmployee(String email);
 
+	/**
+	 * @return
+	 * The ordered list of orders for delivery in Pair with distance/deadline
+	 */
 	public Pair<Pair<Double, Date>, List<Order>> getDeliveryForEmployee(long deliveryId) throws Exception;
 
 	public void setDeliveryToDone(long deliveryId);
 
+	/**
+	 * Adds a delivery to the employee.
+	 * Returns a delivery order with distance.<br/>
+	 */
 	public Pair<Double, List<Order>> newDeliveryForEmployee(String email) throws Exception;
 
-	public void makeNewDelivery() throws Exception;
+	/**
+	 * Makes a new delivery which doesn't belong to any employee yet 
+	 * @throws Exception if there is no order to deliver
+	 */
+	public void makeNewDelivery();
 }

@@ -20,7 +20,7 @@ function bindListeners() {
 	});
 	
 	$('#buy').click(function(){
-		buy();
+		buy(0);
 	});
 	
 	$( window ).resize(function() {
@@ -92,7 +92,7 @@ function addToCart(event) {
 		data : "_csrf=" + token,
 		success : function(response) {
 			if(response == 'error') {
-				alert("Nem sikerült hozzáadni a kocsihoz.");
+				alert("Ez a termék kifogyott.\nKérem próbálkozzon később.");
 			}
 		},
 		error : function(ex) {
@@ -158,7 +158,7 @@ function removeFromCart(event) {
 	});
 }
 
-function buy() {
+function buy(num) {
 	$.ajax({			
 		type : "POST",
 		url : "/makeAnOrder", 
@@ -166,14 +166,29 @@ function buy() {
 		success : function(response) {
 			if(response == "ok"){
 				window.location = window.location.origin;
+			} else if(response.indexOf('MISSING') >= 0){
+				var missing = response.split(';');
+				var str = "";
+				var tmp;
+				for(var i = 1; i < missing.length; i++) {
+					tmp = missing[i].split(':');
+					str += tmp[0] + " termékből csak " + tmp[1] + " db van\n";
+					setQuantity(tmp[2], tmp[1]);
+				}
+				alert(str);
 			} else {
 				alert(response);
+				window.location = window.location.origin;
 			}
 		},
 		error : function(ex) {
 			console.log(ex);
 		}
 	});
+}
+
+function setQuantity(id, quantity) {
+	$('.' + id + '.quantity').val(quantity);
 }
 
 function deleteOrder(event) {

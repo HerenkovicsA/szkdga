@@ -57,8 +57,8 @@ public class EmplyoeeController {
 	public String getNewDelivery(Model model, @RequestParam String email, Authentication authentication){
 		model.addAttribute("employeeName",us.findByEmail(authentication.getName()).getName());
 		try {
-			Pair<Double ,List<Order>> resultPair = ds.getNewDeliveryForEmployee(email);
-			//Pair<Double, List<Order>> newResultPair = ds.newDeliveryForEmployee(email);
+			//Pair<Double ,List<Order>> resultPair = ds.getNewDeliveryForEmployee(email);
+			Pair<Double, List<Order>> resultPair = ds.newDeliveryForEmployee(email);
 			model.addAttribute("distance", resultPair.getKey());
 			model.addAttribute("orderList", resultPair.getValue());
 		} catch (Exception e) {

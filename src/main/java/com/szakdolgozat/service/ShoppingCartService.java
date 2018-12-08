@@ -16,5 +16,15 @@ public interface ShoppingCartService {
 
 	String makeAnOrder(String name);
 
-	String asyncMakeAnOrder(String email);
+	/**
+	 * Creates orders for the user from the products in the cart.
+	 * @return <b>string</b>
+	 *  <ul>
+	 *  	<li>If there isn't enough product on stock, than a <b>;</b> sparated list of product name : onstock string, 
+	 *  starting with MISSING</li>
+	 *  	<li>If there is nothing in the cart than a 'Nincs semmi a kocsiban' string</li>  
+	 *  	<li>On <b>succes</b>, creates orders and returns 'ok'</li>
+	 *  </ul>
+	 */
+	String asyncMakeOrders(String email);
 }

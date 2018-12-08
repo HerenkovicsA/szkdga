@@ -2,8 +2,12 @@ package com.szakdolgozat.contoller;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
@@ -24,10 +28,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.szakdolgozat.components.DeliveryProcessor;
 import com.szakdolgozat.components.ShoppingCart;
 import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.User;
+import com.szakdolgozat.service.DeliveryService;
 import com.szakdolgozat.service.DeliveryServiceImpl;
 import com.szakdolgozat.service.OrderService;
 import com.szakdolgozat.service.PostCodeService;
@@ -47,6 +53,7 @@ public class HomeController {
 	private ShoppingCartService scs;
 	private ProductService ps;
 	private OrderService os;
+	private DeliveryService ds;
 	
 
 	@InitBinder
@@ -55,14 +62,21 @@ public class HomeController {
 	}
 	
 	@Autowired
-	public HomeController(UserService us, PostCodeService pcs, ShoppingCartService scs, ProductService ps, OrderService os) {
+	public HomeController(UserService us, PostCodeService pcs, ShoppingCartService scs, ProductService ps, OrderService os, DeliveryService ds) {
 		this.us = us;
 		this.pcs = pcs;
 		this.scs = scs;
 		this.ps = ps;
 		this.os = os;
+		this.ds = ds;
+		startMakingDeliveries();
 	}
 	
+	private void startMakingDeliveries() {
+		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
+		ses.scheduleAtFixedRate(new DeliveryProcessor(ds,os), 0, 1, TimeUnit.HOURS);		
+	}
+
 	@RequestMapping("/")
 	public String home(Model model, Authentication authentication){
 		User user = us.findByEmail(authentication.getName());
@@ -144,7 +158,8 @@ public class HomeController {
 	
 	@PostMapping(value = "/makeAnOrder")
 	public @ResponseBody String makeAnOrder(Authentication auth) {
-		return scs.makeAnOrder(auth.getName());
+		return scs.asyncMakeOrders(auth.getName());
+		//TODO react for MISSING
 	}
 	
 	@GetMapping("/user/orders")

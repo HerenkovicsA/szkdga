@@ -1,17 +1,10 @@
 package com.szakdolgozat.geneticAlg;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -42,27 +35,54 @@ public class GenAlgBusiness {
 	}
 
 	public Pair<Double, List<Order>> go() {
+		log.info("Start genetic algorithms");
 		long startTime = System.currentTimeMillis();
+		
+		List<Chromosome> bestsList = new ArrayList<Chromosome>();		
+		ExecutorService executor = Executors.newCachedThreadPool();
+		log.info("order size: " + orders.size());
+		if(orders.size() == 2) {
+			List<Order> easyList = new ArrayList<Order>();
+			easyList.add(orders.get(0));
+			easyList.add(orders.get(1));
+			easyList.add(orders.get(0));
+			return new Pair<Double, List<Order>>((double) citiesDistances[0][1], easyList);
+		}
+		for(int j = 0; j < 3; j++) {
+			executor.execute(new Runnable() {
+				@Override
+				public void run() {
+					System.out.println("aaaaaaaaaaaa");
+					runOnce(bestsList);
+				}
+			});
+		}		
+		executor.shutdown();
+		try {
+			executor.awaitTermination(10, TimeUnit.SECONDS);
+			while(!executor.isTerminated()) {
+				Thread.sleep(1);
+			}
+		} catch (InterruptedException e) {
+			log.error(e.getMessage());
+		}
+		long stopTime = System.currentTimeMillis();
+		log.info("Genetic algorithms took: " + (stopTime - startTime) + " ms");
+		Collections.sort(bestsList);
+		System.out.println(bestsList);
+		return new Pair<Double, List<Order>>(bestsList.get(0).getChromValue()/1000, bestsList.get(0).getTour(orders));
+	}
+	
+	private void runOnce(List<Chromosome> bestsList) {
+		log.info("Thread has started");
 		pop = new Population(this.popSize,citiesDistances);
 		Population  newPop;
 		Chromosome offspring1;
-		Chromosome offspring2;
 		
 		pop.orgenise();
 		pop.setPropability();
 		for (int i = 0; i < iterationMax; i++) {
-			
 			newPop = new Population();
-			
-			/*for(int j = 0; j < this.popSize/2 - 2; j++) {
-				offspring1 = new Chromosome();
-				offspring2 = new Chromosome();
-				//xover.PMX(offspring1, offspring2, citiesDistances, pop, false);
-				//xover.cycleCrossover(offspring1, offspring2, citiesDistances, pop);
-				xover.alternatingEdgesCrossover(offspring1, offspring2, citiesDistances, pop);
-				newPop.addChromToPop(offspring1);
-				newPop.addChromToPop(offspring2);
-			}*/
 			for(int j = 0; j < this.popSize - elitism; j++) {
 				offspring1 = new Chromosome();
 				xover.hGreX(offspring1, citiesDistances, pop);
@@ -78,10 +98,11 @@ public class GenAlgBusiness {
 			pop = newPop;
 			
 		}
-		long stopTime = System.currentTimeMillis();
-		log.info("Genetic algorithm took: " + (stopTime - startTime) + " ms");
-		
-		return new Pair<Double, List<Order>>(pop.getBestChrom().getChromValue()/1000, pop.getBestChrom().getTour(orders));
+		addToList(bestsList, pop.getBestChrom());
+		log.info("Thread has stopped");
 	}
 	
+	private synchronized void addToList(List<Chromosome> list, Chromosome chrom) {
+		list.add(chrom);
+	}
 }

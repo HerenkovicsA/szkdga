@@ -31,12 +31,12 @@ public class Delivery implements Serializable{
 	@Column(nullable = false)
 	private long Id;
 	@ManyToOne
-	@JoinColumn(name = "employee_id", nullable = false)
+	@JoinColumn(name = "employee_id")
 	@JsonBackReference
 	private User user;
-	@Column(nullable = false)
+	@Column
 	private Date deliveryDate;
-	@Column(nullable = false)
+	@Column
 	private boolean done;
 	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonManagedReference

@@ -173,7 +173,7 @@
 			</div>
 			<div th:if="${param.d}">
 				<div th:if="${deliveryList} != null">
-					<h1 th:text="(${param.employeeId}?${deliveryList[0].employee.name}+' kiszállításai':'Kiszállítások')">Kiszállítások</h1>
+					<h1 th:text="((${param.employeeId} and ${deliveryList[0].employee} != null)?${deliveryList[0].employee.name}+' kiszállításai':'Kiszállítások')">Kiszállítások</h1>
 					<table class="table table-hover">
 						<thead>
 							<tr>
@@ -186,11 +186,11 @@
 						</thead>
 						<tbody>
 							<tr th:each="delivery : ${deliveryList}">
-								<td th:text="${delivery.employee.name}">user</td>
+								<td th:text="${delivery.employee} != null? ${delivery.employee.name} : 'Nincs még kiszállító'">user</td>
 								<td th:text="${#dates.format(delivery.deliveryDate, 'yyyy-MM-dd')}">N/A</td>
 								<td th:text="${delivery.done}?'Kész':'Várakozik'">N/A</td>
 								<td><a th:href="@{/admin/orders(o,deliveryId=${delivery.id})}">Megrendelések</a></td>
-								<td><button th:attr="data-id=${delivery.id}, data-employeeId=${delivery.employee.id}, data-deliveryDate=${delivery.deliveryDate},
+								<td><button th:attr="data-id=${delivery.id}, data-employeeId=${delivery.employee}?${delivery.employee.id}:'-1', data-deliveryDate=${delivery.deliveryDate},
 									data-done=${delivery.done}"
 									type="button" class="btn btn-dark deliveryButton" data-toggle="modal" data-target="#editModal">Edit</button>
 								<a class="delete Delivery" th:id="${delivery.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>

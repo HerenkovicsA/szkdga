@@ -11,9 +11,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.szakdolgozat.components.DeliveryProcessor;
 import com.szakdolgozat.components.ShoppingCart;
 import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
+
+import javafx.util.Pair;
 
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
@@ -22,14 +25,16 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	
 	private ProductService ps;
 	private OrderService os;
+	private DeliveryService ds;
 	private HashMap<String, ShoppingCart> userCartMap;
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	public ShoppingCartServiceImpl(ProductService ps, OrderService os) {
+	public ShoppingCartServiceImpl(ProductService ps, OrderService os, DeliveryService ds) {
 		this.ps = ps;
 		this.os = os;
+		this.ds = ds;
 		this.userCartMap = new HashMap<String, ShoppingCart>();
 	}
 	
@@ -113,26 +118,35 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	}
 	
 	@Override
-	public String asyncMakeAnOrder(String email) {
+	public String asyncMakeOrders(String email) {
 		ShoppingCart cart = getCart(email);
 		if(!cart.getItems().isEmpty()) {
-			double sumVolume = cart.sumVolume();
-			String result = null;
-			if(sumVolume > CARGO_SIZE) {
-				List<HashMap<Product, Integer>> carts = takeCartIntoPieces(cart);
-				for (HashMap<Product, Integer> subCart : carts) {
-					//TODO check if there is enough product
-					//makeAnOrder(email,subCart);
-					result = "";
-				}
-			} else {
-				result = os.makeAnOrder(email, cart.getItems());
-				if(result.equals("ok")) {
+			String result = "";
+			List<Pair<Product, Integer>> missingList = os.getMissingProductList(cart.getItems());
+			if(missingList.isEmpty()) {
+				double sumVolume = cart.sumVolume();
+				if(sumVolume > CARGO_SIZE) {
+					List<HashMap<Product, Integer>> carts = takeCartIntoPieces(cart);
+					for (HashMap<Product, Integer> subCart : carts) {
+						os.makeAnOrder(email,subCart);
+					}
 					cart.emptyCart();
+					return "A rendelés nem fért egy kocsiban, ezért " + carts.size() + " különböző fuvarral lesz kiszállítva.";
+				} else {
+					result = os.makeAnOrder(email, cart.getItems());
+					if(result.equals("ok")) {
+						cart.emptyCart();
+					}
 				}
+				return "ok";
+			} else {
+				result += "MISSING";
+				for (Pair<Product, Integer> pair : missingList) {
+					result += ";" + pair.getKey().getName() + ":" + pair.getValue() + ":" + pair.getKey().getId() ;
+				}
+				return result;
 			}
-			//TODO make async call for ds.makeNewDelivery
-			return result;
+			
 		}
 		log.error("The cart is empty");
 		return "Nincs semmi a kocsiban";

@@ -16,4 +16,6 @@ public interface OrderRepository extends CrudRepository<Order, Long> {
 
 	Set<Order> findAllByOrderByDeadLineAsc();
 
+	List<Order> findByDoneFalseAndDeliveryIsNull();
+
 }

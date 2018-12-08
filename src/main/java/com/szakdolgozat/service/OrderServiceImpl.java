@@ -209,15 +209,7 @@ public class OrderServiceImpl implements OrderService {
 		return orderList;
 	}
 	
-	/**
-	 * Only call this if there is enough order for a delivery.
-	 * @param cargoSize
-	 * @param cargoLimit
-	 * @param delivery : the {@link Delivery} which the orders will belong to
-	 * @return
-	 * Not sorted list of Orders for the delivery in param
-	 */
-	@Override //TODO make creating an order a limit to take it into more orders if its too big
+	@Override
 	public List<Order> findOrdersForDelivery2(Double cargoSize, double cargoLimit, Delivery delivery) {
 		double spaceLeft = cargoSize.doubleValue();
 		double limit = spaceLeft * cargoLimit;
@@ -242,13 +234,17 @@ public class OrderServiceImpl implements OrderService {
 				}
 				lastList.clear();
 				lastList.addAll(orderList);
-				updateListOfOrders(finalOrderList);
+				updateListOfOrders(finalOrderList);//TODO WTF is this ?probably no delivery?
 			}
 		}
 		
 		return finalOrderList;
 	}
 
+	/**
+	 * Updates the orders in db - setting delivery to not null value
+	 * @param finalOrderList List of Orders to save
+	 */
 	private void updateListOfOrders(List<Order> finalOrderList) {
 		or.saveAll(finalOrderList);
 		
@@ -315,6 +311,30 @@ public class OrderServiceImpl implements OrderService {
 			resultList.add(new Pair<Product, Integer>(pto.getProduct(),pto.getQuantity()));
 		}
 		return resultList;
+	}
+
+	@Override
+	public List<Pair<Product, Integer>> getMissingProductList(HashMap<Product, Integer> cart) {
+		List<Pair<Product, Integer>> missingList = new ArrayList<Pair<Product, Integer>>();
+		for (Product product : cart.keySet()) {
+			if(product.getOnStock() < cart.get(product)) {
+				missingList.add(new Pair<Product, Integer>(product,product.getOnStock()));
+			}
+		}
+		return missingList;
+	}
+
+	@Override
+	public boolean hasEnoughForOneDelivery(double cargoSize) {
+		List<Order> orders = or.findByDoneFalseAndDeliveryIsNull();
+		double volume = 0;
+		for (Order order : orders) {
+			order.countVolume();
+			volume += order.getVolume();
+		}
+		if(volume >= cargoSize) return true;
+		log.info("There is no enough Order for a delivery. Only (" + volume + ")");
+		return false;
 	}
 
 }

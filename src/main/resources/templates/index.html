@@ -157,7 +157,7 @@
 						<tr th:each="order : ${orderList}">
 							<td th:text="${#dates.format(order.deadLine, 'yyyy-MM-dd')}">deadLine</td>
 							<td th:class="${order.id} + ' done'" th:text="${order.done}?'kézbesítve':'várakozik'">done</td>
-							<td th:text="${order.value} + ' Ft'">value</td>
+							<td class="value" th:text="${order.value} + ' Ft'">value</td>
 							<td><a class="showOrder" th:href="@{/user/products(orderId=${order.id})}" data-toggle="modal" data-target="#editModal">Termékek</a></td>
 							<td><a class=" deleteOrder" th:href="@{/cancelOrder(orderId=${order.id})}">Lemondás</a></td>
 						</tr>

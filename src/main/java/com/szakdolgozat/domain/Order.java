@@ -20,6 +20,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.hibernate.Hibernate;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -41,14 +43,14 @@ public class Order implements Serializable{
 	private User user;
 	@Column(nullable = false)
 	private boolean done;
-	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
 	@JsonManagedReference
 	private Set<ProductsToOrders> productsToOrder = new HashSet<ProductsToOrders>();
 	@ManyToOne
 	@JoinColumn(name = "deliver_id")
 	@JsonBackReference
 	private Delivery delivery;
-	@Column
+	@Column(columnDefinition="Decimal(15,2)")
 	private double value;
 	@Transient
 	private double volume;
@@ -124,7 +126,7 @@ public class Order implements Serializable{
 	
 	public void countVolume() {
 		this.volume = 0;
-		if(!this.productsToOrder.isEmpty()) {
+		if(!productsToOrder.isEmpty()) {
 			for (ProductsToOrders pto : this.productsToOrder) {
 				this.volume += pto.getProduct().getVolume() * pto.getQuantity(); 
 			}
