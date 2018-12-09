@@ -41,7 +41,7 @@
 	<div th:if="${param.nd} or ${param.d}">
 		<div th:if="${error} != null" th:text="${error}" class="alert alert-danger"></div>
 		<div th:if="${error} == null">
-			<h1 th:text="'Össz. kilométer: ' + (${distance}/1000)"></h1>
+			<h1 th:text="'Össz. kilométer: ' + ${distance}"></h1>
 			<table class="table table-hover">
 				<thead>
 					<tr>

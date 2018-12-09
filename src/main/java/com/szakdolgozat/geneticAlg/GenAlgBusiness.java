@@ -46,13 +46,12 @@ public class GenAlgBusiness {
 			easyList.add(orders.get(0));
 			easyList.add(orders.get(1));
 			easyList.add(orders.get(0));
-			return new Pair<Double, List<Order>>((double) citiesDistances[0][1], easyList);
+			return new Pair<Double, List<Order>>((double) (citiesDistances[0][1]/1000), easyList);
 		}
 		for(int j = 0; j < 3; j++) {
 			executor.execute(new Runnable() {
 				@Override
 				public void run() {
-					System.out.println("aaaaaaaaaaaa");
 					runOnce(bestsList);
 				}
 			});
