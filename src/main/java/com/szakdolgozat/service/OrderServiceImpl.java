@@ -193,13 +193,24 @@ public class OrderServiceImpl implements OrderService {
 			}else {
 				Set<ProductsToOrders> productsToOrders = orderToEdit.getProductsToOrder();
 				for (ProductsToOrders productsToOrder : productsToOrders) {
-					if(productsToOrder.getProduct().getId() == Long.parseLong(productArrayInfo[0])) {
-						productsToOrder.setQuantity(Integer.parseInt(productArrayInfo[1]));
+					if(productsToOrder.getProduct().getId() == Long.parseLong(productArrayInfo[0]) 
+							&& productsToOrder.getQuantity() != Integer.parseInt(productArrayInfo[1])) {
+						updatePtO(productsToOrder, Integer.parseInt(productArrayInfo[1]));
 					}
 				}
 			}
 		}
 		or.save(orderToEdit);
+	}
+
+	private void updatePtO(ProductsToOrders pto, int quantity) {
+		int diff = pto.getQuantity() - quantity;
+		if(diff != 0) {
+			ps.updateProductOnStock(pto.getProduct(), diff);
+			pto.setQuantity(quantity);
+			pto.updateProdActValue();
+			ptos.updatePtO(pto);
+		}
 	}
 
 	@Override
@@ -234,7 +245,7 @@ public class OrderServiceImpl implements OrderService {
 				}
 				lastList.clear();
 				lastList.addAll(orderList);
-				updateListOfOrders(finalOrderList);//TODO WTF is this ?probably no delivery?
+				updateListOfOrders(finalOrderList);
 			}
 		}
 		
@@ -274,7 +285,7 @@ public class OrderServiceImpl implements OrderService {
 		User user = us.findByEmail(email);
 		Order order = new Order();
 		Date deadLine = new Date();
-		deadLine.setMonth(deadLine.getMonth()+1);
+		deadLine.setDate(deadLine.getDate()+7);
 		order.setDeadLine(deadLine);
 		order.setUser(user);
 		Set<ProductsToOrders> ptoSet = new HashSet<ProductsToOrders>();
@@ -335,6 +346,57 @@ public class OrderServiceImpl implements OrderService {
 		if(volume >= cargoSize) return true;
 		log.info("There is no enough Order for a delivery. Only (" + volume + ")");
 		return false;
+	}
+
+	private List<Order> findUrgentOrders() {
+		Date tomorrow = new Date();
+		tomorrow.setDate(tomorrow.getDate() + 2);
+		List<Order> orders = or.findAllByDeadLineBefore(tomorrow);
+		if(orders != null) return orders;
+		return null;
+	}
+	
+	@Override
+	public boolean hasUrgentOrder() {
+		List<Order> orders = findUrgentOrders();
+		if(orders.isEmpty()) return false;
+		return true;
+	}
+
+	@Override
+	public String deleteProductFromOrder(long productId, long orderId) {
+		Product product = ps.getProductById(productId);
+		Order order = getOrderById(orderId);
+		if(product != null && order != null) {
+			removeProductFromOrder(product, order);
+			if(!isAnyProductLeft(order)) {
+				or.delete(order);
+				return "removed";
+			};
+			return "deleted";
+		}else {
+			return "not exists";
+		}
+	}
+
+	private boolean isAnyProductLeft(Order order) {
+		if(order.getProductsToOrder().isEmpty()) return false;
+		return true;
+	}
+
+	private void removeProductFromOrder(Product product, Order order) {
+		Set<ProductsToOrders> ptoSet = order.getProductsToOrder();
+		for (ProductsToOrders pto : ptoSet) {
+			if(pto.getProduct().equals(product)) {
+				product.getProductstoOrder().remove(pto);
+				product.setOnStock(product.getOnStock() + pto.getQuantity());
+				ptoSet.remove(pto);
+				ptos.deletePtO(pto);
+				ps.saveProduct(product);
+				or.save(order);
+			}
+		}
+		
 	}
 
 }

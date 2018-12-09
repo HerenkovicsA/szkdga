@@ -33,6 +33,8 @@ public class ProductsToOrders implements Serializable{
 	private Order order;
 	@Column(nullable = false)
 	private int quantity;
+	@Column(name = "prod_act_value")
+	private double prodActValue;
 
 	public ProductsToOrders() {
 
@@ -42,6 +44,7 @@ public class ProductsToOrders implements Serializable{
 		this.product = product;
 		this.order = order;
 		this.quantity = quantity;
+		this.prodActValue = product.getPrice() * quantity;
 	}
 
 	public long getId() {
@@ -76,14 +79,23 @@ public class ProductsToOrders implements Serializable{
 		this.quantity = quantity;
 	}
 
+	public double getProdActValue() {
+		return prodActValue;
+	}
+
+	public void setProdActValue(double prodActValue) {
+		this.prodActValue = prodActValue;
+	}
+	
+	public void updateProdActValue() {
+		this.prodActValue = this.quantity * this.product.getPrice();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (Id ^ (Id >>> 32));
-		result = prime * result + ((order == null) ? 0 : order.hashCode());
-		result = prime * result + ((product == null) ? 0 : product.hashCode());
-		result = prime * result + quantity;
 		return result;
 	}
 
@@ -98,25 +110,13 @@ public class ProductsToOrders implements Serializable{
 		ProductsToOrders other = (ProductsToOrders) obj;
 		if (Id != other.Id)
 			return false;
-		if (order == null) {
-			if (other.order != null)
-				return false;
-		} else if (!order.equals(other.order))
-			return false;
-		if (product == null) {
-			if (other.product != null)
-				return false;
-		} else if (!product.equals(other.product))
-			return false;
-		if (quantity != other.quantity)
-			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
 		return "ProductsToOrders [Id=" + Id + ", productId=" + product.getId() + ", orderId=" + order.getId() + ", quantity=" + quantity
-				+ "]";
+				+ " prodActValue=" + prodActValue + "]";
 	}
 	
 	

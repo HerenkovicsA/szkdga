@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html layout:decorator="layouts/main">
 <head>
+	<script type="text/javascript" th:src="@{/js/logReg.js}"></script>
 </head>
 <body>
 
@@ -78,7 +79,7 @@
 						<input type="text" id="houseNumber" name="houseNumber" th:field="*{houseNumber}" class="form-control" required/>
 					</div>
 				</div>
-					<button class="btn btn-lg btn-primary btn-block" type="submit">Regisztráció</button>
+					<button class="btn btn-lg btn-dark btn-block" type="submit">Regisztráció</button>
 		</form>
 
 	</div>

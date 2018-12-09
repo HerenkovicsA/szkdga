@@ -5,17 +5,31 @@
 <meta charset="utf-8" />
 <title>Shop</title>
 <script type="text/javascript" th:src="@{/js/index.js}"></script>
+<link rel="stylesheet" type="text/css" th:href="@{/css/side-bar.css}" href="../static/css/side-bar.css"/>
 </head>
 <body>
 	<div layout:fragment="everyContent">
+		<div sec:authorize="hasAnyAuthority('ADMIN')" id="mySidenav" class="sidenav">
+			<a href="" class="closebtn" id="closebtn">&times;</a>
+			<a href="/">Bolt</a>
+			<a href="/admin/employees?e">Alkalmazottak</a>
+			<a href="/admin/products?p">Termékek</a>
+			<a href="/admin/orders?o">Megrendelések</a>
+			<a href="/admin/deliveries?d">Kiszállítások</a>
+			<a href="/admin/users?u">Felhasználók</a>
+			<a href="javascript: document.logoutForm.submit()" role="menuitem">Kijelentkezés</a>
+		</div>
+		
+		<button sec:authorize="hasAnyAuthority('ADMIN')" type="button" class="btn btn-dark" id= "openNav">open</button>
+		
 		<nav class="navbar navbar-dark bg-dark">
 			<span id="h1" th:text="${userName}"></span>
 			<div class="mainPageButtons">
 				<a th:href="'/'">Főoldal</a>
-				<a th:href="@{/user/cart(c)}"><img id="shopCarPic" class="navPic" th:src="@{/images/shopping_cart.png}"></a>
-				<a th:href="@{/user/orders(o)}">Rendelések</a>
+				<a sec:authorize="hasAnyAuthority('USER')" th:href="@{/user/cart(c)}"><img id="shopCarPic" class="navPic" th:src="@{/images/shopping_cart.png}"></a>
+				<a sec:authorize="hasAnyAuthority('USER')" th:href="@{/user/orders(o)}">Rendelések</a>
 				<a th:href="@{/user(u)}"><img id="profilePic" class="navPic" th:src="@{/images/profile.jpg}"></a>
-				<a href="javascript: document.logoutForm.submit()">Kijelentkezés</a>
+				<a sec:authorize="hasAnyAuthority('USER')" href="javascript: document.logoutForm.submit()">Kijelentkezés</a>
 			</div>
 		</nav>
 	
@@ -23,11 +37,11 @@
 			<div th:if="${param.isEmpty()}">
 				<div id="err" th:if="${productError}" th:text="${productError}" class="alert alert-danger">Error message</div>
 				<div class="item" th:each="product : ${products}">
-					<div class="itemBox">
+					<div class="itemBox" th:if="${product.deleted} == false">
 						<img class="img-fluid productPic" th:src="@{${product.pathToPicture}}"/>
 						<span th:text="${product.name}"></span>
 						<span th:text="${product.price} + ' Ft'"></span>
-						<a class="addToCart" th:href="@{/user/addToCart(productId=${product.id})}">Kosárba</a>
+						<a sec:authorize="hasAnyAuthority('USER')" class="addToCart" th:href="@{/user/addToCart(productId=${product.id})}">Kosárba</a>
 					</div>
 					
 				</div>
@@ -159,7 +173,8 @@
 							<td th:class="${order.id} + ' done'" th:text="${order.done}?'kézbesítve':'várakozik'">done</td>
 							<td class="value" th:text="${order.value} + ' Ft'">value</td>
 							<td><a class="showOrder" th:href="@{/user/products(orderId=${order.id})}" data-toggle="modal" data-target="#editModal">Termékek</a></td>
-							<td><a class=" deleteOrder" th:href="@{/cancelOrder(orderId=${order.id})}">Lemondás</a></td>
+							<td th:if="${order.delivery == null}"><a class=" deleteOrder" th:href="@{/cancelOrder(orderId=${order.id})}">Lemondás</a></td>
+							<td th:if="${order.delivery != null}">Kiszállításon van</td>
 						</tr>
 					</tbody>
 				</table>

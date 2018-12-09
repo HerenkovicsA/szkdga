@@ -1,8 +1,10 @@
 package com.szakdolgozat.repository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import com.szakdolgozat.domain.Delivery;
@@ -17,5 +19,7 @@ public interface OrderRepository extends CrudRepository<Order, Long> {
 	Set<Order> findAllByOrderByDeadLineAsc();
 
 	List<Order> findByDoneFalseAndDeliveryIsNull();
+
+	List<Order> findAllByDeadLineBefore(Date tomorrow);
 
 }

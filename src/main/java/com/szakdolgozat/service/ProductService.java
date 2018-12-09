@@ -22,4 +22,8 @@ public interface ProductService {
 	
 	void saveProduct(Product product);
 
+	void updateProductOnStock(Product product, int diff);
+	
+	String recycleProduct(long id);
+
 }

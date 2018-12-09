@@ -29,8 +29,7 @@ public interface OrderService {
 
 	public List<Order> findOrdersForDelivery();
 	
-	/**
-	 * Only call this if there is enough order for a delivery.
+	/** 
 	 * @param cargoSize
 	 * @param cargoLimit
 	 * @param delivery : the {@link Delivery} which the orders will belong to
@@ -53,4 +52,11 @@ public interface OrderService {
 	 * @return if there is enough order to make a delivery or not 
 	 */
 	public boolean hasEnoughForOneDelivery(double cargoSize);
+
+	/**
+	 * @return true if there is any order that's deadLine is in 48 hours
+	 */
+	public boolean hasUrgentOrder();
+
+	public String deleteProductFromOrder(long productId, long orderId);
 }

@@ -12,4 +12,6 @@ public interface ProductsToOrdersService {
 	void removeProductsToOrdersFromProducts(ProductsToOrders ptoToRemove, Product product);
 
 	void deletePtO(ProductsToOrders productsToOrders);
+
+	void updatePtO(ProductsToOrders productsToOrders);
 }

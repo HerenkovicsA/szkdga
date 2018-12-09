@@ -48,7 +48,7 @@
 						<th scope="col">Cím</th>
 						<th scope="col">Rendelés</th>
 						<th scope="col">Vevő</th>
-						<th scope="col" class="checkBoxHeader">Kész <input type="checkbox" class="makeAllDone form-control" /></th>
+						<th scope="col" class="checkBoxHeader" th:if="${deliveryDone} == false">Kész <input type="checkbox" class="makeAllDone form-control" /></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -56,11 +56,11 @@
 						<td th:text="${order.user.fullAddress}">name</td>
 						<td><a  th:if="${order.deadLine} != null" th:href="@{/employee/orders(o,orderId=${order.id})}">Rendelés</a></td>
 						<td th:text="${order.user.name}">name</td>
-						<td><input th:if="${order.deadLine} != null" type="checkbox" th:checked="${order.done}" th:class="${order.id} + ' orderCheckDone form-control'"></td>					
+						<td th:if="${deliveryDone} == false"><input th:if="${order.deadLine} != null" type="checkbox" th:checked="${order.done}" th:class="${order.id} + ' orderCheckDone form-control'"></td>					
 					</tr>
 				</tbody>
 			</table>
-			<input type="button" id="allIsReady" class="btn btn-dark" value="Minden kiszíállítva!"/>
+			<input th:if="${deliveryDone} == false" type="button" id="allIsReady" class="btn btn-dark" value="Minden kiszíállítva!"/>
 		</div>
 	</div>
 	<div th:if="${param.ad}">

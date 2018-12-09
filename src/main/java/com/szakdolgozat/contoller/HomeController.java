@@ -158,8 +158,7 @@ public class HomeController {
 	
 	@PostMapping(value = "/makeAnOrder")
 	public @ResponseBody String makeAnOrder(Authentication auth) {
-		return scs.asyncMakeOrders(auth.getName());
-		//TODO react for MISSING
+		return scs.makeOrders(auth.getName());
 	}
 	
 	@GetMapping("/user/orders")

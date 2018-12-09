@@ -118,7 +118,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	}
 	
 	@Override
-	public String asyncMakeOrders(String email) {
+	public String makeOrders(String email) {
 		ShoppingCart cart = getCart(email);
 		if(!cart.getItems().isEmpty()) {
 			String result = "";
@@ -131,7 +131,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 						os.makeAnOrder(email,subCart);
 					}
 					cart.emptyCart();
-					return "A rendelés nem fért egy kocsiban, ezért " + carts.size() + " különböző fuvarral lesz kiszállítva.";
+					return "A rendelés nem fér egy kocsiban, ezért " + carts.size() + " különböző fuvarral lesz kiszállítva.";
 				} else {
 					result = os.makeAnOrder(email, cart.getItems());
 					if(result.equals("ok")) {

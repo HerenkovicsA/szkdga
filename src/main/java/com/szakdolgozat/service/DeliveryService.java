@@ -43,6 +43,7 @@ public interface DeliveryService {
 
 	/**
 	 * Makes a new delivery which doesn't belong to any employee yet 
+	 * @param urgent set if true if there are orders that deadline is close
 	 * @throws Exception if there is no order to deliver
 	 */
 	public void makeNewDelivery();

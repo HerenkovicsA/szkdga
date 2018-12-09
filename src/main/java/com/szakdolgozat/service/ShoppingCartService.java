@@ -26,5 +26,5 @@ public interface ShoppingCartService {
 	 *  	<li>On <b>succes</b>, creates orders and returns 'ok'</li>
 	 *  </ul>
 	 */
-	String asyncMakeOrders(String email);
+	String makeOrders(String email);
 }

@@ -45,7 +45,9 @@ public class Product implements Serializable{
 	private Double height;
 	@Column//(nullable = false)
 	private Double length;
-//TODO x,y,z everywhere!!!!!!!!!!
+	@Column
+	private Boolean deleted = false;
+	
 	public Product() {
 	}
 
@@ -124,6 +126,14 @@ public class Product implements Serializable{
 	@Transient
 	public double getVolume() {
 		return height * length * width;
+	}
+
+	public Boolean getDeleted() {
+		return deleted;
+	}
+
+	public void setDeleted(Boolean deleted) {
+		this.deleted = deleted;
 	}
 
 	@Override

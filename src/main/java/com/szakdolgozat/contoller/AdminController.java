@@ -234,6 +234,18 @@ public class AdminController {
 		return ps.deleteProduct(id);
     }
 	
+	@PostMapping(value = "/admin/deleteProductFromOrder", params = {"productId","orderId"})
+    public @ResponseBody String productFromOrder(@RequestParam long productId, @RequestParam long orderId) {
+		
+		return os.deleteProductFromOrder(productId, orderId);
+    }
+	
+	@PostMapping(value = "/admin/recycleProduct", params = "id")
+    public @ResponseBody String recycleProduct(@RequestParam long id) {
+		
+		return ps.recycleProduct(id);
+    }
+	
 	@PostMapping(value = "/admin/deleteUser", params = "id")
     public @ResponseBody String deleteUser(@RequestParam long id) {
 		

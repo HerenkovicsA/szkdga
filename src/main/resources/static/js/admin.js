@@ -7,17 +7,13 @@ $(document).ready(function() {
 
 function bindListeners() {
     	
-	document.getElementById("openNav").onclick = function() {
-	    document.getElementById("mySidenav").style.width = "250px";
-	    document.getElementById("main").style.marginLeft = "250px";
-	    document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
-	};
+	$("#openNav").click(function() {
+		openSideBar();
+	});
 	
-	document.getElementById("closebtn").onclick = function () {
-	    document.getElementById("mySidenav").style.width = "0";
-	    document.getElementById("main").style.marginLeft= "0";
-	    document.body.style.backgroundColor = "white";
-	};
+	$("#closebtn").click(function () {
+		closeSideBar();
+	});
 	
 	$('#addProduct').click(function(event) {
 		event.preventDefault();
@@ -56,8 +52,24 @@ function bindListeners() {
 	$('#submitDelivery').click(function(event) {
 		submitDelivery(event);
 	});
-}
 	
+	$('.recycleProduct').click(function(event) {
+		recycleProduct(event);
+	});
+}
+
+function openSideBar() {
+	$('#mySidenav').css('width','250px');
+	$('#main').css('marginLeft','250px');
+	$(document.body).css('background-color','rgba(0,0,0,0.4)');
+}
+
+function closeSideBar() {
+	$('#mySidenav').css('width','0');
+    $('#main').css('marginLeft','0');
+    $(document.body).css('background-color','white');
+}
+
 function clearErrorMessages() {
 	$('.errorMessages').hide();
 }
@@ -97,17 +109,52 @@ function deleteFunc(event){
 	if(anchor.hasClass('delete')){
 		anchor.removeClass('delete');
 	}
-	
+	var orderId = $(anchor).data('orderid');
 	var whatToDelete = anchor.attr('class');
+	var url = "/admin/delete";
+	if(orderId == null) {
+		url += whatToDelete + "?id=" + id;
+	} else {
+		url += whatToDelete + "?productId=" + id + "&orderId=" + orderId;
+	}
 	if(sure){
 		$.ajax({
 			
 			type : "POST",
-			url : "/admin/delete" + whatToDelete + "?id=" + id, 
+			url : url, 
 			data : "_csrf=" + token,
 			success : function(response) {
 				console.log(response);
 				if(response == 'deleted') {
+					window.location.reload();
+				} else if(response == 'removed') {
+					window.location = window.location.origin + "/admin/orders?o";
+				} else {
+					alert("Error: " + id + " id-vel rendelkező termék nem létezik.");
+					window.location.reload();
+				}	
+			},
+			error : function(ex) {
+				console.log(ex);
+			}
+		});
+	}
+}
+
+function recycleProduct(event){
+	var anchor = $(event.target).parent();
+	var id = anchor.attr("id");
+	var sure = confirm("Biztos benne, hogy vissza akarja hozni a terméket?");
+	
+	if(sure){
+		$.ajax({
+			
+			type : "POST",
+			url : "/admin/recycleProduct?id=" + id, 
+			data : "_csrf=" + token,
+			success : function(response) {
+				console.log(response);
+				if(response == 'recycled') {
 					window.location.reload();
 				} else {
 					alert("Error: " + id + " id-vel rendelkező termék nem létezik.");
@@ -303,6 +350,11 @@ function updateSummOnOrderModal(){
 	value.val(summ.toFixed(2));
 }
 
+function getId(clazz) {
+	var clazzArray = clazz.split(' ');
+	return clazzArray[0];
+}
+
 function submitOrder(event){
 	event.preventDefault();
     var deleteBoxes = $('.deleteBox');
@@ -310,8 +362,7 @@ function submitOrder(event){
     var products = [];
     
     for(var i = 0; i < quantities.length; i++) {
-    	products[i] = $(quantities[i]).prop("class").charAt(0) + ";"
-    		+ $(quantities[i]).val() + ";" + $(deleteBoxes[i]).prop("checked");
+    	products[i] = getId($(quantities[i]).prop('class')) + ";" + $(quantities[i]).val() + ";" + $(deleteBoxes[i]).prop("checked");
     }
     
 	var toSend = {
@@ -323,7 +374,7 @@ function submitOrder(event){
 		    "products" : products
 	};
 	
-	console.log(toSend);
+	console.log(products);
 	
     $.ajax({
 		type : "POST",

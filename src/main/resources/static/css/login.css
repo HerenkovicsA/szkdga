@@ -1,0 +1,17 @@
+#loginForm{
+	position: absolute;
+	top:25%;
+	left:25%;
+	right:25%;
+	bottom:25%;
+}
+.login{
+	margin-top:10pt;
+	margin-bottom:10pt;
+}
+#regAnchor{
+	color: initial;
+}
+.login-text{
+	text-align:center;
+}

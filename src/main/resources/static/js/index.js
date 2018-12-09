@@ -7,9 +7,25 @@ $(document).ready(function() {
 });
 
 function bindListeners() {
+	
+	$("#openNav").click(function() {
+		openSideBar();
+	});
+	
+	$("#closebtn").click(function () {
+		closeSideBar();
+	});
+	
 	fillFormForUser();
 	
 	runSumAtStart();
+	
+	$('.footer').hover(
+		function() {
+			$('.footer').slideUp().delay(3 * 1000);
+		},function() {
+			$('.footer').slideDown();
+	});
 	
 	$('.addToCart').click(function(event){
 		addToCart(event);
@@ -38,6 +54,18 @@ function bindListeners() {
 	$('.showOrder').click(function(event){
 		showOrder(event);
 	});
+}
+
+function openSideBar() {
+	$('#mySidenav').css('width','250px');
+	$('#main').css('marginLeft','250px');
+	$(document.body).css('background-color','rgba(0,0,0,0.4)');
+}
+
+function closeSideBar() {
+	$('#mySidenav').css('width','0');
+    $('#main').css('marginLeft','0');
+    $(document.body).css('background-color','white');
 }
 
 function fillFormForUser() {
@@ -79,6 +107,16 @@ function sizeFooter() {
 	var footer = $('.footer');
 	var model = $('.container').children()[0];
 	footer.width($(model).width());
+}
+
+function hideFooter() {
+	$('.footer').slideDown();
+	console.log("out");
+}
+
+function showFooter() {
+	$('.footer').slideUp();
+	console.log("in");
 }
 
 function addToCart(event) {

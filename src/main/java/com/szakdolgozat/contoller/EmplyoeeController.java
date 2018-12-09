@@ -63,9 +63,7 @@ public class EmplyoeeController {
 			model.addAttribute("orderList", resultPair.getValue());
 		} catch (Exception e) {
 			if (e.getMessage().equals("Employee has active delivery")) {
-				model.addAttribute("error", e.getMessage());
-			} else if (e.getMessage().equals("Employee has active delivery")) {
-				model.addAttribute("error", e.getMessage());
+				model.addAttribute("error", "Van egy be nem fejezett kiszállíátsa. Szállítsa ki először azt.");
 			} else {
 				e.printStackTrace();
 			}
@@ -95,6 +93,7 @@ public class EmplyoeeController {
 			model.addAttribute("deadLine", resultPair.getKey().getValue());
 			model.addAttribute("distance", resultPair.getKey().getKey());
 			model.addAttribute("orderList", resultPair.getValue());
+			model.addAttribute("deliveryDone", ds.findDeliveryById(deliveryId).isDone());
 		} catch (NoSuchElementException nsee) {
 			model.addAttribute("error", "A kiszállítás (" + deliveryId + ") nem létezik");
 		}catch (Exception e) {

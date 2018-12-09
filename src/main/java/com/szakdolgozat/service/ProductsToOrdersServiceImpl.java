@@ -52,28 +52,31 @@ public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 	}
 
 	private void removeProductsToOrdersFromOrder(ProductsToOrders ptoToRemove, Order order) {
-		System.out.println(order.getProductsToOrder());
 		Set<ProductsToOrders> ptoSet = order.getProductsToOrder();
 		if(ptoSet.contains(ptoToRemove)) {
 			ptoSet.remove(ptoToRemove);
 			order.setProductsToOrder(ptoSet);
 		} else log.error("ProductsToOrders with " + ptoToRemove.getId() + " id is not belongs to order with " + order.getId() + " id");
-		System.out.println(order.getProductsToOrder());
 	}
 	
 	@Override
 	public void removeProductsToOrdersFromProducts(ProductsToOrders ptoToRemove, Product product) {
-		System.out.println(product.getProductstoOrder());
 		Set<ProductsToOrders> ptoSet = product.getProductstoOrder();
 		if(ptoSet.contains(ptoToRemove)) {
 			ptoSet.remove(ptoToRemove);
 			product.setProductstoOrder(ptoSet);
+			product.setOnStock(product.getOnStock() + ptoToRemove.getQuantity());
+			pr.save(product);
 		} else log.error("ProductsToOrders with " + ptoToRemove.getId() + " id is not belongs to order with " + product.getId() + " id");
-		System.out.println(product.getProductstoOrder());
 	}
 
 	@Override
 	public void deletePtO(ProductsToOrders productsToOrders) {
 		ptor.delete(productsToOrders);		
+	}
+	
+	@Override
+	public void updatePtO(ProductsToOrders productsToOrders) {
+		ptor.save(productsToOrders);
 	}
 }

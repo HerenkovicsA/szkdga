@@ -66,7 +66,7 @@ public class SzkdgSimpleUrlAuthenticationSuccessHandler implements Authenticatio
         if (isUser) {
             return "/";
         } else if (isAdmin) {
-            return "/admin";
+            return "/";
         } else if (isEmployee) {
             return "/employee";
         } else {

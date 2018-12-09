@@ -201,7 +201,9 @@ public class DeliveryServiceImpl implements DeliveryService{
 		dr.save(deliveryToEdit);	
 	}
 
-	@Override//TODO delete
+	/**
+	 * @deprecated Use {@link #newDeliveryForEmployee}
+	 */
 	public Pair<Double, List<Order>> getNewDeliveryForEmployee(String email) throws Exception {
 		User employee = us.findByEmail(email);
 		if(employee == null) {
@@ -238,7 +240,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 			log.error("No free order for delivery");
 			return;
 		}
-		
+
 		orders.add(0, getFakeOrder());
 		
 		String[] addresses = new String[orders.size()];
@@ -277,9 +279,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 	 * A delivery entity or <b>null</b> if there is no delivery in db
 	 */
 	private Delivery findDeliveryForEmployee() {
-		Optional<Delivery> optDelivery = dr.findTop1ByUserIsNullAndPriorityIsNotNullOrderByPriorityDesc();
-		if(optDelivery.isPresent()) return optDelivery.get();
-		optDelivery = dr.findTop1ByUserIsNullOrderByDeliveryDateAsc();
+		Optional<Delivery> optDelivery = dr.findTop1ByUserIsNullOrderByDeliveryDateAsc();
 		if(optDelivery.isPresent()) return optDelivery.get();
 		return null;
 	}

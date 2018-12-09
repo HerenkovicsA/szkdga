@@ -28,8 +28,13 @@ public class DeliveryProcessor implements Runnable {
 		log.info("Starting DeliveryProcessor thread...");
 		if(os.hasEnoughForOneDelivery(CARGO_SIZE)) {
 			log.info("Start making new delivery...");
-			ds.makeNewDelivery();
+			ds.makeNewDelivery(); 
 		} else {
+			while(os.hasUrgentOrder()) {
+				log.info("Start making urgent delivery...");
+				ds.makeNewDelivery();
+				log.info("Made urgent delivery");
+			}
 			log.info("Stopping DeliveryProcessor thread...");
 			return;
 		}
