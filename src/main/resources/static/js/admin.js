@@ -2,7 +2,7 @@ var token = $("meta[name='_csrf']").attr("content");
 
 $(document).ready(function() {
 	bindListeners();
-
+	fixValues();
 });
 
 function bindListeners() {
@@ -530,4 +530,31 @@ function fixTimeZone(date) {
 	var month = ("0" + (helper.getMonth()+1)).slice(-2);
 	var day = ("0" + helper.getDate()).slice(-2); 
 	return helper.getFullYear() + "-" + month + "-" + day;
+}
+
+function fixValues() {
+	var url = window.location.href;
+	
+	if(url.indexOf("orders?o") >= 0) {
+		var values = $('.orderValue');
+		for(var i = 0; i < values.length; i++) {
+			$(values[i]).html(editValue( $(values[i]).html() ));
+		}
+	}
+}
+
+function editValue(value) {
+	console.log(value);
+	if(value.indexOf('E') >= 0) {
+		value = value.slice(0,-3);
+		var numbers = value.indexOf('E') - value.indexOf('.') -1;
+		var exponential = value.charAt(value.indexOf('E')+1);
+		var diff = exponential - numbers;
+		value = value.replace('E','').replace('.','');
+		for(var j = 0; j < diff; j++) {
+			value += '0';
+		}
+		value += ".0 Ft";
+	}
+	return value;
 }

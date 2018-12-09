@@ -164,7 +164,7 @@
 							<td th:text="${#dates.format(order.deadLine, 'yyyy-MM-dd')}">deadLine</td>
 							<td th:text="${order.user.name}">user</td>
 							<td th:text="${order.done}?'kézbesítve':'várakozik'">done</td>
-							<td th:text="${order.value} + ' Ft'">value</td>
+							<td class="orderValue" th:text="${order.value} + ' Ft'">value</td>
 							<td><a th:href="@{/admin/deliveries(d,deliveryId=${order.delivery != null && order.delivery.id != null}?${order.delivery.id}:'')}"
 								 th:text="${order.delivery != null && order.delivery.id != null}?'Kiszállítás':'Még nincs kiszállításon'">Kiszállítás</a></td>
 							<td><a th:href="@{/admin/products(p,orderId=${order.id})}">Termékek</a></td>
