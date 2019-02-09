@@ -1,30 +1,23 @@
 package com.szakdolgozat.contoller;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.szakdolgozat.domain.Delivery;
 import com.szakdolgozat.domain.Order;
-import com.szakdolgozat.domain.User;
 import com.szakdolgozat.service.DeliveryService;
 import com.szakdolgozat.service.OrderService;
 import com.szakdolgozat.service.UserService;
@@ -87,7 +80,7 @@ public class EmplyoeeController {
 	@GetMapping(value = "employee/delivery", params="deliveryId")
 	public String getDelivery(Model model, @RequestParam long deliveryId, Authentication authentication){
 		model.addAttribute("employeeName",us.findByEmail(authentication.getName()).getName());
-		Pair<Pair<Double, Date>, List<Order>> resultPair;
+		Pair<Pair<Double, LocalDate>, List<Order>> resultPair;
 		try {
 			resultPair = ds.getDeliveryForEmployee(deliveryId);
 			model.addAttribute("deadLine", resultPair.getKey().getValue());

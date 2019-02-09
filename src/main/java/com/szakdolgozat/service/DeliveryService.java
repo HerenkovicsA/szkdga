@@ -1,5 +1,6 @@
 package com.szakdolgozat.service;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,7 @@ public interface DeliveryService {
 	 * @return
 	 * The ordered list of orders for delivery in Pair with distance/deadline
 	 */
-	public Pair<Pair<Double, Date>, List<Order>> getDeliveryForEmployee(long deliveryId) throws Exception;
+	public Pair<Pair<Double, LocalDate>, List<Order>> getDeliveryForEmployee(long deliveryId) throws Exception;
 
 	public void setDeliveryToDone(long deliveryId);
 

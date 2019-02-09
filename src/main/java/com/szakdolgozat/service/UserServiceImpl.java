@@ -222,7 +222,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 		List<Order> orderList = new ArrayList<Order>();
 		try {
 			orderList.addAll(findOrdersOfUser(user.getId()));
-			orderList.sort((Order o1, Order o2) -> (int)(o2.getDeadLine().getTime()-o1.getDeadLine().getTime()));
+			orderList.sort((Order o1, Order o2) -> o2.getDeadLine().compareTo(o1.getDeadLine()));
 			return orderList;
 		} catch (Exception e) {
 			log.warn(e.getMessage());

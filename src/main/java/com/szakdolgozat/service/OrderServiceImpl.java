@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+
+import java.time.LocalDate;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
@@ -175,7 +176,7 @@ public class OrderServiceImpl implements OrderService {
 		int year = Integer.parseInt(fullDate[0]);
 		int month = Integer.parseInt(fullDate[1]);
 		int day = Integer.parseInt(fullDate[2]);
-		orderToEdit.setDeadLine(new Date(year-1900, month-1, day));
+		orderToEdit.setDeadLine(LocalDate.of(year, month, day));
 		orderToEdit.setDone(Boolean.parseBoolean(map.get("done").toString()));
 		
 		ArrayList<String> productInfos = (ArrayList)map.get("products");
@@ -284,9 +285,7 @@ public class OrderServiceImpl implements OrderService {
 	public String makeAnOrder(String email, HashMap<Product, Integer> items) {
 		User user = us.findByEmail(email);
 		Order order = new Order();
-		Date deadLine = new Date();
-		deadLine.setDate(deadLine.getDate()+7);
-		order.setDeadLine(deadLine);
+		order.setDeadLine(LocalDate.now().plusWeeks(1));
 		order.setUser(user);
 		Set<ProductsToOrders> ptoSet = new HashSet<ProductsToOrders>();
 		double value = 0;
@@ -349,9 +348,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	private List<Order> findUrgentOrders() {
-		Date tomorrow = new Date();
-		tomorrow.setDate(tomorrow.getDate() + 2);
-		List<Order> orders = or.findAllByDeadLineBefore(tomorrow);
+		LocalDate tomorrow = LocalDate.now().plusDays(1);
+		List<Order> orders = or.findAllByDeliveryIsNullAndDeadLineBefore(tomorrow);
 		if(orders != null) return orders;
 		return null;
 	}

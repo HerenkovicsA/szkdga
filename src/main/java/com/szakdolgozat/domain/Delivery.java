@@ -1,7 +1,8 @@
 package com.szakdolgozat.domain;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ public class Delivery implements Serializable{
 	@JsonBackReference
 	private User user;
 	@Column
-	private Date deliveryDate;
+	private LocalDate deliveryDate;
 	@Column
 	private boolean done;
 	@OneToMany(mappedBy = "delivery", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -66,11 +67,11 @@ public class Delivery implements Serializable{
 		this.user = employee;
 	}
 
-	public Date getDeliveryDate() {
+	public LocalDate getDeliveryDate() {
 		return deliveryDate;
 	}
 
-	public void setDeliveryDate(Date deliveryDate) {
+	public void setDeliveryDate(LocalDate deliveryDate) {
 		this.deliveryDate = deliveryDate;
 	}
 

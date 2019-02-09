@@ -169,7 +169,7 @@
 					</thead>
 					<tbody>
 						<tr th:each="order : ${orderList}">
-							<td th:text="${#dates.format(order.deadLine, 'yyyy-MM-dd')}">deadLine</td>
+							<td th:text="${order.deadLine}">deadLine</td>
 							<td th:class="${order.id} + ' done'" th:text="${order.done}?'kézbesítve':'várakozik'">done</td>
 							<td class="value" th:text="${order.value} + ' Ft'">value</td>
 							<td><a class="showOrder" th:href="@{/user/products(orderId=${order.id})}" data-toggle="modal" data-target="#editModal">Termékek</a></td>

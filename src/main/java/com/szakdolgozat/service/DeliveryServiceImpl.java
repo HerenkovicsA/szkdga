@@ -1,7 +1,7 @@
 package com.szakdolgozat.service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -69,6 +69,18 @@ public class DeliveryServiceImpl implements DeliveryService{
 				
 			}
 		}
+		
+//		for (int i = 0; i < addresses.length; i++) {
+//			for (int j = i; j < addresses.length; j++) {
+//				if(i==j || addresses[i].equalsIgnoreCase(addresses[j])) {
+//					distanceMatrix[i][j] = 0 ;
+//				}else {
+//					distanceMatrix[i][j] = gs.getDistance(askGoogle, addresses[i], addresses[j]);
+//					distanceMatrix[i][j] = distanceMatrix[j][i];
+//				}
+//				
+//			}
+//		}
 		
 		return new CandD(distanceMatrix, addresses);
 	}
@@ -142,9 +154,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 			for (Order order : orderSet) {
 				order.setProductsToOrder(null);
 				resultMap.put(order.hashCode() + "|" + order.getUser().getId() + "|" + order.getUser().getEmail(), order);
-				System.out.println(order.getDeadLine().getTimezoneOffset());
 			}
-			log.warn(orderSet.toString());
 			return resultMap;
 		}else {
 			throw new Exception("Nem létezik kiszállítás " + deliveryId + " id-vel");
@@ -169,7 +179,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 		int year = Integer.parseInt(fullDate[0]);
 		int month = Integer.parseInt(fullDate[1]);
 		int day = Integer.parseInt(fullDate[2]);
-		deliveryToEdit.setDeliveryDate(new Date(year-1900, month-1, day));
+		deliveryToEdit.setDeliveryDate(LocalDate.of(year, month, day));
 		ArrayList<String> orderInfos = (ArrayList)map.get("orders");
 		String[] orderArrayInfo; // values are: id;deadLine;done;delete "2;2018-11-29;false;false"]
 		for (String orderInfo : orderInfos) {
@@ -190,7 +200,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 						year = Integer.parseInt(fullDate[0]);
 						month = Integer.parseInt(fullDate[1]);
 						day = Integer.parseInt(fullDate[2]);
-						order.setDeadLine(new Date(year-1900,month-1,day));
+						order.setDeadLine(LocalDate.of(year, month, day));
 						System.out.println("order");
 						System.out.println(order);
 						System.out.println("++++++++++");
@@ -267,7 +277,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 			employee.addToDelvierisOfEmployee(delivery);
 			delivery.setEmployee(employee);
 			dr.save(delivery);
-			Pair<Pair<Double, Date>, List<Order>> tmp = getDeliveryForEmployee(delivery.getId());
+			Pair<Pair<Double, LocalDate>, List<Order>> tmp = getDeliveryForEmployee(delivery.getId());
 			return new Pair<Double, List<Order>>(tmp.getKey().getKey(), tmp.getValue());
 		}
 		return null;
@@ -321,12 +331,12 @@ public class DeliveryServiceImpl implements DeliveryService{
 		if(employee != null) {
 			employee.addToDelvierisOfEmployee(newDelivery);
 		}		
-		Date earliestDate = new Date(5000,1,1);
+		LocalDate earliestDate = LocalDate.MAX;
 		Set<Order> orderSet = new HashSet<Order>();
 		for (Order order : orders) {
 			order.setDelivery(newDelivery);
 			orderSet.add(order);
-			if(order.getDeadLine().before(earliestDate)) earliestDate = order.getDeadLine();
+			if(order.getDeadLine().isBefore(earliestDate)) earliestDate = order.getDeadLine();
 		}
 		newDelivery.setDeliveryDate(earliestDate);
 		newDelivery.setOrdersOfDelivery(orderSet);
@@ -353,7 +363,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 	}
 
 	@Override
-	public Pair<Pair<Double, Date>, List<Order>> getDeliveryForEmployee(long deliveryId) throws Exception {
+	public Pair<Pair<Double, LocalDate>, List<Order>> getDeliveryForEmployee(long deliveryId) throws Exception {
 		Delivery delivery = findDeliveryById(deliveryId);
 		List<Order> newOrderList = new ArrayList<Order>();
 		Set<Order> orderSet = delivery.getOrdersOfDelivery();
@@ -361,7 +371,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 		for (String orderId : orderedOrderIds) {
 			newOrderList.add(getOrderFromSetById(orderSet, Long.parseLong(orderId)));
 		}
-		return new Pair<Pair<Double, Date>, List<Order>>(new Pair<Double, Date>(delivery.getDistance(),
+		return new Pair<Pair<Double, LocalDate>, List<Order>>(new Pair<Double, LocalDate>(delivery.getDistance(),
 				delivery.getDeliveryDate()),newOrderList);
 	}
 	

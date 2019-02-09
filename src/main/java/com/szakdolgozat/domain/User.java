@@ -1,7 +1,7 @@
 package com.szakdolgozat.domain;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,18 +16,15 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.szakdolgozat.components.ShoppingCart;
 
 @Entity
 @Table(name = "users")
@@ -51,7 +48,7 @@ public class User implements Serializable{
 	@Column(nullable = false)
 	@Past(message = "Születésnap a mai napnál korábbi kell, hogy legyen")
 	@DateTimeFormat(pattern="yyyy-MM-dd")
-	private Date birthday;
+	private LocalDate birthday;
 	@Column(nullable = false)
 	@Email(message = "Email cím csak valid cím lehet (valami@valami.valami).")
 	private String email;
@@ -127,11 +124,11 @@ public class User implements Serializable{
 		this.name = name;
 	}
 
-	public Date getBirthday() {
+	public LocalDate getBirthday() {
 		return birthday;
 	}
 
-	public void setBirthday(Date birthday) {
+	public void setBirthday(LocalDate birthday) {
 		this.birthday = birthday;
 	}
 

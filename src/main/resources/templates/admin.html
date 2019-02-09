@@ -42,13 +42,13 @@
 					<tbody>
 						<tr th:each="employee : ${employeeList}">
 							<td th:text="${employee.name}">name</td>
-							<td th:text="${#dates.format(employee.birthday, 'yyyy-MM-dd')}">birthday</td>
+							<td th:text="${employee.birthday}">birthday</td>
 							<td th:text="${employee.postCode} + ', ' + ${employee.city} + ' ' + ${employee.address} + ' ' + ${employee.houseNumber}">address</td>
 							<td th:text="${employee.email}">email</td>
 							<td th:text="${employee.sex==1}?'Nő':'Férfi'">sex</td> 
 							<td th:text="${employee.phoneNumber}">phone_number</td>
 							<td><a th:href="@{/admin/deliveries(d,employeeId=${employee.id})}">Kiszállítások</a></td>
-							<td><button th:attr="data-id=${employee.id}, data-name=${employee.name}, data-birthday=${#dates.format(employee.birthday, 'yyyy-MM-dd')},
+							<td><button th:attr="data-id=${employee.id}, data-name=${employee.name}, data-birthday=${employee.birthday},
 								 data-postCode=${employee.postCode}, data-city=${employee.city}, data-address=${employee.address}, data-houseNumber=${employee.houseNumber},
 								 data-email=${employee.email}, data-sex=${employee.sex}, data-phoneNumber=${employee.phoneNumber}, data-role=${employee.role.id}" 
 								type="button" class="btn btn-dark userButton" data-toggle="modal" data-target="#editModal">Edit</button>
@@ -76,13 +76,13 @@
 					<tbody>
 						<tr th:each="customer : ${userList}">
 							<td th:text="${customer.name}">name</td>
-							<td th:text="${#dates.format(customer.birthday, 'yyyy-MM-dd')}">birthday</td>
+							<td th:text="${customer.birthday}">birthday</td>
 							<td th:text="${customer.postCode} + ', ' + ${customer.city} + ' ' + ${customer.address} + ' ' + ${customer.houseNumber}">address</td>
 							<td th:text="${customer.email}">email</td>
 							<td th:text="${customer.sex==1}?'Nő':'Férfi'">sex</td> 
 							<td th:text="${customer.phoneNumber}">phone_number</td>
 							<td><a th:href="@{/admin/orders(o,userId=${customer.id})}">Rendelések</a></td>
-							<td><button th:attr="data-id=${customer.id}, data-name=${customer.name}, data-birthday=${#dates.format(customer.birthday, 'yyyy-MM-dd')},
+							<td><button th:attr="data-id=${customer.id}, data-name=${customer.name}, data-birthday=${customer.birthday},
 								 data-postCode=${customer.postCode}, data-city=${customer.city}, data-address=${customer.address}, data-houseNumber=${customer.houseNumber},
 								 data-email=${customer.email}, data-sex=${customer.sex}, data-phoneNumber=${customer.phoneNumber}, data-role=${customer.role.id}" 
 								type="button" class="btn btn-dark userButton" data-toggle="modal" data-target="#editModal">Edit</button>
@@ -161,7 +161,7 @@
 					</thead>
 					<tbody>
 						<tr th:each="order : ${orderList}">
-							<td th:text="${#dates.format(order.deadLine, 'yyyy-MM-dd')}">deadLine</td>
+							<td th:text="${order.deadLine}">deadLine</td>
 							<td th:text="${order.user.name}">user</td>
 							<td th:text="${order.done}?'kézbesítve':'várakozik'">done</td>
 							<td class="orderValue" th:text="${order.value} + ' Ft'">value</td>
@@ -192,7 +192,7 @@
 						<tbody>
 							<tr th:each="delivery : ${deliveryList}">
 								<td th:text="${delivery.employee} != null? ${delivery.employee.name} : 'Nincs még kiszállító'">user</td>
-								<td th:text="${#dates.format(delivery.deliveryDate, 'yyyy-MM-dd')}">N/A</td>
+								<td th:text="${delivery.deliveryDate}">N/A</td>
 								<td th:text="${delivery.done}?'Kész':'Várakozik'">N/A</td>
 								<td><a th:href="@{/admin/orders(o,deliveryId=${delivery.id})}">Megrendelések</a></td>
 								<td><button th:attr="data-id=${delivery.id}, data-employeeId=${delivery.employee}?${delivery.employee.id}:'-1', data-deliveryDate=${delivery.deliveryDate},

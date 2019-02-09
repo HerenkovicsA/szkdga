@@ -1,9 +1,7 @@
 package com.szakdolgozat.domain;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,8 +18,6 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.hibernate.Hibernate;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -36,7 +32,7 @@ public class Order implements Serializable{
 	@Column(nullable = false)
 	private long Id;
 	@Column(nullable = false)
-	private Date deadLine;
+	private LocalDate deadLine;
 	@ManyToOne
 	@JoinColumn(name = "user_id", nullable = false)
 	@JsonBackReference
@@ -63,7 +59,7 @@ public class Order implements Serializable{
 		return Id;
 	}
 	
-	public Order(Date deadLine, User user, boolean done, Set<ProductsToOrders> producttoorders, Delivery delivery, double value) {
+	public Order(LocalDate deadLine, User user, boolean done, Set<ProductsToOrders> producttoorders, Delivery delivery, double value) {
 		this.deadLine = deadLine;
 		this.user = user;
 		this.done = done;
@@ -88,11 +84,11 @@ public class Order implements Serializable{
 		this.delivery = delivery;
 	}
 
-	public Date getDeadLine() {
+	public LocalDate getDeadLine() {
 		return deadLine;
 	}
 
-	public void setDeadLine(Date deadLine) {
+	public void setDeadLine(LocalDate deadLine) {
 		this.deadLine = deadLine;
 	}
 
