@@ -21,8 +21,7 @@ public class Crossover {
 	}
 	
 	private Chromosome tournamentRW(Population pop, int size) {
-		Chromosome chosenOne = null;
-		ArrayList<Chromosome> racers = new ArrayList();
+		ArrayList<Chromosome> racers = new ArrayList<Chromosome>();
 		if(size > 0) {
 			for (int i = 0; i < size; i++) {
 				racers.add(runTheWheel(pop));
@@ -56,10 +55,18 @@ public class Crossover {
 		return -1;
 	}
 	
-	private void swapGens(int i1, int i2, ArrayList<Gen> chromForChild) {
-		Gen tmp = chromForChild.get(i1);
-		chromForChild.set(i1, chromForChild.get(i2));
-		chromForChild.set(i2, tmp);
+	private void invertGens(int i1, int i2, ArrayList<Gen> chromForChild) {
+		if(i1 > i2) {
+			int temp = i2;
+			i2 = i1;
+			i1 = temp;
+		}
+		Gen tmp;
+		for(int i = 0; i <= (i2 - i1)/2; i++) {
+			tmp = chromForChild.get(i1 + i);
+			chromForChild.set(i1 + i, chromForChild.get(i2 - i));
+			chromForChild.set(i2 - i, tmp);
+		}
 	}
 	
 	//swap two randomly chosen gens
@@ -70,7 +77,7 @@ public class Crossover {
 		while(index1 == index2) {
 			index2 = ThreadLocalRandom.current().nextInt(chromToMutate.getChrom().size()-1)+1;
 		}
-		this.swapGens(index1, index2, chromToMutate.getChrom());
+		this.invertGens(index1, index2, chromToMutate.getChrom());
 	}
 	
 	public void PMX(Chromosome child1,Chromosome child2, int[][] citiesDistances, Population pop, boolean mappedOrMatched) {
@@ -128,13 +135,13 @@ public class Crossover {
 			for (int i = 0; i < middleSegment1.size(); i++) {
 				indexToSwap1 = indexOfGenByVal(chromForChild1, middleSegment1.get(i));
 				indexToSwap2 = indexOfGenByVal(chromForChild1, middleSegment2.get(i));
-				swapGens(indexToSwap1, indexToSwap2, chromForChild1);
+				invertGens(indexToSwap1, indexToSwap2, chromForChild1);
 			}
 			
 			for (int i = 0; i < middleSegment2.size(); i++) {
 				indexToSwap1 = indexOfGenByVal(chromForChild2, middleSegment2.get(i));
 				indexToSwap2 = indexOfGenByVal(chromForChild2, middleSegment1.get(i));
-				swapGens(indexToSwap1, indexToSwap2, chromForChild2);
+				invertGens(indexToSwap1, indexToSwap2, chromForChild2);
 			}
 		}
 		
@@ -258,8 +265,8 @@ public class Crossover {
 	}
 	
 	public void hGreX(Chromosome child1, int[][] citiesDistances, Population pop) {
-		ArrayList<Gen> parent1 = this.tournament(pop, 4).getChrom();//this.runTheWheel(pop).getChrom();//this.tournamentRW(pop, 2).getChrom();
-		ArrayList<Gen> parent2 = this.tournament(pop, 4).getChrom();
+		ArrayList<Gen> parent1 = this.runTheWheel(pop).getChrom();
+		ArrayList<Gen> parent2 = this.runTheWheel(pop).getChrom();
 		ArrayList<Gen> chromForChild = new ArrayList<Gen>();
 		Gen next;
 		boolean chosenNewByRandom = false;
