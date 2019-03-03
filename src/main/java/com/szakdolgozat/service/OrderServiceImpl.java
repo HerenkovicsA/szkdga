@@ -1,21 +1,14 @@
 package com.szakdolgozat.service;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
-
-import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import java.time.LocalDate;
-
-import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 import org.slf4j.Logger;
@@ -23,21 +16,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.szakdolgozat.service.OrderService;
 import com.szakdolgozat.components.ProductAndQuantityResponse;
 import com.szakdolgozat.domain.Delivery;
 import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.ProductsToOrders;
-import com.szakdolgozat.domain.Role;
 import com.szakdolgozat.domain.User;
 import com.szakdolgozat.repository.DeliveryRepository;
 import com.szakdolgozat.repository.OrderRepository;
-import com.szakdolgozat.repository.ProductsToOrdersRepository;
-import com.szakdolgozat.repository.UserRepository;
 
 import javafx.util.Pair;
 
