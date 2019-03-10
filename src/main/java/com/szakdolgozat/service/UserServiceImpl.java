@@ -36,7 +36,7 @@ import com.szakdolgozat.repository.UserRepository;
 public class UserServiceImpl implements UserService, UserDetailsService{
 
 	private UserRepository userRepo;
-	private RoleRepository roleRepo;
+	private RoleService roleService;
 	private BCryptPasswordEncoder passwordEncoder;
 
 	private final String USER_ROLE = "USER";
@@ -55,8 +55,8 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	}
 
 	@Autowired
-	public void setRoleRepo(RoleRepository roleRepo) {
-		this.roleRepo = roleRepo;
+	public void setRoleRepo(RoleService roleService) {
+		this.roleService = roleService;
 	}
 
 	@Autowired
@@ -93,7 +93,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	public int registerUser(User userToRegister) {
 		User userCheck = findByEmail(userToRegister.getEmail());
 		if (userCheck != null)	return 0;
-		userToRegister.setRole(roleRepo.findByName(USER_ROLE));
+		userToRegister.setRole(roleService.findRoleByName(USER_ROLE));
 		userToRegister.setPhoneNumber(userToRegister.getPhoneNumber());
 		userToRegister.setPassword(passwordEncoder.encode(userToRegister.getPassword()));
 		userRepo.save(userToRegister);
@@ -112,14 +112,14 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 
 	@Override
 	public List<User> findAllEmployees() throws Exception {
-		List<User> employees = userRepo.findAllByRole(roleRepo.findByName(EMPLOYEE_ROLE));
+		List<User> employees = userRepo.findAllByRole(roleService.findRoleByName(EMPLOYEE_ROLE));
 		if(employees.isEmpty()) throw new Exception("No employee found");
 		return employees;
 	}
 
 	@Override
 	public List<User> findAllUsers() throws Exception {
-		List<User> users = userRepo.findAllByRole(roleRepo.findByName(USER_ROLE));
+		List<User> users = userRepo.findAllByRole(roleService.findRoleByName(USER_ROLE));
 		if(users.isEmpty()) throw new Exception("No user found");
 		return users;
 	}

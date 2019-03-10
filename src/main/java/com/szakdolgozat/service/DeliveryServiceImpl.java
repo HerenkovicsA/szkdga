@@ -48,14 +48,45 @@ public class DeliveryServiceImpl implements DeliveryService{
 			+ "9152, Börcs Rákóczi Ferenc utca 1 -> 9151, Abda Árpád utca 35 -> 9151, Abda Szent Imre utca 40 -> 9025, Győr Haladás utca 26 -> 9025, Győr Botond utca 5 -> "
 			+ "9026, Győr, Egyetem tér 1.";
 	
-	@Autowired
-	public DeliveryServiceImpl(GoogleService gs, DeliveryRepository dr, UserService us, OrderService os) {
-		this.gs = gs;
-		this.dr = dr;
-		this.us = us;
-		this.os = os;
+	public DeliveryServiceImpl() {
 	}
 	
+	public DeliveryRepository getDr() {
+		return dr;
+	}
+
+	@Autowired
+	public void setDr(DeliveryRepository dr) {
+		this.dr = dr;
+	}
+
+	public GoogleService getGs() {
+		return gs;
+	}
+
+	@Autowired
+	public void setGs(GoogleService gs) {
+		this.gs = gs;
+	}
+
+	public UserService getUs() {
+		return us;
+	}
+
+	@Autowired
+	public void setUs(UserService us) {
+		this.us = us;
+	}
+
+	public OrderService getOs() {
+		return os;
+	}
+
+	@Autowired
+	public void setOs(OrderService os) {
+		this.os = os;
+	}
+
 	private CandD createCandD(boolean askGoogle, String[] addresses) {
 		int[][] distanceMatrix = new int[addresses.length][addresses.length];
 		

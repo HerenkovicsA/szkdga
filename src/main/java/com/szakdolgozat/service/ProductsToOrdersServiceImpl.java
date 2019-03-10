@@ -20,23 +20,25 @@ import com.szakdolgozat.repository.ProductsToOrdersRepository;
 public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 	
 	private ProductsToOrdersRepository ptor;
-	private ProductRepository pr;
-	private OrderRepository or;
+	private ProductService ps;
+	private OrderService os;
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	@Autowired
-	public ProductsToOrdersServiceImpl(ProductsToOrdersRepository ptor, ProductRepository pr, OrderRepository or) {
+	public ProductsToOrdersServiceImpl(ProductsToOrdersRepository ptor, ProductService ps, OrderService os) {
 		this.ptor = ptor;
-		this.pr = pr;
-		this.or = or;
+		this.ps = ps;
+		this.os = os;
 	}
 
 	@Override
 	@Transactional
 	public void deleteByOrderIdAndProductId(long orderId, long productId) throws Exception{
-		Order order = or.findById(orderId).get();
-		Product product = pr.findById(productId).get();
+		Order order = os.getOrderById(orderId);
+		if(order == null) throw new Exception("Order not found");
+		Product product = ps.getProductById(productId);
+		if(product == null) throw new Exception("Product not found");
 		ProductsToOrders ptoToRemove = ptor.findByOrderAndProduct(order, product);
 		removeProductsToOrdersFromOrder(ptoToRemove, order);
 		removeProductsToOrdersFromProducts(ptoToRemove, product);
@@ -46,8 +48,10 @@ public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 
 	@Override
 	public ProductsToOrders findByOrderAndProduct(long orderId, long productId) throws Exception {
-		Order order = or.findById(orderId).get();
-		Product product = pr.findById(productId).get();
+		Order order = os.getOrderById(orderId);
+		if(order == null) throw new Exception("Order not found");
+		Product product = ps.getProductById(productId);
+		if(product == null) throw new Exception("Product not found");
 		return ptor.findByOrderAndProduct(order, product);
 	}
 
@@ -66,7 +70,7 @@ public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 			ptoSet.remove(ptoToRemove);
 			product.setProductstoOrder(ptoSet);
 			product.setOnStock(product.getOnStock() + ptoToRemove.getQuantity());
-			pr.save(product);
+			ps.saveProduct(product);
 		} else log.error("ProductsToOrders with " + ptoToRemove.getId() + " id is not belongs to order with " + product.getId() + " id");
 	}
 

@@ -32,22 +32,62 @@ import javafx.util.Pair;
 public class OrderServiceImpl implements OrderService {
 
 	private OrderRepository or;
-	private DeliveryRepository dr;
+	private DeliveryService ds;
 	private UserService us;
 	private ProductsToOrdersService ptos;
 	private ProductService ps;
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
-	@Autowired
-	public OrderServiceImpl(OrderRepository or, DeliveryRepository dr, UserService us, ProductsToOrdersService ptos, ProductService ps) {
-		this.or = or;
-		this.dr = dr;
-		this.us	= us;
-		this.ptos = ptos;
-		this.ps = ps;
+	public OrderServiceImpl() {
+
 	}
 	
+	public OrderRepository getOr() {
+		return or;
+	}
+
+	@Autowired
+	public void setOr(OrderRepository or) {
+		this.or = or;
+	}
+
+	public DeliveryService getDs() {
+		return ds;
+	}
+
+	@Autowired
+	public void setDs(DeliveryService ds) {
+		this.ds = ds;
+	}
+
+	public UserService getUs() {
+		return us;
+	}
+
+	@Autowired
+	public void setUs(UserService us) {
+		this.us = us;
+	}
+
+	public ProductsToOrdersService getPtos() {
+		return ptos;
+	}
+
+	@Autowired
+	public void setPtos(ProductsToOrdersService ptos) {
+		this.ptos = ptos;
+	}
+
+	public ProductService getPs() {
+		return ps;
+	}
+
+	@Autowired
+	public void setPs(ProductService ps) {
+		this.ps = ps;
+	}
+
 	@Override
 	public List<Order> findAll() throws Exception {
 		List<Order> orderList = new ArrayList<Order>();
@@ -61,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	public List<Order> findOrdersOfDelivery(long deliveryId) throws Exception {
 		List<Order> orderList = new ArrayList<Order>();
-		for (Order order : or.findAllByDelivery(dr.findById(deliveryId).get())) {
+		for (Order order : or.findAllByDelivery(ds.findDeliveryById(deliveryId))) {
 			orderList.add(order);
 		}
 		if(orderList.isEmpty()) throw new Exception("No order found for delivery id!");
