@@ -9,13 +9,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
 	<title>Bolt</title>
 	
-<!-- 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" /> -->
 	<link rel="stylesheet" type="text/css" th:href="@{/css/lib/bootstrap/bootstrap.min.css}"/>
 	<link rel="stylesheet" type="text/css" th:href="@{/css/main.css}"/>
 	
 
 	<script type="text/javascript" th:src="@{/js/lib/jquery-2.0.3.min.js}"></script>
 	<script type="text/javascript" th:src="@{/js/lib/bootstrap.min.js}"></script>
+	<script type="text/javascript" th:src="@{/js/cookieKiller.js}"></script>
 </head>
 <body>
 
@@ -28,7 +28,9 @@
 		</div>
 	
 		<div class="footer navbar-fixed-bottom bg-dark">
-			<p>Bolt, minden egy helyen!</p>
+			A weboldal cookie-kat használ a felhasználói élmény fokozása érdekében. 
+			Az oldal használatával elfogadja a cookie-k használatát 
+			<button id="cookieButton" class="btn btn-warning">Elfogadom</button>
 		</div>
 	
 	</div>

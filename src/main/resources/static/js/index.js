@@ -20,13 +20,6 @@ function bindListeners() {
 	
 	runSumAtStart();
 	
-	$('.footer').hover(
-		function() {
-			$('.footer').slideUp().delay(3 * 1000);
-		},function() {
-			$('.footer').slideDown();
-	});
-	
 	$('.addToCart').click(function(event){
 		addToCart(event);
 	});
