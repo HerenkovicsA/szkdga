@@ -102,10 +102,10 @@ public class AdminController {
 	public String products(Model model){
 		try {
 			model.addAttribute("productList", ps.findAll());
-			model.addAttribute("newProduct", new Product());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
+		model.addAttribute("newProduct", new Product());
 		return "admin";
 	}
 	
@@ -139,10 +139,10 @@ public class AdminController {
 	public String listProductsToOrder(@RequestParam long orderId, Model model) {
 		try {
 			model.addAttribute("productsOfOrderList", os.findProductsOfOrder(orderId));
-			model.addAttribute("newProduct", new Product());
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
+		model.addAttribute("newProduct", new Product());
 		return "admin";
 	}
 	

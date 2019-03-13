@@ -20,3 +20,9 @@ img.productPic{
 .modal-delivery-deadline{
 	
 }
+.m-close{
+	float:right;
+}
+.m-submit{
+	float:left;
+}

@@ -21,7 +21,7 @@
 			<a href="javascript: document.logoutForm.submit()" role="menuitem">Kijelentkezés</a>
 		</div>
 		
-		<button type="button" class="btn btn-dark" id= "openNav">open</button>
+		<button type="button" class="btn btn-dark" id= "openNav">Menü</button>
 		
 		<div id="main">
 			<div th:if="${param.e}">
@@ -41,17 +41,17 @@
 					</thead>
 					<tbody>
 						<tr th:each="employee : ${employeeList}">
-							<td th:text="${employee.name}">name</td>
-							<td th:text="${employee.birthday}">birthday</td>
-							<td th:text="${employee.postCode} + ', ' + ${employee.city} + ' ' + ${employee.address} + ' ' + ${employee.houseNumber}">address</td>
+							<td th:text="${employee.name}">név</td>
+							<td th:text="${employee.birthday}">születésnap</td>
+							<td th:text="${employee.postCode} + ', ' + ${employee.city} + ' ' + ${employee.address} + ' ' + ${employee.houseNumber}">lakcím</td>
 							<td th:text="${employee.email}">email</td>
-							<td th:text="${employee.sex==1}?'Nő':'Férfi'">sex</td> 
-							<td th:text="${employee.phoneNumber}">phone_number</td>
+							<td th:text="${employee.sex==1}?'Nő':'Férfi'">nem</td> 
+							<td th:text="${employee.phoneNumber}">telefon szám</td>
 							<td><a th:href="@{/admin/deliveries(d,employeeId=${employee.id})}">Kiszállítások</a></td>
 							<td><button th:attr="data-id=${employee.id}, data-name=${employee.name}, data-birthday=${employee.birthday},
 								 data-postCode=${employee.postCode}, data-city=${employee.city}, data-address=${employee.address}, data-houseNumber=${employee.houseNumber},
 								 data-email=${employee.email}, data-sex=${employee.sex}, data-phoneNumber=${employee.phoneNumber}, data-role=${employee.role.id}" 
-								type="button" class="btn btn-dark userButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								type="button" class="btn btn-dark userButton" data-toggle="modal" data-target="#editModal">Szerkeszt</button>
 								<a class="delete User" th:id="${employee.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a>
 							</td>
 						</tr>
@@ -75,17 +75,17 @@
 					</thead>
 					<tbody>
 						<tr th:each="customer : ${userList}">
-							<td th:text="${customer.name}">name</td>
-							<td th:text="${customer.birthday}">birthday</td>
-							<td th:text="${customer.postCode} + ', ' + ${customer.city} + ' ' + ${customer.address} + ' ' + ${customer.houseNumber}">address</td>
+							<td th:text="${customer.name}">név</td>
+							<td th:text="${customer.birthday}">születésnap</td>
+							<td th:text="${customer.postCode} + ', ' + ${customer.city} + ' ' + ${customer.address} + ' ' + ${customer.houseNumber}">lakcím</td>
 							<td th:text="${customer.email}">email</td>
-							<td th:text="${customer.sex==1}?'Nő':'Férfi'">sex</td> 
-							<td th:text="${customer.phoneNumber}">phone_number</td>
+							<td th:text="${customer.sex==1}?'Nő':'Férfi'">nem</td> 
+							<td th:text="${customer.phoneNumber}">telefonszám</td>
 							<td><a th:href="@{/admin/orders(o,userId=${customer.id})}">Rendelések</a></td>
 							<td><button th:attr="data-id=${customer.id}, data-name=${customer.name}, data-birthday=${customer.birthday},
 								 data-postCode=${customer.postCode}, data-city=${customer.city}, data-address=${customer.address}, data-houseNumber=${customer.houseNumber},
 								 data-email=${customer.email}, data-sex=${customer.sex}, data-phoneNumber=${customer.phoneNumber}, data-role=${customer.role.id}" 
-								type="button" class="btn btn-dark userButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								type="button" class="btn btn-dark userButton" data-toggle="modal" data-target="#editModal">Szerkeszt</button>
 								<a class="delete User" th:id="${customer.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a>
 							</td>
 							
@@ -111,15 +111,15 @@
 					</thead>
 					<tbody>
 						<tr th:unless="${param.orderId}" th:each="product : ${productList}">
-							<td  th:text="${product.name}">name</td>
-							<td th:text="${product.onStock}">on stock</td>
-							<td th:text="${product.price} + ' Ft'">price</td>
-							<td th:text="${product.height} + 'x' + ${product.width} + 'x' + ${product.length}">size</td>
+							<td  th:text="${product.name}">név</td>
+							<td th:text="${product.onStock}">raktáron</td>
+							<td th:text="${product.price} + ' Ft'">ár</td>
+							<td th:text="${product.height} + 'x' + ${product.width} + 'x' + ${product.length}">méret</td>
 							<td><img class="img-fluid productPic" th:attr="src=@{${product.pathToPicture}}"/></td>
 							<td><button th:attr="data-id=${product.id}, data-name=${product.name}, data-onStock=${product.onStock},
 								data-length=${product.length},data-height=${product.height},data-width=${product.width},
 								data-price=${product.price}, data-pathToPicture=${product.pathToPicture}"
-								type="button" class="btn btn-dark productButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								type="button" class="btn btn-dark productButton" data-toggle="modal" data-target="#editModal">Szerkeszt</button>
 								<a th:if="${product.deleted} == false" class="delete Product" th:id="${product.id}">
 									<img class="deletePic" th:src="@{/images/delete.png}"/>
 								</a>
@@ -128,16 +128,16 @@
 								</a>
 						</tr>
 						<tr th:if="${param.orderId}" th:each="productOfOrder : ${productsOfOrderList}">
-							<td  th:text="${productOfOrder.product.name}">name</td>
-							<td th:text="${productOfOrder.product.onStock}">on stock</td>
-							<td th:text="${productOfOrder.prodActValue} + ' Ft'">price</td>
+							<td  th:text="${productOfOrder.product.name}">név</td>
+							<td th:text="${productOfOrder.product.onStock}">raktáron</td>
+							<td th:text="${productOfOrder.prodActValue} + ' Ft'">ár</td>
 							<td th:text="${productOfOrder.product.height} + 'x' + ${productOfOrder.product.width} + 'x' + ${productOfOrder.product.length}">size</td>
 							<td><img class="img-fluid productPic" th:attr="src=@{${productOfOrder.product.pathToPicture}}"/></td>
-							<td th:text="${productOfOrder.quantity}">amount</td>
+							<td th:text="${productOfOrder.quantity}">mennyiség</td>
 							<td><button th:attr="data-id=${productOfOrder.product.id}, data-name=${productOfOrder.product.name}, 
 								data-onStock=${productOfOrder.product.onStock},data-length=${productOfOrder.product.length},data-height=${productOfOrder.product.height},
 								data-width=${productOfOrder.product.width},data-price=${productOfOrder.product.price}, data-pathToPicture=${productOfOrder.product.pathToPicture}"
-								type="button" class="btn btn-dark productButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								type="button" class="btn btn-dark productButton" data-toggle="modal" data-target="#editModal">Szerkeszt</button>
 								<a class="delete ProductFromOrder" th:attr="data-orderId=${param.orderId}" th:id="${productOfOrder.product.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
 						</tr>
 					</tbody>
@@ -161,16 +161,16 @@
 					</thead>
 					<tbody>
 						<tr th:each="order : ${orderList}">
-							<td th:text="${order.deadLine}">deadLine</td>
+							<td th:text="${order.deadLine}">határidő</td>
 							<td th:text="${order.user.name}">user</td>
-							<td th:text="${order.done}?'kézbesítve':'várakozik'">done</td>
-							<td class="orderValue" th:text="${order.value} + ' Ft'">value</td>
+							<td th:text="${order.done}?'kézbesítve':'várakozik'">kész</td>
+							<td class="orderValue" th:text="${order.value} + ' Ft'">érték</td>
 							<td><a th:href="@{/admin/deliveries(d,deliveryId=${order.delivery != null && order.delivery.id != null}?${order.delivery.id}:'')}"
 								 th:text="${order.delivery != null && order.delivery.id != null}?'Kiszállítás':'Még nincs kiszállításon'">Kiszállítás</a></td>
 							<td><a th:href="@{/admin/products(p,orderId=${order.id})}">Termékek</a></td>
 							<td><button th:if="${order.delivery == null}" th:attr="data-id=${order.id}, data-userId=${order.user.id}, data-deadLine=${order.deadLine},
 								data-done=${order.done}, data-value=${order.value}"
-								type="button" class="btn btn-dark orderButton" data-toggle="modal" data-target="#editModal">Edit</button>
+								type="button" class="btn btn-dark orderButton" data-toggle="modal" data-target="#editModal">Szerkeszt</button>
 								<a th:if="${order.delivery == null}" class="delete Order" th:id="${order.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
 						</tr>
 					</tbody>
@@ -191,13 +191,13 @@
 						</thead>
 						<tbody>
 							<tr th:each="delivery : ${deliveryList}">
-								<td th:text="${delivery.employee} != null? ${delivery.employee.name} : 'Nincs még kiszállító'">user</td>
-								<td th:text="${delivery.deliveryDate}">N/A</td>
+								<td th:text="${delivery.employee} != null? ${delivery.employee.name} : 'Nincs még kiszállító'">munkás</td>
+								<td th:text="${delivery.deliveryDate}">kiszállítás napja</td>
 								<td th:text="${delivery.done}?'Kész':'Várakozik'">N/A</td>
 								<td><a th:href="@{/admin/orders(o,deliveryId=${delivery.id})}">Megrendelések</a></td>
 								<td><button th:attr="data-id=${delivery.id}, data-employeeId=${delivery.employee}?${delivery.employee.id}:'-1', data-deliveryDate=${delivery.deliveryDate},
 									data-done=${delivery.done}"
-									type="button" class="btn btn-dark deliveryButton" data-toggle="modal" data-target="#editModal">Edit</button>
+									type="button" class="btn btn-dark deliveryButton" data-toggle="modal" data-target="#editModal">Szerkeszt</button>
 								<a class="delete Delivery" th:id="${delivery.id}"><img class="deletePic" th:src="@{/images/delete.png}"/></a></td>
 							</tr>
 						</tbody>
@@ -216,9 +216,6 @@
 						</div>
 						<div class="modal-body">
 							<form th:replace="(${param.e} or ${param.u}? ~{modal :: user}:(${param.p}? ~{modal :: newProduct} : (${param.o}? ~{modal :: editOrder} : ~{modal :: editDelivery})))"></form>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						</div>
 					</div>
 			      

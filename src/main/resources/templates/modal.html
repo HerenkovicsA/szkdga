@@ -85,7 +85,10 @@
 				</select>
 			</div>
 		</div>
-		<p><input id="submitUser" type="submit" value="Submit" /> </p>
+		<div>
+			<input id="submitUser" type="submit" class="m-submit btn btn-default" value="Elküld" />
+			<button type="button" class="m-close btn btn-default" data-dismiss="modal">Mégse</button>
+		</div>
 	</form>
 <!--+++++++++++++++++++++++++++++++++++++++++Product modal++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<form th:fragment="newProduct" th:action="@{/admin/addOrEditProduct}" th:object="${newProduct}" method="post" enctype="multipart/form-data">
@@ -134,7 +137,10 @@
 		</div>
 		<input type="text" th:field="*{pathToPicture}" hidden/>
 		<input type="number" th:field="*{id}" hidden/>
-		<p><input id="submitAddProduct" type="submit" value="Hozzáad" /> </p>
+		<div>
+			<input id="submitAddProduct" type="submit" class="m-submit btn btn-default" value="Hozzáad" />
+			<button type="button" class="m-close btn btn-default" data-dismiss="modal">Mégse</button>
+		</div>
 	</form>
 <!--+++++++++++++++++++++++++++++++++++++++++Orders modal++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<form th:fragment="editOrder" method="post">
@@ -167,7 +173,10 @@
 			<label class="col-sm-2 col-form-label">Termékek:  </label>
 			<table id="orderTable"></table>
 		</div>
-		<p><input id="submitOrder" type="submit" value="Módosít" /> </p>
+		<div>
+			<input id="submitOrder" type="submit" class="m-submit btn btn-default" value="Módosít" />
+			<button type="button" class="m-close btn btn-default" data-dismiss="modal">Mégse</button>
+		</div>
 	</form>
 <!--+++++++++++++++++++++++++++++++++++++++++Deliveries modal++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->
 	<form th:fragment="editDelivery" method="post">
@@ -196,7 +205,10 @@
 				<table id="orderTable"></table>
 			</div>
 		</div>
-		<p><input id="submitDelivery" type="submit" value="Módosít" /> </p>
+		<div>
+			<input id="submitDelivery" type="submit" class="m-submit btn btn-default" value="Módosít" /> 
+			<button type="button" class="m-close btn btn-default" data-dismiss="modal">Mégse</button>
+		</div>
 	</form>
 </body>
 </html>

@@ -53,9 +53,9 @@
 				</thead>
 				<tbody>
 					<tr th:each="order : ${orderList}">
-						<td th:text="${order.user.fullAddress}">name</td>
+						<td th:text="${order.user.fullAddress}">cím</td>
 						<td><a  th:if="${order.deadLine} != null" th:href="@{/employee/orders(o,orderId=${order.id})}">Rendelés</a></td>
-						<td th:text="${order.user.name}">name</td>
+						<td th:text="${order.user.name}">név</td>
 						<td th:if="${deliveryDone} == false"><input th:if="${order.deadLine} != null" type="checkbox" th:checked="${order.done}" th:class="${order.id} + ' orderCheckDone form-control'"></td>					
 					</tr>
 				</tbody>
@@ -77,8 +77,8 @@
 				</thead>
 				<tbody>
 					<tr th:each="delivery : ${deliveries}">
-						<td th:text="${delivery.deliveryDate}">N/A</td>
-						<td th:text="${delivery.done}?'Kész':'Várakozik'">N/A</td>
+						<td th:text="${delivery.deliveryDate}">kiszállítás napja</td>
+						<td th:text="${delivery.done}?'Kész':'Várakozik'">kiszállítás napja</td>
 						<td><a th:href="@{/employee/delivery(d,deliveryId=${delivery.id})}">Megrendeléshez</a></td>
 					</tr>
 				</tbody>
@@ -101,10 +101,10 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td th:text="${order.deadLine}">deadLine</td>
-						<td th:text="${order.user.name}">user</td>
-						<td th:text="${order.done}?'kézbesítve':'várakozik'">done</td>
-						<td class="orderValue" th:text="${order.value} + ' Ft'">value</td>
+						<td th:text="${order.deadLine}">határidő</td>
+						<td th:text="${order.user.name}">vásárló</td>
+						<td th:text="${order.done}?'kézbesítve':'várakozik'">kész</td>
+						<td class="orderValue" th:text="${order.value} + ' Ft'">érték</td>
 						<td><button th:attr="data-id=${order.id}" type="button" 
 							class="btn btn-dark orderButton" data-toggle="modal" data-target="#editModal">Termékek</button>
 						</td>
@@ -126,7 +126,7 @@
 					<table id="orderTable" class="table table-hover"></table>
 				</div>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-default" data-dismiss="modal">Bezár</button>
 				</div>
 			</div>
 	      
