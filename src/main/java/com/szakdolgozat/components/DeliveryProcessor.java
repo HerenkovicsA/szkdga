@@ -26,18 +26,11 @@ public class DeliveryProcessor implements Runnable {
 	@Override
 	public void run() {
 		log.info("Starting DeliveryProcessor thread...");
-		if(os.hasEnoughForOneDelivery(CARGO_SIZE)) {
+		while(os.hasEnoughForOneDelivery(CARGO_SIZE) || os.hasUrgentOrder()) {
 			log.info("Start making new delivery...");
 			ds.makeNewDelivery(); 
-		} else {
-			while(os.hasUrgentOrder()) {
-				log.info("Start making urgent delivery...");
-				ds.makeNewDelivery();
-				log.info("Made urgent delivery");
-			}
-			log.info("Stopping DeliveryProcessor thread...");
-			return;
 		}
+		log.info("Stopping DeliveryProcessor thread...");
 	}
 
 }
