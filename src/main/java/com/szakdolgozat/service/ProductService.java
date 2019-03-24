@@ -14,7 +14,7 @@ public interface ProductService {
 
 	String deleteProduct(long id);
 
-	void addOrEditProduct(Product product, MultipartFile file);
+	void addOrEditProduct(Product product, MultipartFile file, String path);
 	
 	Product getProductById(long id);
 

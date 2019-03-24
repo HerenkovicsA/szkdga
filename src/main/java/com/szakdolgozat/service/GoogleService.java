@@ -21,11 +21,9 @@ public class GoogleService {
 	private static HttpsURLConnection con;
 	private static final String DISTANCES_MATRIX_API = "https://maps.googleapis.com/maps/api/distancematrix/json?";
 	private static final String API_KEY = System.getenv("GOOGLE_API_KEY");
-
-	//https://maps.googleapis.com/maps/api/distancematrix/json?origins=Boston,MA|Charlestown,MA&destinations=Lexington,MA|Concord,MA&departure_time=now&key=YOUR_API_KEY
 	
 	/**
-	 * getDistance
+	 * Get distance between two addresses from Google API.
 	 * @param askGoogle
 	 * @param origin
 	 * @param destination
@@ -115,7 +113,6 @@ public class GoogleService {
 	private String formAddressForUrl(String address) throws UnsupportedEncodingException {
 		if(address != null)
 			return URLEncoder.encode(address, "UTF-8");
-		System.out.println(address);
 		return "problem";
 	}
 	

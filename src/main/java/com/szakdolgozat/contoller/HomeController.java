@@ -1,5 +1,7 @@
 package com.szakdolgozat.contoller;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -74,7 +76,7 @@ public class HomeController {
 	
 	private void startMakingDeliveries() {
 		ScheduledExecutorService ses = Executors.newSingleThreadScheduledExecutor();
-		ses.scheduleAtFixedRate(new DeliveryProcessor(ds,os), 0, 1, TimeUnit.HOURS);		
+		ses.scheduleAtFixedRate(new DeliveryProcessor(ds,os), 0, 1, TimeUnit.HOURS);	
 	}
 
 	@RequestMapping("/")

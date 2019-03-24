@@ -62,17 +62,17 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public void addOrEditProduct(Product product, MultipartFile file) {
+	public void addOrEditProduct(Product product, MultipartFile file, String path) {
 		Optional<Product> optProd = pr.findById(product.getId());
 		Product productToSave;
 		if(optProd.isPresent()) {
 			productToSave = optProd.get();
 			if(!file.isEmpty()) {
-				productToSave.setPathToPicture(sfs.store(file,productToSave.getPathToPicture()));
+				productToSave.setPathToPicture(sfs.store(file,productToSave.getPathToPicture(), path));
 			}
 		} else {
 			productToSave = new Product();
-			productToSave.setPathToPicture(sfs.store(file, false));
+			productToSave.setPathToPicture(sfs.store(file, false, path));
 		}
 		productToSave.setHeight(product.getHeight());
 		productToSave.setWidth(product.getWidth());

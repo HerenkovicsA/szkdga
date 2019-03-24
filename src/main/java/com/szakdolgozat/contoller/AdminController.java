@@ -1,5 +1,6 @@
 package com.szakdolgozat.contoller;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -54,16 +56,18 @@ public class AdminController {
 	private DeliveryService ds;
 	private PostCodeService pcs;
 	private StoreFileService sfs;
+	private ServletContext context;
 	
 	@Autowired
 	public AdminController(UserService us, ProductService ps, OrderService os, DeliveryService ds, PostCodeService pcs,
-			StoreFileService sfs) {
+			StoreFileService sfs, ServletContext context) {
 		this.us = us;
 		this.ps = ps;
 		this.os = os;
 		this.ds = ds;
 		this.pcs = pcs;
 		this.sfs = sfs;
+		this.context = context;
 	}
 	
 	@InitBinder
@@ -224,7 +228,7 @@ public class AdminController {
 	
 	@PostMapping("/admin/addOrEditProduct")
     public String addOrEditProduct(@ModelAttribute Product product, @RequestParam("file") MultipartFile file) {
-		ps.addOrEditProduct(product, file);
+		ps.addOrEditProduct(product, file, context.getRealPath(""));
         return "redirect:/admin/products?p";
     }
 

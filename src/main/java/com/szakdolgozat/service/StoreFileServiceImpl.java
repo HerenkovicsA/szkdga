@@ -14,12 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class StoreFileServiceImpl implements StoreFileService{
 
-    private final String IMAGE_STORE_DIRECTORY = System.getProperty("image.storage", new File("images").getAbsolutePath());
     private final String ENV = System.getProperty("environment");
     private final Logger LOG = LoggerFactory.getLogger(this.getClass());
 
-	public String store(MultipartFile file, boolean overwrite) {
-		File directory = new File(IMAGE_STORE_DIRECTORY);
+    @Override
+	public String store(MultipartFile file, boolean overwrite, String contextPath) {
+		File directory = new File(contextPath + File.separator + "images");
 		if(! directory.isDirectory()) {
 			LOG.warn(directory + " doesnt exists. It will be created.");
 			try{
@@ -28,7 +28,7 @@ public class StoreFileServiceImpl implements StoreFileService{
 				LOG.error(e.getMessage());
 			}
 		}
-		String pathToFile = IMAGE_STORE_DIRECTORY + "\\" + file.getOriginalFilename();		
+		String pathToFile = contextPath + File.separator + "images" + File.separator + file.getOriginalFilename();		
         try {
         	File fileToSave = new File(pathToFile);
         	while(fileToSave.exists() && !overwrite) {
@@ -38,24 +38,25 @@ public class StoreFileServiceImpl implements StoreFileService{
         	}
         	LOG.info("Saving " + fileToSave.getName() + " to " + directory);
 			file.transferTo(fileToSave);
-			if(ENV.equals("test")) {
+			if(ENV != null && ENV.equals("test")) {
 				return "\\images\\" + fileToSave.getName();
 			}
 		} catch (IllegalStateException | IOException e) {
 			LOG.error(e.getMessage());
 			e.printStackTrace();
 		}
-        return pathToFile;
+        return pathToFile.substring(contextPath.length());
     }
 
 	@Override
-	public String store(MultipartFile file, String path) {
+	public String store(MultipartFile file, String path, String contextPath) {
 		File actual = new File(path);
 		if(actual.getName().equals(file.getOriginalFilename())) {
-			return store(file, true);
+			return store(file, true, contextPath);
 		} else {
 			actual.delete();
-			return store(file, false);
+			return store(file, false, contextPath);
 		}
 	}
+	
 }
