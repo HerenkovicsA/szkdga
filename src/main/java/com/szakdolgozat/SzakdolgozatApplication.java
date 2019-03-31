@@ -11,7 +11,7 @@ import org.springframework.context.annotation.PropertySources;
 
 @EnableConfigurationProperties
 @PropertySources({
-    @PropertySource(value = "file:${szkdg_conf}", ignoreResourceNotFound = true)
+    @PropertySource("file:${spring.config.location}/application.properties")
 })
 @SpringBootApplication
 public class SzakdolgozatApplication extends SpringBootServletInitializer{

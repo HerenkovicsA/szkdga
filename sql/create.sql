@@ -11,3 +11,6 @@ alter table szkdg_db.orders add constraint FK32ql8ubntj5uh44ph9659tiih foreign k
 alter table szkdg_db.productstoorders add constraint FK7yjm90g3nq2crs0m5ww2w9esm foreign key (order_id) references szkdg_db.orders;
 alter table szkdg_db.productstoorders add constraint FKagq4yiyog3g0c4y9wyx40xlwa foreign key (product_id) references szkdg_db.products;
 alter table szkdg_db.users add constraint FKp56c1712k691lhsyewcssf40f foreign key (role_id) references szkdg_db.roles;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA szkdg_db TO szkdg;
+COMMIT;

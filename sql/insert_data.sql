@@ -8,7 +8,7 @@ INSERT INTO szkdg_db.users
 (address, birthday, city, email, house_number, name, password, phone_number, post_code, sex, role_id)
 VALUES ('Egyetem tér','1969-04-01','Győr','admin@vagyok.en','1','Admin Aladár','$2a$10$dsFl9mizF6./XNvcM1wZK..xAKC8bm/37lTvZzEOIjfMXWviyJJa.','301234567','9022',0,1),
 ('Egyetem tér','1989-04-01','Győr','munkas@vagyok.en','1','Employee Erik','$2a$10$uS41byHvXzhAWJbZoqwK4.eKQ/ckNUawdJaC3YK9maKGl7ToivBnC','201234567','9022',0,3),
-('Szent István út','1999-09-09','Győr','vasarlo@vagyok.en','1','User Ubul','$2a$10$Z1hUplKhyqE3IMJ5C.lsD.ixV8yZXi25ozpiuY8K.muWbUoN7SKme','301234567','9022',0,3);
+('Szent István út','1999-09-09','Győr','vasarlo@vagyok.en','1','User Ubul','$2a$10$Z1hUplKhyqE3IMJ5C.lsD.ixV8yZXi25ozpiuY8K.muWbUoN7SKme','301234567','9022',0,2);
 
 COMMIT;
 
