@@ -1,12 +1,8 @@
 package com.szakdolgozat.contoller;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -31,19 +27,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.szakdolgozat.components.DeliveryProcessor;
-import com.szakdolgozat.components.ShoppingCart;
 import com.szakdolgozat.domain.Order;
-import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.User;
 import com.szakdolgozat.service.DeliveryService;
-import com.szakdolgozat.service.DeliveryServiceImpl;
 import com.szakdolgozat.service.OrderService;
 import com.szakdolgozat.service.PostCodeService;
 import com.szakdolgozat.service.ProductService;
 import com.szakdolgozat.service.ShoppingCartService;
 import com.szakdolgozat.service.UserService;
-
-import javafx.util.Pair;
 
 @Controller
 public class HomeController {

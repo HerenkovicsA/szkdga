@@ -9,14 +9,11 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
-import com.szakdolgozat.components.DeliveryProcessor;
 import com.szakdolgozat.components.ShoppingCart;
-import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
-
-import javafx.util.Pair;
 
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
@@ -142,7 +139,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 			} else {
 				result += "MISSING";
 				for (Pair<Product, Integer> pair : missingList) {
-					result += ";" + pair.getKey().getName() + ":" + pair.getValue() + ":" + pair.getKey().getId() ;
+					result += ";" + pair.getFirst().getName() + ":" + pair.getSecond() + ":" + pair.getFirst().getId() ;
 				}
 				return result;
 			}

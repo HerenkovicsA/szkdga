@@ -14,6 +14,7 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
 import com.szakdolgozat.service.OrderService;
@@ -23,10 +24,7 @@ import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.ProductsToOrders;
 import com.szakdolgozat.domain.User;
-import com.szakdolgozat.repository.DeliveryRepository;
 import com.szakdolgozat.repository.OrderRepository;
-
-import javafx.util.Pair;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -345,7 +343,7 @@ public class OrderServiceImpl implements OrderService {
 		Set<ProductsToOrders> ptoSet = order.getProductsToOrder();
 		if(ptoSet.isEmpty()) return null;
 		for (ProductsToOrders pto : ptoSet) {
-			resultList.add(new Pair<Product, Integer>(pto.getProduct(),pto.getQuantity()));
+			resultList.add(Pair.of(pto.getProduct(),pto.getQuantity()));
 		}
 		return resultList;
 	}
@@ -355,7 +353,7 @@ public class OrderServiceImpl implements OrderService {
 		List<Pair<Product, Integer>> missingList = new ArrayList<Pair<Product, Integer>>();
 		for (Product product : cart.keySet()) {
 			if(product.getOnStock() < cart.get(product)) {
-				missingList.add(new Pair<Product, Integer>(product,product.getOnStock()));
+				missingList.add(Pair.of(product,product.getOnStock()));
 			}
 		}
 		return missingList;

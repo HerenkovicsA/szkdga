@@ -26,7 +26,7 @@ import com.szakdolgozat.geneticAlg.GenAlgBusiness;
 import com.szakdolgozat.repository.DeliveryRepository;
 import com.szakdolgozat.repository.UserRepository;
 
-import javafx.util.Pair;
+import org.springframework.data.util.Pair;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService{
@@ -268,7 +268,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 			addresses[i] = orders.get(i).getUser().getFullAddress();
 		}
 		Pair<Double, List<Order>> resultPair = getShortestRoute(true, addresses, orders);	
-		createNewDelivery(orders,employee,resultPair.getKey(),createOrderStringForDelivery(resultPair.getValue()));
+		createNewDelivery(orders,employee,resultPair.getFirst(),createOrderStringForDelivery(resultPair.getSecond()));
 		return resultPair;
 	}
 	
@@ -289,7 +289,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 			addresses[i] = orders.get(i).getUser().getFullAddress();
 		}
 		Pair<Double, List<Order>> resultPair = getShortestRoute(true, addresses, orders);	
-		createNewDelivery(orders,resultPair.getKey(),createOrderStringForDelivery(resultPair.getValue()), newDelivery);
+		createNewDelivery(orders,resultPair.getFirst(),createOrderStringForDelivery(resultPair.getSecond()), newDelivery);
 	}
 	
 	@Override
@@ -309,7 +309,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 			delivery.setEmployee(employee);
 			dr.save(delivery);
 			Pair<Pair<Double, LocalDate>, List<Order>> tmp = getDeliveryForEmployee(delivery.getId());
-			return new Pair<Double, List<Order>>(tmp.getKey().getKey(), tmp.getValue());
+			return Pair.of(tmp.getFirst().getFirst(), tmp.getSecond());
 		}
 		return null;
 	}
@@ -402,7 +402,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 		for (String orderId : orderedOrderIds) {
 			newOrderList.add(getOrderFromSetById(orderSet, Long.parseLong(orderId)));
 		}
-		return new Pair<Pair<Double, LocalDate>, List<Order>>(new Pair<Double, LocalDate>(delivery.getDistance(),
+		return Pair.of(Pair.of(delivery.getDistance(),
 				delivery.getDeliveryDate()),newOrderList);
 	}
 	

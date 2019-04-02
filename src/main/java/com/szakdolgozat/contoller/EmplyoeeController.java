@@ -22,7 +22,7 @@ import com.szakdolgozat.service.DeliveryService;
 import com.szakdolgozat.service.OrderService;
 import com.szakdolgozat.service.UserService;
 
-import javafx.util.Pair;
+import org.springframework.data.util.Pair;
 
 @Controller
 public class EmplyoeeController {
@@ -52,8 +52,8 @@ public class EmplyoeeController {
 		try {
 			//Pair<Double ,List<Order>> resultPair = ds.getNewDeliveryForEmployee(email);
 			Pair<Double, List<Order>> resultPair = ds.newDeliveryForEmployee(email);
-			model.addAttribute("distance", resultPair.getKey());
-			model.addAttribute("orderList", resultPair.getValue());
+			model.addAttribute("distance", resultPair.getFirst());
+			model.addAttribute("orderList", resultPair.getSecond());
 		} catch (Exception e) {
 			if (e.getMessage().equals("Employee has active delivery")) {
 				model.addAttribute("error", "Van egy be nem fejezett kiszállíátsa. Szállítsa ki először azt.");
@@ -83,9 +83,9 @@ public class EmplyoeeController {
 		Pair<Pair<Double, LocalDate>, List<Order>> resultPair;
 		try {
 			resultPair = ds.getDeliveryForEmployee(deliveryId);
-			model.addAttribute("deadLine", resultPair.getKey().getValue());
-			model.addAttribute("distance", resultPair.getKey().getKey());
-			model.addAttribute("orderList", resultPair.getValue());
+			model.addAttribute("deadLine", resultPair.getFirst().getSecond());
+			model.addAttribute("distance", resultPair.getFirst().getFirst());
+			model.addAttribute("orderList", resultPair.getSecond());
 			model.addAttribute("deliveryDone", ds.findDeliveryById(deliveryId).isDone());
 		} catch (NoSuchElementException nsee) {
 			model.addAttribute("error", "A kiszállítás (" + deliveryId + ") nem létezik");

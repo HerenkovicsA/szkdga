@@ -11,7 +11,7 @@ import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.ProductsToOrders;
 
-import javafx.util.Pair;
+import org.springframework.data.util.Pair;
 
 public interface OrderService {
 

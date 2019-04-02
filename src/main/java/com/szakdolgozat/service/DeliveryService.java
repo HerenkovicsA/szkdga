@@ -1,16 +1,14 @@
 package com.szakdolgozat.service;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.szakdolgozat.domain.Delivery;
 import com.szakdolgozat.domain.Order;
-import com.szakdolgozat.domain.User;
 
-import javafx.util.Pair;
+import org.springframework.data.util.Pair;
 
 public interface DeliveryService {
 	

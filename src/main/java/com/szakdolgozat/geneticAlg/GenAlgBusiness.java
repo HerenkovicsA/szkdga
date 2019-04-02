@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.szakdolgozat.domain.Order;
 
-import javafx.util.Pair;
+import org.springframework.data.util.Pair;
 
 public class GenAlgBusiness {
 	
@@ -46,7 +46,7 @@ public class GenAlgBusiness {
 			easyList.add(orders.get(0));
 			easyList.add(orders.get(1));
 			easyList.add(orders.get(0));
-			return new Pair<Double, List<Order>>((double) (citiesDistances[0][1]/1000), easyList);
+			return Pair.of((double) (citiesDistances[0][1]/1000), easyList);
 		}
 		for(int j = 0; j < 3; j++) {
 			executor.execute(new Runnable() {
@@ -69,7 +69,7 @@ public class GenAlgBusiness {
 		log.info("Genetic algorithms took: " + (stopTime - startTime) + " ms");
 		Collections.sort(bestsList);
 		System.out.println(bestsList);
-		return new Pair<Double, List<Order>>(bestsList.get(0).getChromValue()/1000, bestsList.get(0).getTour(orders));
+		return Pair.of(bestsList.get(0).getChromValue()/1000, bestsList.get(0).getTour(orders));
 	}
 	
 	private void runOnce(List<Chromosome> bestsList) {
