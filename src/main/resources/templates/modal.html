@@ -133,7 +133,8 @@
 			<div class="col-sm-10">
 				<input type="file" accept="image/*" name="file" id="picture" class="form-control" multiple="multiple" required />
 			</div>
-			<p class="col-sm-12" id="infoPicEdit" hidden>Ha nem akar változtatni a képen, hagyja üresen a mezőt</p>
+			<p class="col-sm-12 picExtraInfo" id="infoPicEdit" hidden>Ha nem akar változtatni a képen, hagyja üresen a mezőt</p>
+			<p class="col-sm-12 picExtraInfo">A kép mérete nem lehet nagyobb, mint 1 MB</p>
 		</div>
 		<input type="text" th:field="*{pathToPicture}" hidden/>
 		<input type="number" th:field="*{id}" hidden/>

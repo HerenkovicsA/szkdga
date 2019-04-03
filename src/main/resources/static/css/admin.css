@@ -26,3 +26,7 @@ img.productPic{
 .m-submit{
 	float:left;
 }
+.picExtraInfo {
+	text-align: right;
+	color : #d3710e;
+}

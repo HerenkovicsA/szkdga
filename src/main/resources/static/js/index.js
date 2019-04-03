@@ -2,6 +2,7 @@ var token = $("meta[name='_csrf']").attr("content");
 
 $(document).ready(function() {
 	sizeFooter();
+	checkForMinSize();
 	bindListeners();
 
 });
@@ -34,6 +35,7 @@ function bindListeners() {
 	
 	$( window ).resize(function() {
 		sizeFooter();
+		checkForMinSize();
 	});
 	
 	$('.removeFromCart').click(function(event){
@@ -100,6 +102,16 @@ function sizeFooter() {
 	var footer = $('.footer');
 	var model = $('.container').children()[0];
 	footer.width($(model).width());
+}
+
+function checkForMinSize() {
+	if($(window).width() < 825) {
+		$('.mainPageButtons').append($('#openNav'));
+		$('#openNav').css('position','inherit');
+	} else if ($('#openNav').parent()[0].className == 'mainPageButtons') {
+		$('.navbar').before($('#openNav'));
+		$('#openNav').css('position','absolute');
+	}
 }
 
 function hideFooter() {

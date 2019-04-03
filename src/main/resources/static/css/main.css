@@ -11,8 +11,10 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 8%;
-	height: 9.5%;
+    min-width: 8%;
+    height: auto;
+    min-height: 7.5%;
+    width: auto;
 }
 .navPic{
 	max-width:7%;
@@ -79,4 +81,10 @@ img.itemPic{
 .checkBoxHeader{
     display: flex;
     align-items: center;	
+}
+.navbar{
+	width: auto;
+	height: auto;
+	
+	max-height: 10%;
 }
