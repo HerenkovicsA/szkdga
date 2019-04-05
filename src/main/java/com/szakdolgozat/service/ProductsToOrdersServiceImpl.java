@@ -43,7 +43,6 @@ public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 		removeProductsToOrdersFromOrder(ptoToRemove, order);
 		removeProductsToOrdersFromProducts(ptoToRemove, product);
 		ptor.delete(ptoToRemove);
-		System.out.println("done");
 	}
 
 	@Override

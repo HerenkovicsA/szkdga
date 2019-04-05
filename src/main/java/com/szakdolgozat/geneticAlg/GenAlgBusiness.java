@@ -68,7 +68,6 @@ public class GenAlgBusiness {
 		long stopTime = System.currentTimeMillis();
 		log.info("Genetic algorithms took: " + (stopTime - startTime) + " ms");
 		Collections.sort(bestsList);
-		System.out.println(bestsList);
 		return Pair.of(bestsList.get(0).getChromValue()/1000, bestsList.get(0).getTour(orders));
 	}
 	

@@ -53,7 +53,7 @@ public class RegistrationController {
 		//if returns 0, email address is already in use
 		if(bindingResult.hasErrors())
         {
-			System.out.println("error with reg");
+			log.warn("There were errors during registration");
             return "auth/registration";
         }		
 		if(!pcs.checkPostCodeAndCity(user.getPostCode(), user.getCity())) {

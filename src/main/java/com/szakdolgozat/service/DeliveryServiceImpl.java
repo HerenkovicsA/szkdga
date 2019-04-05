@@ -232,9 +232,6 @@ public class DeliveryServiceImpl implements DeliveryService{
 						month = Integer.parseInt(fullDate[1]);
 						day = Integer.parseInt(fullDate[2]);
 						order.setDeadLine(LocalDate.of(year, month, day));
-						System.out.println("order");
-						System.out.println(order);
-						System.out.println("++++++++++");
 					}
 				}
 			}

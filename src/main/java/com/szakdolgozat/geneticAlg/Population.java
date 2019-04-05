@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 public class Population {
+	
+	protected Log logger = LogFactory.getLog(this.getClass());
 	
 	private ArrayList<Chromosome> pop;
 	private double fitnessSum = 0;
@@ -37,7 +42,7 @@ public class Population {
 		try {
 			Collections.sort(this.pop);
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		
 	}
@@ -76,11 +81,4 @@ public class Population {
 		return "Population " + pop;
 	}
 	
-//	public String toString(String[] cities) {
-//		String result = "";
-//		for (Chromosome chromosome : pop) {
-//			result += "\n" + chromosome.getTour(cities);
-//		}
-//		return result;
-//	}
 }
