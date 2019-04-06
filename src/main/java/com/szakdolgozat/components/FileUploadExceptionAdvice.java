@@ -9,18 +9,17 @@ import org.apache.tomcat.util.http.fileupload.FileUploadBase.SizeLimitExceededEx
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.ui.Model;
 
 @ControllerAdvice
 public class FileUploadExceptionAdvice {
-      
+	
     @ExceptionHandler({MaxUploadSizeExceededException.class,SizeLimitExceededException.class})
-    public ModelAndView handleMaxSizeException(
+    public String handleMaxSizeException(
       MaxUploadSizeExceededException exc, HttpServletRequest request, 
-      HttpServletResponse response) throws IOException {
+      HttpServletResponse responsem, Model model) throws IOException {
     	System.out.println(exc.getLocalizedMessage());
-    	ModelAndView maV = new ModelAndView("redirect:/error");
-    	maV.addObject("message", "s2l");
-    	return maV;
+    	model.addAttribute("message", "s2l");
+    	return "redirect:/error";
     }
 }
