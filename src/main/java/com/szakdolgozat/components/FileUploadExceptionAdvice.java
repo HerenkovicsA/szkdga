@@ -5,6 +5,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.tomcat.util.http.fileupload.FileUploadBase.SizeLimitExceededException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -13,7 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 @ControllerAdvice
 public class FileUploadExceptionAdvice {
       
-    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    @ExceptionHandler({MaxUploadSizeExceededException.class,SizeLimitExceededException.class})
     public ModelAndView handleMaxSizeException(
       MaxUploadSizeExceededException exc, HttpServletRequest request, 
       HttpServletResponse response) throws IOException {
