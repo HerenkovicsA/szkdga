@@ -45,5 +45,5 @@ public interface DeliveryService {
 	 * @param urgent set if true if there are orders that deadline is close
 	 * @throws Exception if there is no order to deliver
 	 */
-	public void makeNewDelivery();
+	public void makeNewDelivery() throws Exception;
 }

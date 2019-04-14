@@ -40,7 +40,6 @@ public class GenAlgBusiness {
 		
 		List<Chromosome> bestsList = new ArrayList<Chromosome>();		
 		ExecutorService executor = Executors.newCachedThreadPool();
-		log.info("order size: " + orders.size());
 		if(orders.size() == 2) {
 			List<Order> easyList = new ArrayList<Order>();
 			easyList.add(orders.get(0));

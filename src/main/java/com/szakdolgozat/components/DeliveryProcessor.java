@@ -28,7 +28,12 @@ public class DeliveryProcessor implements Runnable {
 		log.info("Starting DeliveryProcessor thread...");
 		while(os.hasEnoughForOneDelivery(CARGO_SIZE) || os.hasUrgentOrder()) {
 			log.info("Start making new delivery...");
-			ds.makeNewDelivery(); 
+			try {
+				ds.makeNewDelivery();
+			} catch (Exception e) {
+				log.error("Error while creating delivery. Stoping thread to retry later.\n" + e.getMessage());
+				break;
+			} 
 		}
 		log.info("Stopping DeliveryProcessor thread...");
 	}

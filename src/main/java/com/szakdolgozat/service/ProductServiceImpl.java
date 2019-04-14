@@ -123,7 +123,6 @@ public class ProductServiceImpl implements ProductService {
 	public Product getProductForCart(long productId) {
 		Product product = getProductById(productId);
 		if(product != null && product.getOnStock() > 0 ) {
-			product.setOnStock(product.getOnStock() - 1);
 			pr.save(product);
 			return product;
 		}

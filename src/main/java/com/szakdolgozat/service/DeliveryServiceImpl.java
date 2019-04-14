@@ -95,7 +95,17 @@ public class DeliveryServiceImpl implements DeliveryService{
 				if(i==j || addresses[i].equalsIgnoreCase(addresses[j])) {
 					distanceMatrix[i][j] = 0 ;
 				}else {
-					distanceMatrix[i][j] = gs.getDistance(askGoogle, addresses[i], addresses[j]);
+					try {
+						distanceMatrix[i][j] = gs.getDistance(askGoogle, addresses[i], addresses[j]);
+					} catch (Exception e) {
+						log.warn("Error while getting distance.");
+						try {
+							distanceMatrix[i][j] = gs.getDistance(askGoogle, addresses[i], addresses[j]);
+						} catch (Exception e1) {
+							log.error("Error happened again. Stop creatin Delivery.");
+							return null;
+						}
+					}
 				}
 				
 			}
@@ -119,6 +129,9 @@ public class DeliveryServiceImpl implements DeliveryService{
 	private Pair<Double, List<Order>> getShortestRoute(boolean askGoogle,String[] addresses, List<Order> orders) {
 		long startTime = System.currentTimeMillis();
 		CandD cd = createCandD(askGoogle, addresses);
+		if(cd == null) {
+			return null;
+		}
 		long stopTime = System.currentTimeMillis();
 		log.info("Getting data from Google API took: " + (stopTime - startTime) + " ms");
 		 int popSize = addresses.length * 5;
@@ -270,12 +283,13 @@ public class DeliveryServiceImpl implements DeliveryService{
 	}
 	
 	@Override
-	public void makeNewDelivery() {
+	public void makeNewDelivery() throws Exception{
 		Delivery newDelivery = new Delivery();
 		dr.save(newDelivery);
 		List<Order> orders = os.findOrdersForDelivery2(CARGO_SIZE, CARGO_LIMIT, newDelivery);
 		if(orders == null || orders.isEmpty()) {
 			log.error("No free order for delivery");
+			dr.delete(newDelivery);
 			return;
 		}
 
@@ -285,7 +299,11 @@ public class DeliveryServiceImpl implements DeliveryService{
 		for (int i = 0; i < orders.size(); i++) {
 			addresses[i] = orders.get(i).getUser().getFullAddress();
 		}
-		Pair<Double, List<Order>> resultPair = getShortestRoute(true, addresses, orders);	
+		Pair<Double, List<Order>> resultPair = getShortestRoute(true, addresses, orders);
+		if(resultPair == null) {
+			deleteDelivery(newDelivery.getId());
+			throw new Exception("Creating was unsuccessful");
+		}
 		createNewDelivery(orders,resultPair.getFirst(),createOrderStringForDelivery(resultPair.getSecond()), newDelivery);
 	}
 	

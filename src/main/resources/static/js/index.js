@@ -105,12 +105,14 @@ function sizeFooter() {
 }
 
 function checkForMinSize() {
-	if($(window).width() < 825) {
-		$('.mainPageButtons').append($('#openNav'));
-		$('#openNav').css('position','inherit');
-	} else if ($('#openNav').parent()[0].className == 'mainPageButtons') {
-		$('.navbar').before($('#openNav'));
-		$('#openNav').css('position','absolute');
+	if($('#openNav')[0]){
+		if($(window).width() < 825) {
+			$('.mainPageButtons').append($('#openNav'));
+			$('#openNav').css('position','inherit');
+		} else if ($('#openNav').parent()[0].className == 'mainPageButtons') {
+			$('.navbar').before($('#openNav'));
+			$('#openNav').css('position','absolute');
+		}	
 	}
 }
 
@@ -261,8 +263,8 @@ function showOrder(event) {
 				var product;
 				var quantity;
 				$.each(response, function(key) {
-					product = response[key].key;
-					quantity = response[key].value;
+					product = response[key].first;
+					quantity = response[key].second;
 					orderTable.append(row.replace("{path}",product.pathToPicture).replace("{name}",product.name)
 								.replace("{price}",product.price).replace("{quantity}",quantity));
 				});

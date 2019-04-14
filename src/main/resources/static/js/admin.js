@@ -1,4 +1,5 @@
 var token = $("meta[name='_csrf']").attr("content");
+var CARGO_SIZE = 14900000;
 
 $(document).ready(function() {
 	bindListeners();
@@ -18,6 +19,7 @@ function bindListeners() {
 	$('#addProduct').click(function(event) {
 		event.preventDefault();
 		$('#editModal').modal('toggle');
+		addCheckForSize();
 		addProduct(event);
 	});
 	
@@ -218,6 +220,30 @@ function submitUser(event) {
 		error : function(ex) {
 			console.log(ex);
 		}
+	});
+}
+
+function checkSize(){
+	var h = $('#height');
+	var l = $('#length');
+	var w = $('#width');
+	if(h.val() * l.val() * w.val() > CARGO_SIZE) {
+		$('#submitAddProduct').hide();
+		alert("A termék térogata nem lehet nagyobb, mint " + CARGO_SIZE + " cm3");
+	} else if($('#submitAddProduct').is(":hidden")) {
+		$('#submitAddProduct').show();
+	}
+}
+
+function addCheckForSize() {
+	$('#height').change(function() {
+		checkSize();
+	});
+	$('#width').change(function() {
+		checkSize();
+	});
+	$('#length').change(function() {
+		checkSize();
 	});
 }
 

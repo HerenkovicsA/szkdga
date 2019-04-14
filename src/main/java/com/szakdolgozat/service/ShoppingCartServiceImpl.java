@@ -180,7 +180,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 	
 	/**
 	 * Takes the <i>amountOfProd</i> {@link Product} form the cart into more orders<br/>
-	 * as it's size would be to large for one order.
+	 * as it's size would be too large for one order.
 	 * Adds the <<i>product</i> to the <i>orderList</i> and calls {@link #addToOrder} 
 	 * @param orderList : the list of orders where the product will be added
 	 * @param spaceLeft : space left for new products in orders of orderList

@@ -96,6 +96,10 @@ public class ProductsToOrders implements Serializable{
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (int) (Id ^ (Id >>> 32));
+		long temp;
+		temp = Double.doubleToLongBits(prodActValue);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		result = prime * result + quantity;
 		return result;
 	}
 
@@ -109,6 +113,10 @@ public class ProductsToOrders implements Serializable{
 			return false;
 		ProductsToOrders other = (ProductsToOrders) obj;
 		if (Id != other.Id)
+			return false;
+		if (Double.doubleToLongBits(prodActValue) != Double.doubleToLongBits(other.prodActValue))
+			return false;
+		if (quantity != other.quantity)
 			return false;
 		return true;
 	}

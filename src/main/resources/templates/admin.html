@@ -47,7 +47,7 @@
 							<td th:text="${employee.email}">email</td>
 							<td th:text="${employee.sex==1}?'Nő':'Férfi'">nem</td> 
 							<td th:text="${employee.phoneNumber}">telefon szám</td>
-							<td><a th:href="@{/admin/deliveries(d,employeeId=${employee.id})}">Kiszállítások</a></td>
+							<td><a th:if="${employee.id}" th:href="@{/admin/deliveries(d,employeeId=${employee.id})}">Kiszállítások</a></td>
 							<td><button th:attr="data-id=${employee.id}, data-name=${employee.name}, data-birthday=${employee.birthday},
 								 data-postCode=${employee.postCode}, data-city=${employee.city}, data-address=${employee.address}, data-houseNumber=${employee.houseNumber},
 								 data-email=${employee.email}, data-sex=${employee.sex}, data-phoneNumber=${employee.phoneNumber}, data-role=${employee.role.id}" 

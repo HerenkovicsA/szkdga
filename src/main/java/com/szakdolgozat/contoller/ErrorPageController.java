@@ -1,7 +1,5 @@
 package com.szakdolgozat.contoller;
 
-import java.text.DateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
@@ -48,7 +46,7 @@ public class ErrorPageController implements ErrorController {
 		model.addAttribute("timestamp",LocalDateTime.now().format(formatter));
 		model.addAttribute("link",link);
 		
-		return "detailedError";
+		return "error";
 	}
 	
 	@Override

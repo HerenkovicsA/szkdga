@@ -29,8 +29,9 @@ public class GoogleService {
 	 * @param destination
 	 * @return if 0 there was a problem with the requests. Otherwise returns the distance in meters.
 	 */
-	public int getDistance(boolean askGoogle, String origin, String destination) {
+	public int getDistance(boolean askGoogle, String origin, String destination) throws Exception{
 		JsonNode jsNode = getDistanceJson(askGoogle, origin, destination);
+		if(jsNode == null || jsNode.isNull()) throw new Exception("");
 		int distance = jsNode.findValue("distance").findValue("value").asInt();
 		return distance;
 	}
