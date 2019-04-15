@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.szakdolgozat.domain.User;
+import com.szakdolgozat.service.GoogleService;
 import com.szakdolgozat.service.PostCodeService;
 import com.szakdolgozat.service.UserService;
 
@@ -28,12 +29,14 @@ public class RegistrationController {
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	
 	private UserService us;
-	private PostCodeService pcs;	
+	private PostCodeService pcs;
+	private GoogleService gs;
 	
 	@Autowired
-	public RegistrationController(UserService us, PostCodeService pcs) {
+	public RegistrationController(UserService us, PostCodeService pcs, GoogleService gs) {
 		this.us = us;
 		this.pcs = pcs;
+		this.gs = gs;
 	}
 	
 	@InitBinder
@@ -49,7 +52,6 @@ public class RegistrationController {
 	
 	@PostMapping("/registration")
     public String reg(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
-		log.info("Uj user!");
 		//if returns 0, email address is already in use
 		if(bindingResult.hasErrors())
         {
@@ -59,6 +61,11 @@ public class RegistrationController {
 		if(!pcs.checkPostCodeAndCity(user.getPostCode(), user.getCity())) {
 			log.debug("City: " + user.getCity() + " and postcode: " + user.getPostCode() + " is not equal");
 			model.addAttribute("postCodeError", user.getCity() + " irányítószáma nem: " + user.getPostCode() + " !");
+			return "auth/registration";
+		}
+		if(!gs.validateAddress(user.getFullAddress())) {
+			log.warn("Address is probably not valid");
+			model.addAttribute("invalidAddress", "A cím: " + user.getFullAddress() + " nem biztos, hogy létezik");
 			return "auth/registration";
 		}
 		int result = us.registerUser(user);
