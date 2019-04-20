@@ -39,6 +39,7 @@ import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.User;
 import com.szakdolgozat.service.DeliveryService;
+import com.szakdolgozat.service.GoogleService;
 import com.szakdolgozat.service.OrderService;
 import com.szakdolgozat.service.PostCodeService;
 import com.szakdolgozat.service.ProductService;
@@ -56,17 +57,19 @@ public class AdminController {
 	private DeliveryService ds;
 	private PostCodeService pcs;
 	private StoreFileService sfs;
+	private GoogleService gs;
 	private ServletContext context;
 	
 	@Autowired
 	public AdminController(UserService us, ProductService ps, OrderService os, DeliveryService ds, PostCodeService pcs,
-			StoreFileService sfs, ServletContext context) {
+			StoreFileService sfs, GoogleService gs, ServletContext context) {
 		this.us = us;
 		this.ps = ps;
 		this.os = os;
 		this.ds = ds;
 		this.pcs = pcs;
 		this.sfs = sfs;
+		this.gs = gs;
 		this.context = context;
 	}
 	
@@ -211,7 +214,13 @@ public class AdminController {
 				res.setStatus("FAIL");
 				errorMessages.add(new ErrorMessage("postCodeError", user.getCity() + " irányítószáma nem: " + user.getPostCode() + " !"));
 				res.setErrorMessageList(errorMessages);
-			}else {
+			} else if(!gs.validateAddress(user.getFullAddress())) {
+				res.setStatus("FAIL");
+				errorMessages.add(new ErrorMessage("invalidAddress", "A cím: " + user.getFullAddress() + " nem biztos, hogy létezik. "
+						+ "Kérem ellenőrizze, hogy nem írt el valamit. (pl. 'ut'-at írt 'út' vagy 'utca' helyett)"));
+				res.setErrorMessageList(errorMessages);
+				
+			} else {
 				try {
 					us.editUser(user);
 				} catch (Exception e) {

@@ -39,11 +39,11 @@ public class Product implements Serializable{
 	private Set<ProductsToOrders> productsToOrder = new HashSet<ProductsToOrders>();
 	@Column(length = 2000, nullable = false)
 	private String pathToPicture;
-	@Column//(nullable = false)
+	@Column
 	private Double width;
-	@Column//(nullable = false)
+	@Column
 	private Double height;
-	@Column//(nullable = false)
+	@Column
 	private Double length;
 	@Column
 	private Boolean deleted = false;

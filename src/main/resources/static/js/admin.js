@@ -99,6 +99,9 @@ function showFormError(errorVal) {
 		}else if(errorVal[i].fieldName === 'emailError'){
 			$('#emailError').text(errorVal[i].message);
 			$('#emailError').show();
+		}else if(errorVal[i].fieldName === 'invalidAddress'){
+			$('#invalidAddress').text(errorVal[i].message);
+			$('#invalidAddress').show();
 		}
 	}
 }

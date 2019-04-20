@@ -30,6 +30,7 @@ import com.szakdolgozat.components.DeliveryProcessor;
 import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.User;
 import com.szakdolgozat.service.DeliveryService;
+import com.szakdolgozat.service.GoogleService;
 import com.szakdolgozat.service.OrderService;
 import com.szakdolgozat.service.PostCodeService;
 import com.szakdolgozat.service.ProductService;
@@ -47,6 +48,7 @@ public class HomeController {
 	private ProductService ps;
 	private OrderService os;
 	private DeliveryService ds;
+	private GoogleService gs;
 	
 
 	@InitBinder
@@ -55,13 +57,14 @@ public class HomeController {
 	}
 	
 	@Autowired
-	public HomeController(UserService us, PostCodeService pcs, ShoppingCartService scs, ProductService ps, OrderService os, DeliveryService ds) {
+	public HomeController(UserService us, PostCodeService pcs, ShoppingCartService scs, ProductService ps, OrderService os, DeliveryService ds, GoogleService gs) {
 		this.us = us;
 		this.pcs = pcs;
 		this.scs = scs;
 		this.ps = ps;
 		this.os = os;
 		this.ds = ds;
+		this.gs = gs;
 		startMakingDeliveries();
 	}
 	
@@ -103,6 +106,10 @@ public class HomeController {
         }else if(!pcs.checkPostCodeAndCity(user.getPostCode(), user.getCity())) {
 			log.debug("City: " + user.getCity() + " and postcode: " + user.getPostCode() + " is not equal");
 			model.addAttribute("postCodeError", user.getCity() + " irányítószáma nem: " + user.getPostCode() + " !");
+		} else if(!gs.validateAddress(user.getFullAddress())) {
+			log.warn("Address is probably not valid");
+			model.addAttribute("invalidAddress", "A cím: " + user.getFullAddress() + " nem biztos, hogy létezik. Kérem ellenőrizze, hogy nem írt el"
+					+ "valamit. (pl. 'ut'-at írt 'út' vagy 'utca' helyett)");
 		} else {
 			try { 
 				us.editUser(user);
