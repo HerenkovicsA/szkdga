@@ -420,6 +420,7 @@ function deliveryButton(event) {
 	var button = $(event.target);
 	var userSelect = $('#employee');
 	var orderTable = $('#orderTable');
+	var orderDone = $('.orderDone');
 	$('#id').val(button.data('id'));
     $('#deliveryDate').val(button.data('deliverydate').substring(0,10));
     $('#employee').val(button.data('employeeid'));
@@ -476,13 +477,14 @@ function deliveryButton(event) {
 				$.each(response, function(key, order) {
 					userId = key.substring(key.indexOf("|")+1,key.lastIndexOf("|"));
 					email = key.substring(key.lastIndexOf("|")+1);
-					checked = (order.done == "true");
 					orderTable.append(row.replace("{deadLine}",fixTimeZone(order.deadLine)).replace("{user}",email)
 						.replace("{userId}",userId).replace("{value}",order.value).replace(new RegExp("{id}","g"),order.id));
 					
 					$( "." + order.id + ".orderDone" ).change(function(event) {
 						deliveryAndOrderDone(event);
 					});
+					
+					$( "." + order.id + ".orderDone" ).prop("checked", order.done);
 
 				});
 				orderTable.append("</tbody>");
