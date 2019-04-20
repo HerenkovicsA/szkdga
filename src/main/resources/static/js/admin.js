@@ -126,7 +126,6 @@ function deleteFunc(event){
 			url : url, 
 			data : "_csrf=" + token,
 			success : function(response) {
-				console.log(response);
 				if(response == 'deleted') {
 					window.location.reload();
 				} else if(response == 'removed') {
@@ -155,7 +154,6 @@ function recycleProduct(event){
 			url : "/admin/recycleProduct?id=" + id, 
 			data : "_csrf=" + token,
 			success : function(response) {
-				console.log(response);
 				if(response == 'recycled') {
 					window.location.reload();
 				} else {
@@ -209,8 +207,6 @@ function submitUser(event) {
 			+ "&birthday=" + BIRTHDAY + "&phoneNumber=" + PHONE_NUMBER + "&sex=" + SEX + "&postCode=" + POST_CODE 
 			+ "&city=" + CITY + "&address=" + ADDRESS + "&houseNumber=" + HOUSE_NUMBER + "&role=" + ROLE,
 		success : function(response) {
-			console.log("response");
-			console.log(response);
 			if(response.status == 'FAIL') {
 				showFormError(response.errorMessageList);
 			} else {
@@ -358,10 +354,8 @@ function updateSummOnOrderModal(){
 	for(var i = 0; i < prices.length; i++){
 		if(target.hasClass("deleteBox")) {
 			if($(deleteBoxes[i]).prop("checked")) {
-				console.log("checked");
 				$(quantities[i]).val(0);
 			}else if($(quantities[i]).val() == 0){
-				console.log("not checked");
 				$(quantities[i]).val(1);
 			}
 		}else{
@@ -399,8 +393,6 @@ function submitOrder(event){
 		    "done" : $('#done').prop('checked'),
 		    "products" : products
 	};
-	
-	console.log(products);
 	
     $.ajax({
 		type : "POST",
@@ -463,7 +455,7 @@ function deliveryButton(event) {
 		data : "_csrf=" + token,
 		success : function(response) {
 			if(typeof(response) == 'string') {
-				console.log(response);
+				console.log("error");
 			} else {
 				orderTable.empty();
 				orderTable.append("<thead><tr><th class='modal-delivery-deadline' scope='col'>Határidő</th><th scope='col'>Kiszállítva</th><th>Vásárló</th><th>Érték</th><th>Törlés</th></tr></thead><tbody>");
@@ -486,7 +478,6 @@ function deliveryButton(event) {
 						deliveryAndOrderDone(event);
 					});
 
-					console.log(fixTimeZone(order.deadLine));
 				});
 				orderTable.append("</tbody>");
 			}	
@@ -570,7 +561,6 @@ function fixValues() {
 }
 
 function editValue(value) {
-	console.log(value);
 	if(value.indexOf('E') >= 0) {
 		value = value.slice(0,-3);
 		var numbers = value.indexOf('E') - value.indexOf('.') -1;

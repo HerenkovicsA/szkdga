@@ -28,6 +28,7 @@ import org.springframework.data.util.Pair;
 public class EmplyoeeController {
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final String GOOGLE_API_KEY = System.getenv("GOOGLE_API_KEY");
 	private DeliveryService ds;
 	private OrderService os;
 	private UserService us;
@@ -51,8 +52,13 @@ public class EmplyoeeController {
 		model.addAttribute("employeeName",us.findByEmail(authentication.getName()).getName());
 		try {
 			Pair<Double, List<Order>> resultPair = ds.newDeliveryForEmployee(email);
-			model.addAttribute("distance", resultPair.getFirst());
-			model.addAttribute("orderList", resultPair.getSecond());
+			if(resultPair == null) {
+				model.addAttribute("error", "Nincs jelenleg kiosztható kiszállítás. Nézzen vissza később");
+			} else {
+				model.addAttribute("distance", resultPair.getFirst());
+				model.addAttribute("orderList", resultPair.getSecond());
+				model.addAttribute("deliveryDone", false);
+			}
 		} catch (Exception e) {
 			if (e.getMessage().equals("Employee has active delivery")) {
 				model.addAttribute("error", "Van egy be nem fejezett kiszállíátsa. Szállítsa ki először azt.");
@@ -86,6 +92,7 @@ public class EmplyoeeController {
 			model.addAttribute("distance", resultPair.getFirst().getFirst());
 			model.addAttribute("orderList", resultPair.getSecond());
 			model.addAttribute("deliveryDone", ds.findDeliveryById(deliveryId).isDone());
+			model.addAttribute("apiKey", GOOGLE_API_KEY);
 		} catch (NoSuchElementException nsee) {
 			model.addAttribute("error", "A kiszállítás (" + deliveryId + ") nem létezik");
 		}catch (Exception e) {

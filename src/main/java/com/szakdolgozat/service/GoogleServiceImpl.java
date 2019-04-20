@@ -44,6 +44,9 @@ public class GoogleServiceImpl implements GoogleService{
 		if(jsNode == null || jsNode.isNull()) {
 			return false;
 		}
+		if(jsNode.findValue("location_type") == null) {
+			return false;
+		}
 		String locationType = jsNode.findValue("location_type").asText();
 		return locationType.equalsIgnoreCase("ROOFTOP");
 	}

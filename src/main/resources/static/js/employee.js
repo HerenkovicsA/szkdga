@@ -4,6 +4,7 @@ $(document).ready(function() {
 	checkIfAllIsDone();
 	bindListeners();
 	fixValues();
+	hideFirstBtn();
 });
 
 function bindListeners() {
@@ -22,6 +23,10 @@ function bindListeners() {
 	
 	$('.orderButton').click(function(event) {
 		orderButton(event);
+	});
+	
+	$('.mapButton').click(function(event) {
+		openMapModal(event);
 	});
 }
 
@@ -154,4 +159,22 @@ function editValue(value) {
 		value += ".0 Ft";
 	}
 	return value;
+}
+
+function openMapModal(event) {
+	var button = $(event.target);
+	var destination = $(button.parent().parent().find(".orderAddress")).text();
+	var origin = $(button.parent().parent().prev().find(".orderAddress")).text();
+	var mapFrame = $('#mapFrame');
+	console.log(button);
+	var url = "https://www.google.com/maps/embed/v1/directions?origin=" + origin 
+		+ "&destination=" + destination + "&key=" + button.data('key');
+	mapFrame.attr("src", url);
+}
+
+function hideFirstBtn() {
+	var table = $('#deliveryOrderTable')
+	if(table[0]) {
+		$(table.find('.mapButton')[0]).hide();
+	}
 }

@@ -24,3 +24,16 @@
 .mainButtonsDiv{
 	text-align:middle;
 }
+.m-d{
+	height:90%;
+}
+.m-c{
+	height:100%;
+}
+#mapFrame{
+	height:100%;
+	width:100%;
+}
+.cb{
+	text-align:center;
+}

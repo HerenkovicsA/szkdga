@@ -65,7 +65,8 @@ public class RegistrationController {
 		}
 		if(!gs.validateAddress(user.getFullAddress())) {
 			log.warn("Address is probably not valid");
-			model.addAttribute("invalidAddress", "A cím: " + user.getFullAddress() + " nem biztos, hogy létezik");
+			model.addAttribute("invalidAddress", "A cím: " + user.getFullAddress() + " nem biztos, hogy létezik. Kérem ellenőrizze, hogy nem írt el"
+					+ "valamit. (pl. 'ut'-at írt 'út' vagy 'utca' helyett)");
 			return "auth/registration";
 		}
 		int result = us.registerUser(user);

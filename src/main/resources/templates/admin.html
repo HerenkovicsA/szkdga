@@ -165,8 +165,10 @@
 							<td th:text="${order.user.name}">user</td>
 							<td th:text="${order.done}?'kézbesítve':'várakozik'">kész</td>
 							<td class="orderValue" th:text="${order.value} + ' Ft'">érték</td>
-							<td><a th:href="@{/admin/deliveries(d,deliveryId=${order.delivery != null && order.delivery.id != null}?${order.delivery.id}:'')}"
-								 th:text="${order.delivery != null && order.delivery.id != null}?'Kiszállítás':'Még nincs kiszállításon'">Kiszállítás</a></td>
+							<td th:if="${order.delivery != null && order.delivery.id != null}">
+								<a th:href="@{/admin/deliveries(d,deliveryId=${order.delivery.id})}">Kiszállítás</a>
+							</td>
+							<td th:if="${order.delivery == null || order.delivery.id == null}">Nincs még kiszállításon</td>
 							<td><a th:href="@{/admin/products(p,orderId=${order.id})}">Termékek</a></td>
 							<td><button th:if="${order.delivery == null}" th:attr="data-id=${order.id}, data-userId=${order.user.id}, data-deadLine=${order.deadLine},
 								data-done=${order.done}, data-value=${order.value}"
