@@ -49,7 +49,8 @@ function allIsReady(event) {
 
 function orderCheckDone(event) {
 	var orderCheckBox = $(event.target);
-	var id = orderCheckBox.prop("class").substring(0,2).trim();
+	var clazz = orderCheckBox.prop("class");
+	var id = clazz.substring(0,clazz.indexOf(" ")).trim();
 	var checked = orderCheckBox.prop("checked");
 	$.post("/employee/orderIsDone?orderId=" + id + "&b=" + checked, "_csrf=" + token);
 	checkIfAllIsDone();

@@ -488,6 +488,9 @@ function deliveryButton(event) {
 
 				});
 				orderTable.append("</tbody>");
+				if(button.data('done')) {
+					$('.deleteBox').prop("disabled", true);
+				}
 			}	
 		},
 		error : function(ex) {
@@ -504,7 +507,8 @@ function submitDelivery(event){
     var orders = [];
     
     for(var i = 0; i < deleteBoxes.length; i++) {
-    	orders[i] = $(deleteBoxes[i]).prop("class").charAt(0) + ";" + $(deadLines[i]).val() + ";"
+    	var clazz = $(deleteBoxes[i]).prop("class");
+    	orders[i] = clazz.substring(0, clazz.indexOf(" ")).trim() + ";" + $(deadLines[i]).val() + ";"
     		+ $(orderDone[i]).prop("checked") + ";" + $(deleteBoxes[i]).prop("checked"); 
     }
     
