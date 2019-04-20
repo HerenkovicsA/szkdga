@@ -184,6 +184,7 @@ function userButton(event){
 	$('#address').val(button.data('address'));
 	$('#houseNumber').val(button.data('housenumber'));
 	$('#role').val(button.data('role'));
+	$('#modal-header-text').text("Szerkesztés");
 }
 
 function submitUser(event) {
@@ -258,6 +259,7 @@ function addProduct(event){
 	$('#pathToPicture').val('');
 	$('#picture').attr('required','required');
 	$('#submitAddProduct').val('Hozzáad');
+	$('#modal-header-text').text("Új termék");
 	$('#infoPicEdit').attr('hidden','hidden');
 }
 
@@ -273,6 +275,7 @@ function productButton(event){
 	$('#pathToPicture').val(button.data('pathtopicture'));
 	$('#picture').removeAttr('required');
 	$('#submitAddProduct').val('Módosít');
+	$('#modal-header-text').text("Szerkesztés");
 	$('#infoPicEdit').removeAttr('hidden');
 }
 
