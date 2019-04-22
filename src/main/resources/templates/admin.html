@@ -187,7 +187,7 @@
 							</tr>
 						</thead>
 						<tbody>
-							<tr th:each="delivery : ${deliveryList}">
+							<tr th:each="delivery : ${deliveryList}" th:if="${delivery.deliveryDate}">
 								<td th:text="${delivery.employee} != null? ${delivery.employee.name} : 'Nincs még kiszállító'">munkás</td>
 								<td th:text="${delivery.deliveryDate}">kiszállítás napja</td>
 								<td th:text="${delivery.done}?'Kész':'Várakozik'">N/A</td>

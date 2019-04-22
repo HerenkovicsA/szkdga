@@ -215,16 +215,18 @@ public class DeliveryServiceImpl implements DeliveryService{
 		if(map.isEmpty()) log.error("Map is empty");
 		Delivery deliveryToEdit = dr.findById(Long.valueOf(map.get("deliveryId").toString())).get();
 		deliveryToEdit.setDone(Boolean.parseBoolean(map.get("done").toString()));
-		if(deliveryToEdit.getEmployee() == null && !map.get("employeeId").toString().isEmpty()
-				|| deliveryToEdit.getEmployee().getId() != Long.parseLong(map.get("employeeId").toString())) {
-			User newEmployee;
-			try {
-				newEmployee = us.findUserById(Long.parseLong(map.get("employeeId").toString()));
-				deliveryToEdit.setEmployee(newEmployee);
-			} catch (Exception e) {
-				log.error(e.getMessage());
-			}			
-		}
+		if(map.get("employeeId") != null) {
+			if(deliveryToEdit.getEmployee() == null && !map.get("employeeId").toString().isEmpty()
+					|| deliveryToEdit.getEmployee() != null	&& deliveryToEdit.getEmployee().getId() != Long.parseLong(map.get("employeeId").toString())) {
+				User newEmployee;
+				try {
+					newEmployee = us.findUserById(Long.parseLong(map.get("employeeId").toString()));
+					deliveryToEdit.setEmployee(newEmployee);
+				} catch (Exception e) {
+					log.error(e.getMessage());
+				}			
+			}
+		} 
 		String[] fullDate = map.get("deliveryDate").toString().split("-");
 		int year = Integer.parseInt(fullDate[0]);
 		int month = Integer.parseInt(fullDate[1]);
@@ -261,10 +263,17 @@ public class DeliveryServiceImpl implements DeliveryService{
 			User employee = deliveryToEdit.getEmployee();
 			
 			deleteDelivery(deliveryToEdit.getId());
+			Thread delMakerThread = new Thread(() -> {
+				Delivery newDelivery = new Delivery();
+				newDelivery = dr.save(newDelivery);
+				try {
+					makeDelivery(orderList, newDelivery, employee);
+				} catch (Exception e) {
+					log.error(e.getMessage());
+				}
+			});
+			delMakerThread.start();
 			
-			Delivery newDelivery = new Delivery();
-			newDelivery = dr.save(newDelivery);
-			makeDelivery(orderList, newDelivery, employee);
 		} else {
 			dr.save(deliveryToEdit);
 		}
