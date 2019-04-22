@@ -10,6 +10,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.transaction.Transactional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,6 +160,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 	}
 
 	@Override
+	@Transactional
 	public String deleteDelivery(long id) {
 		Optional<Delivery> deliveryToRemove = dr.findById(id);
 		if(deliveryToRemove.isPresent()) {
@@ -183,8 +186,9 @@ public class DeliveryServiceImpl implements DeliveryService{
 			Set<Delivery> deliverySet = employee.getDeliveriesOfEmployee();
 			if(deliverySet.contains(deliveryToRemove)) {
 				deliverySet.remove(deliveryToRemove);
-				employee.setDeliveriesOfEmployee(deliverySet);
-			} else log.error("Delivery with " + deliveryToRemove.getId() + " id does not belongs to employee " + employee.getName());
+			} else {
+				log.error("Delivery with " + deliveryToRemove.getId() + " id does not belongs to employee " + employee.getName());
+			}
 		}
 	}
 
@@ -206,11 +210,13 @@ public class DeliveryServiceImpl implements DeliveryService{
 	}
 
 	@Override
-	public void editDelivery(Map<Object, Object> map) {
+	public void editDelivery(Map<Object, Object> map) throws Exception {
+		boolean deleted = false;
 		if(map.isEmpty()) log.error("Map is empty");
 		Delivery deliveryToEdit = dr.findById(Long.valueOf(map.get("deliveryId").toString())).get();
 		deliveryToEdit.setDone(Boolean.parseBoolean(map.get("done").toString()));
-		if(deliveryToEdit.getEmployee().getId() != Long.parseLong(map.get("employeeId").toString())) {
+		if(deliveryToEdit.getEmployee() == null && !map.get("employeeId").toString().isEmpty()
+				|| deliveryToEdit.getEmployee().getId() != Long.parseLong(map.get("employeeId").toString())) {
 			User newEmployee;
 			try {
 				newEmployee = us.findUserById(Long.parseLong(map.get("employeeId").toString()));
@@ -230,10 +236,11 @@ public class DeliveryServiceImpl implements DeliveryService{
 			orderArrayInfo = orderInfo.split(";");
 			
 			if(Boolean.parseBoolean(orderArrayInfo[3])) {
-				if(os.deleteOrder(Long.parseLong(orderArrayInfo[0])).equals("not exists")) {
-					log.error("Order with " + orderArrayInfo[0] + " id does not exists");
+				if(os.deleteOrderFromDelivery(Long.parseLong(orderArrayInfo[0]), deliveryToEdit)) {
+					deleted = true;
+					log.info("Order with " + orderArrayInfo[0] + " id is removed from delivery");
 				} else {
-					log.info("Order with " + orderArrayInfo[0] + " id is deleted from database");
+					log.error("Order with " + orderArrayInfo[0] + " id does not exists");
 				}				
 			}else {
 				Set<Order> orders = deliveryToEdit.getOrdersOfDelivery();
@@ -249,7 +256,18 @@ public class DeliveryServiceImpl implements DeliveryService{
 				}
 			}
 		}
-		dr.save(deliveryToEdit);	
+		if(deleted && !deliveryToEdit.getOrdersOfDelivery().isEmpty()) {
+			List<Order> orderList = new ArrayList<Order>(deliveryToEdit.getOrdersOfDelivery());
+			User employee = deliveryToEdit.getEmployee();
+			
+			deleteDelivery(deliveryToEdit.getId());
+			
+			Delivery newDelivery = new Delivery();
+			newDelivery = dr.save(newDelivery);
+			makeDelivery(orderList, newDelivery, employee);
+		} else {
+			dr.save(deliveryToEdit);
+		}
 	}
 
 	/**
@@ -293,6 +311,10 @@ public class DeliveryServiceImpl implements DeliveryService{
 			return;
 		}
 
+		makeDelivery(orders, newDelivery, null);
+	}
+	
+	private void makeDelivery(List<Order> orders, Delivery newDelivery, User employee) throws Exception {
 		orders.add(0, getFakeOrder());
 		
 		String[] addresses = new String[orders.size()];
@@ -304,7 +326,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 			deleteDelivery(newDelivery.getId());
 			throw new Exception("Creating was unsuccessful");
 		}
-		createNewDelivery(orders,resultPair.getFirst(),createOrderStringForDelivery(resultPair.getSecond()), newDelivery);
+		createNewDelivery(orders,resultPair.getFirst(),createOrderStringForDelivery(resultPair.getSecond()), newDelivery, employee);
 	}
 	
 	@Override
@@ -341,14 +363,15 @@ public class DeliveryServiceImpl implements DeliveryService{
 	}
 
 	/**
-	 * Edits and saves the new delivery from the params with no employee
+	 * Edits and saves the new delivery from the params
 	 * @param orders : list of orders to give to the delivery
 	 * @param distance
 	 * @param deliverOrder :  order to follow when delivering the orders
 	 * @param newDelivery : the delivery to be saved
+	 * @param employee
 	 */
-	private void createNewDelivery(List<Order> orders, Double distance, String deliverOrder, Delivery newDelivery) {
-		createNewDelivery(orders, null, distance, deliverOrder, newDelivery);
+	private void createNewDelivery(List<Order> orders, Double distance, String deliverOrder, Delivery newDelivery, User employee) {
+		createNewDelivery(orders, employee, distance, deliverOrder, newDelivery);
 	}
 	
 	/**
@@ -372,7 +395,6 @@ public class DeliveryServiceImpl implements DeliveryService{
 	 */
 	private void createNewDelivery(List<Order> orders, User employee, Double distance, String deliverOrder,Delivery newDelivery) {
 		orders.remove(0);
-		long startTime = System.currentTimeMillis();
 		newDelivery.setEmployee(employee);
 		if(employee != null) {
 			employee.addToDelvierisOfEmployee(newDelivery);
@@ -390,8 +412,6 @@ public class DeliveryServiceImpl implements DeliveryService{
 		newDelivery.setDistance(distance);
 		newDelivery.setDeliveryOrder(deliverOrder);
 		dr.save(newDelivery);
-		long stopTime = System.currentTimeMillis();
-		log.info("createNewDelivery took: " + (stopTime - startTime) + " ms");
 	}
 	
 	private String createOrderStringForDelivery(List<Order> finalList) {

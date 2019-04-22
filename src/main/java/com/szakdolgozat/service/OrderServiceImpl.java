@@ -162,12 +162,17 @@ public class OrderServiceImpl implements OrderService {
 	private void removeOrderFromDelivery(Order orderToRemove) {
 		Delivery delivery = orderToRemove.getDelivery();
 		if(delivery != null) {
-			Set<Order> orderSet = delivery.getOrdersOfDelivery();
-			if(orderSet.contains(orderToRemove)) {
-				orderSet.remove(orderToRemove);
-				delivery.setOrdersOfDelivery(orderSet);
-			} else log.error("Order with " + orderToRemove.getId() + " does not belong to delivery with: " + delivery.getId() + " id");
+			removeOrderFromDelivery(orderToRemove, delivery);
 		}		
+	}
+	
+	private void removeOrderFromDelivery(Order orderToRemove, Delivery delivery) {
+		Set<Order> orderSet = delivery.getOrdersOfDelivery();
+		if(orderSet.contains(orderToRemove)) {
+			orderSet.remove(orderToRemove);
+		} else { 
+			log.error("Order with " + orderToRemove.getId() + " does not belong to delivery with: " + delivery.getId() + " id");
+		}
 	}
 
 	@Override
@@ -420,6 +425,18 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 		
+	}
+
+	@Override
+	public boolean deleteOrderFromDelivery(long id, Delivery delivery) {
+		Order order = getOrderById(id);
+		if(order == null) {
+			return false;
+		}
+		removeOrderFromDelivery(order, delivery);
+		order.setDelivery(null);
+		or.save(order);
+		return true;
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.szakdolgozat.contoller;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -341,7 +340,7 @@ public class AdminController {
 			ds.editDelivery(map);
 		} catch (Exception e) {
 			log.error(e.getMessage());
-			return "FAIL";
+			return "redirect:/error";
 		}
 		return "admin";
 	}

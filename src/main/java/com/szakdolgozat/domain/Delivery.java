@@ -88,7 +88,8 @@ public class Delivery implements Serializable{
 	}
 
 	public void setOrdersOfDelivery(Set<Order> ordersOfDelivery) {
-		this.ordersOfDelivery = ordersOfDelivery;
+		this.ordersOfDelivery.clear();
+		this.ordersOfDelivery.addAll(ordersOfDelivery);
 	}
 	
 	public String getDeliveryOrder() {

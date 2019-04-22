@@ -59,4 +59,6 @@ public interface OrderService {
 	public boolean hasUrgentOrder();
 
 	public String deleteProductFromOrder(long productId, long orderId);
+
+	public boolean deleteOrderFromDelivery(long parseLong, Delivery deliveryToEdit);
 }

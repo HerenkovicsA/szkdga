@@ -333,11 +333,9 @@ function orderButton(event) {
 					orderTable.append(row.replace("{name}",value.name).replace("{price}",value.price)
 							.replace("{quantity}",value.quantity).replace(new RegExp("{id}","g"),value.id));
 					$( "." + value.id + ".deleteBox" ).change(function(event) {
-						console.log("deletbox");
 						updateSummOnOrderModal(event);
 					});
 					$( "." + value.id + ".quantity" ).change(function(event) {
-						console.log("quantity");
 						updateSummOnOrderModal(event);
 					});
 				});
@@ -507,8 +505,7 @@ function submitDelivery(event){
     var orders = [];
     
     for(var i = 0; i < deleteBoxes.length; i++) {
-    	var clazz = $(deleteBoxes[i]).prop("class");
-    	orders[i] = clazz.substring(0, clazz.indexOf(" ")).trim() + ";" + $(deadLines[i]).val() + ";"
+    	orders[i] = getId($(deleteBoxes[i]).prop("class")) + ";" + $(deadLines[i]).val() + ";"
     		+ $(orderDone[i]).prop("checked") + ";" + $(deleteBoxes[i]).prop("checked"); 
     }
     

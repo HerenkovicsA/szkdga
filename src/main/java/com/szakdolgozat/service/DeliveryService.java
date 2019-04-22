@@ -20,7 +20,7 @@ public interface DeliveryService {
 
 	public Map<String, Order> getOrderOfDelivery(long deliveryId) throws Exception;
 
-	public void editDelivery(Map<Object, Object> map);
+	public void editDelivery(Map<Object, Object> map) throws Exception;
 
 	public Pair<Double, List<Order>> getNewDeliveryForEmployee(String email) throws Exception;
 

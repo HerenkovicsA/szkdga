@@ -193,6 +193,7 @@ public class User implements Serializable{
 	}
 
 	public void setDeliveriesOfEmployee(Set<Delivery> deliveriesOfEmployee) {
+		this.deliveriesOfEmployee.clear();
 		this.deliveriesOfEmployee = deliveriesOfEmployee;
 	}
 
