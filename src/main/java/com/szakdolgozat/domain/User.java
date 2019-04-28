@@ -50,7 +50,7 @@ public class User implements Serializable{
 	@DateTimeFormat(pattern="yyyy-MM-dd")
 	private LocalDate birthday;
 	@Column(nullable = false)
-	@Email(message = "Email cím csak valid cím lehet (valami@valami.valami).")
+	@Email(message = "Email cím csak érvényes cím lehet (valami@valami.valami).")
 	private String email;
 	@Column(name = "phone_number", nullable = false)
 	@Pattern(regexp = "([237]0\\d{7}+)|(\\d{8}+)", message = "Mobil: 20 vagy 30 vagy 70 -el kell kezdődnie, "
