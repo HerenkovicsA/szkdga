@@ -8,7 +8,7 @@ public interface GoogleService {
 	 * @param destination
 	 * @return if 0 there was a problem with the requests. Otherwise returns the distance in meters.
 	 */
-	int getDistance(boolean askGoogle, String origin, String destination) throws Exception;
+	int getDistance(String origin, String destination) throws Exception;
 	
 	boolean validateAddress(String address);
 }

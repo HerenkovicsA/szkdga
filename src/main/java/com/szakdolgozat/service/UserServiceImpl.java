@@ -1,9 +1,7 @@
 package com.szakdolgozat.service;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,20 +12,14 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.comparator.Comparators;
 
-import com.szakdolgozat.repository.RoleRepository;
-import com.szakdolgozat.service.UserDetailsImpl;
 import com.szakdolgozat.domain.Delivery;
 import com.szakdolgozat.domain.Order;
-import com.szakdolgozat.domain.Product;
-import com.szakdolgozat.domain.ProductsToOrders;
 import com.szakdolgozat.domain.Role;
 import com.szakdolgozat.domain.User;
 import com.szakdolgozat.repository.UserRepository;
@@ -40,7 +32,6 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	private BCryptPasswordEncoder passwordEncoder;
 
 	private final String USER_ROLE = "USER";
-	private final String ADMIN_ROLE = "ADMIN";
 	private final String EMPLOYEE_ROLE = "EMPLOYEE";
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -64,10 +55,6 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 		this.passwordEncoder = passwordEncoder;
 	}
 
-	public void createUser(User user){
-		userRepo.save(user);
-	}
-
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		User user = findByEmail(username);
@@ -76,11 +63,6 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 		}
 
 		return new UserDetailsImpl(user);
-	}
-
-	@Override
-	public User findByName(String name) {
-		return userRepo.findByName(name);
 	}
 	
 	@Override
@@ -98,15 +80,6 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 		userRepo.save(userToRegister);
 
 		return 1;
-	}
-
-	@Override
-	public void encodeExistingUserPassword() {
-		Iterable<User> users = userRepo.findAll();
-		for (User user : users) {
-			user.setPassword(passwordEncoder.encode(user.getPassword()));
-			userRepo.save(user);
-		}
 	}
 
 	@Override

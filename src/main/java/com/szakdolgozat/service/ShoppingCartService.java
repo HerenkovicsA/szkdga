@@ -14,8 +14,6 @@ public interface ShoppingCartService {
 
 	String changeAmount(long productId, int quantity, String email);
 
-	String makeAnOrder(String name);
-
 	/**
 	 * Creates orders for the user from the products in the cart.
 	 * @return <b>string</b>

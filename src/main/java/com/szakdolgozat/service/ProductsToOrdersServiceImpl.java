@@ -12,8 +12,6 @@ import org.springframework.stereotype.Service;
 import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.domain.ProductsToOrders;
-import com.szakdolgozat.repository.OrderRepository;
-import com.szakdolgozat.repository.ProductRepository;
 import com.szakdolgozat.repository.ProductsToOrdersRepository;
 
 @Service
@@ -43,15 +41,6 @@ public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 		removeProductsToOrdersFromOrder(ptoToRemove, order);
 		removeProductsToOrdersFromProducts(ptoToRemove, product);
 		ptor.delete(ptoToRemove);
-	}
-
-	@Override
-	public ProductsToOrders findByOrderAndProduct(long orderId, long productId) throws Exception {
-		Order order = os.getOrderById(orderId);
-		if(order == null) throw new Exception("Order not found");
-		Product product = ps.getProductById(productId);
-		if(product == null) throw new Exception("Product not found");
-		return ptor.findByOrderAndProduct(order, product);
 	}
 
 	private void removeProductsToOrdersFromOrder(ProductsToOrders ptoToRemove, Order order) {

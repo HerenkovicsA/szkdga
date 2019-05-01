@@ -25,14 +25,13 @@ public class GoogleServiceImpl implements GoogleService{
 	
 	/**
 	 * Get distance between two addresses from Google API.
-	 * @param askGoogle
 	 * @param origin
 	 * @param destination
 	 * @return if 0 there was a problem with the requests. Otherwise returns the distance in meters.
 	 */
 	@Override
-	public int getDistance(boolean askGoogle, String origin, String destination) throws Exception{
-		JsonNode jsNode = getDistanceJson(askGoogle, origin, destination);
+	public int getDistance(String origin, String destination) throws Exception{
+		JsonNode jsNode = getDistanceJson(origin, destination);
 		if(jsNode == null || jsNode.isNull()) throw new Exception("Problem while using distance API");
 		int distance = jsNode.findValue("distance").findValue("value").asInt();
 		return distance;
@@ -57,7 +56,7 @@ public class GoogleServiceImpl implements GoogleService{
     	return doGet(url);
 	}
 
-	private JsonNode getDistanceJson(boolean askGoogle, String origin, String destination) {
+	private JsonNode getDistanceJson(String origin, String destination) {
 		String from = formAddressForUrl(origin);
 		String to = formAddressForUrl(destination);
 		String url = DISTANCES_MATRIX_API + "origins=" + from + "&destinations=" + to + "&key=" + API_KEY;

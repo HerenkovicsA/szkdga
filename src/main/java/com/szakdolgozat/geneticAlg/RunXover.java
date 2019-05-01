@@ -3,7 +3,6 @@ package com.szakdolgozat.geneticAlg;
 public class RunXover implements Runnable{
 
 	private Chromosome offspring1;
-	private Chromosome offspring2;
 	private Crossover xover;
 	private Population pop;
 	private Population newPop;
@@ -13,7 +12,6 @@ public class RunXover implements Runnable{
 
 	public RunXover(Crossover xover, Population pop, Population newPop, int[][] citiesDistances, int j) {
 		this.offspring1 = new Chromosome();
-		this.offspring2 = new Chromosome();
 		this.xover = xover;
 		this.pop = pop;
 		this.newPop = newPop;

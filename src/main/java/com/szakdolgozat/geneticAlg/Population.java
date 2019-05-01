@@ -47,7 +47,7 @@ public class Population {
 		
 	}
 	//summ the overall fitness in the population
-	public void summFitness() {
+	private void summFitness() {
 		for (Iterator iterator = pop.iterator(); iterator.hasNext();) {
 			Chromosome chromosome = (Chromosome) iterator.next();
 			this.fitnessSum += chromosome.getFitness();

@@ -243,13 +243,6 @@ public class OrderServiceImpl implements OrderService {
 			ptos.updatePtO(pto);
 		}
 	}
-
-	@Override
-	public List<Order> findOrdersForDelivery() {
-		List<Order> orderList = or.findTop20ByDoneFalseAndDeliveryIsNullOrderByDeadLineAsc();
-		if(orderList == null || orderList.isEmpty()) return null;
-		return orderList;
-	}
 	
 	@Override
 	public List<Order> findOrdersForDelivery2(Double cargoSize, double cargoLimit, Delivery delivery) {

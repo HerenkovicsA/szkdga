@@ -70,8 +70,6 @@ function fillFormForUser() {
 			url : "/getLogedUser", 
 			data : "_csrf=" + token,
 			success : function(response) {
-				console.log(response.id);
-				console.log($("#id"));
 				$("#address").val(response.address);
 				$("#birthday").val(fixTimeZone(response.birthday));
 				$("#city").val(response.city);
@@ -118,12 +116,10 @@ function checkForMinSize() {
 
 function hideFooter() {
 	$('.footer').slideDown();
-	console.log("out");
 }
 
 function showFooter() {
 	$('.footer').slideUp();
-	console.log("in");
 }
 
 function addToCart(event) {

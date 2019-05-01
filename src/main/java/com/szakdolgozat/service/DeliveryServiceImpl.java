@@ -15,20 +15,15 @@ import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 
-import com.szakdolgozat.components.ProductAndQuantityResponse;
 import com.szakdolgozat.domain.Delivery;
 import com.szakdolgozat.domain.Order;
-import com.szakdolgozat.domain.Product;
-import com.szakdolgozat.domain.ProductsToOrders;
 import com.szakdolgozat.domain.User;
 import com.szakdolgozat.geneticAlg.CandD;
 import com.szakdolgozat.geneticAlg.GenAlgBusiness;
 import com.szakdolgozat.repository.DeliveryRepository;
-import com.szakdolgozat.repository.UserRepository;
-
-import org.springframework.data.util.Pair;
 
 @Service
 public class DeliveryServiceImpl implements DeliveryService{
@@ -43,12 +38,6 @@ public class DeliveryServiceImpl implements DeliveryService{
 	
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 	private final String COMPANYS_ADDRESS = "9026, Győr, Egyetem tér 1.";
-	private final String TEST_STRING = "330.194 km : 9026, Győr, Egyetem tér 1. -> 1064, Budapest Andrássy út 5 -> 1064, Budapest Andrássy út 5 ->"
-			+ " 9099, Pér Szent Imer utca 46 -> 9084, Győrság Ország út 29 -> 9082, Nyúl Táncsics Mihály utca 139 -> 9081, Győrújbarát Veres Péter utca 33 -> "
-			+ "9012, Győr Hegyalja utca 12 -> 9024, Győr Cuha utca 8 -> 9028, Győr József Attila utca 175 -> 9027, Győr Gömb utca 16 -> 9022, Győr Bisinger setany 13 -> "
-			+ "9022, Győr Bisinger setany 13 -> 9022, Győr Bisinger setany 13 -> 9184, Kunsziget Ifjúság utca 13 -> 9153, Öttevény Kossuth utca 23 -> "
-			+ "9152, Börcs Rákóczi Ferenc utca 1 -> 9151, Abda Árpád utca 35 -> 9151, Abda Szent Imre utca 40 -> 9025, Győr Haladás utca 26 -> 9025, Győr Botond utca 5 -> "
-			+ "9026, Győr, Egyetem tér 1.";
 	
 	public DeliveryServiceImpl() {
 	}
@@ -98,11 +87,11 @@ public class DeliveryServiceImpl implements DeliveryService{
 					distanceMatrix[i][j] = 0 ;
 				}else {
 					try {
-						distanceMatrix[i][j] = gs.getDistance(askGoogle, addresses[i], addresses[j]);
+						distanceMatrix[i][j] = gs.getDistance(addresses[i], addresses[j]);
 					} catch (Exception e) {
 						log.warn("Error while getting distance.");
 						try {
-							distanceMatrix[i][j] = gs.getDistance(askGoogle, addresses[i], addresses[j]);
+							distanceMatrix[i][j] = gs.getDistance(addresses[i], addresses[j]);
 						} catch (Exception e1) {
 							log.error("Error happened again. Stop creatin Delivery.");
 							return null;
@@ -112,18 +101,6 @@ public class DeliveryServiceImpl implements DeliveryService{
 				
 			}
 		}
-		
-//		for (int i = 0; i < addresses.length; i++) {
-//			for (int j = i; j < addresses.length; j++) {
-//				if(i==j || addresses[i].equalsIgnoreCase(addresses[j])) {
-//					distanceMatrix[i][j] = 0 ;
-//				}else {
-//					distanceMatrix[i][j] = gs.getDistance(askGoogle, addresses[i], addresses[j]);
-//					distanceMatrix[i][j] = distanceMatrix[j][i];
-//				}
-//				
-//			}
-//		}
 		
 		return new CandD(distanceMatrix, addresses);
 	}
@@ -278,36 +255,6 @@ public class DeliveryServiceImpl implements DeliveryService{
 			dr.save(deliveryToEdit);
 		}
 	}
-
-	/**
-	 * @deprecated Use {@link #newDeliveryForEmployee}
-	 */
-	public Pair<Double, List<Order>> getNewDeliveryForEmployee(String email) throws Exception {
-		User employee = us.findByEmail(email);
-		if(employee == null) {
-			log.error("Employee is not found with email address: " + email);
-			throw new Exception("Employee is not found with email address: " + email);
-		}
-		if(us.hasActiveDelivery(employee)) {
-			log.error("Employee has active delivery");
-			throw new Exception("Employee has active delivery");
-		}
-		List<Order> orders = os.findOrdersForDelivery();
-		if(orders.isEmpty()) {
-			log.error("No free order for delivery");
-			throw new Exception("No free order");
-		}
-		
-		orders.add(0, getFakeOrder());
-		
-		String[] addresses = new String[orders.size()];
-		for (int i = 0; i < orders.size(); i++) {
-			addresses[i] = orders.get(i).getUser().getFullAddress();
-		}
-		Pair<Double, List<Order>> resultPair = getShortestRoute(true, addresses, orders);	
-		createNewDelivery(orders,employee,resultPair.getFirst(),createOrderStringForDelivery(resultPair.getSecond()));
-		return resultPair;
-	}
 	
 	@Override
 	public void makeNewDelivery() throws Exception{
@@ -381,17 +328,6 @@ public class DeliveryServiceImpl implements DeliveryService{
 	 */
 	private void createNewDelivery(List<Order> orders, Double distance, String deliverOrder, Delivery newDelivery, User employee) {
 		createNewDelivery(orders, employee, distance, deliverOrder, newDelivery);
-	}
-	
-	/**
-	 * Creates the new delivery from the params
-	 * @param orders : list of orders to give to the delivery
-	 * @param employee
-	 * @param distance
-	 * @param deliverOrder :  order to follow when delivering the orders
-	 */
-	private void createNewDelivery(List<Order> orders, User employee, Double distance, String deliverOrder) {
-		createNewDelivery(orders, employee, distance, deliverOrder, new Delivery());
 	}
 	
 	/**

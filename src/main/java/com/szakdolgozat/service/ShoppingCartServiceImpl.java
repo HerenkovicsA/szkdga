@@ -98,21 +98,6 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 		log.error("Couldn't change product's amount");
 		return "error";
 	}
-
-	@Override
-	public String makeAnOrder(String email) {
-		ShoppingCart cart = getCart(email);
-		if(!cart.getItems().isEmpty()) {
-			String result = os.makeAnOrder(email, cart.getItems());
-			if(result.equals("ok")) {
-				cart.emptyCart();
-			}
-			return result;
-		}
-		log.error("The cart is empty");
-		return "Nincs semmi a kocsiban";
-		
-	}
 	
 	@Override
 	public String makeOrders(String email) {
@@ -227,7 +212,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 				break;
 			}
 		}
-		if(!placed) {//if the product does'n fit in any order than make a new one
+		if(!placed) {//if the product doesn't fit in any order than make a new one
 			order = new HashMap<Product, Integer>();
 			order.put(product, amountOfProd);
 			orderList.add(order);

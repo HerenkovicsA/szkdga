@@ -1,6 +1,5 @@
 package com.szakdolgozat.service;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.szakdolgozat.domain.Order;
 import com.szakdolgozat.domain.Product;
 import com.szakdolgozat.repository.ProductRepository;
 
@@ -33,32 +31,6 @@ public class ProductServiceImpl implements ProductService {
 		}
 		if(productList.isEmpty()) throw new Exception("No product found!");
 		return productList;
-	}
-
-	@Override
-	public void addOrEditProduct(Product product, String pathToFile) {
-		String env = System.getProperty("environment");
-		String imgStorePlace = System.getProperty("environment");
-		Optional<Product> optProd = pr.findById(product.getId());
-		Product productToSave;
-		if(optProd.isPresent()) {
-			productToSave = optProd.get();
-		} else {
-			productToSave = new Product();
-		}
-		if(pathToFile == null) {
-			productToSave.setPathToPicture(product.getPathToPicture());
-		}else {
-			if(env.equals("test")) {
-				int lastSepChar = pathToFile.lastIndexOf(File.separatorChar);
-				pathToFile = "\\images" + pathToFile.substring(lastSepChar);
-			}
-			productToSave.setPathToPicture(pathToFile);
-		}			
-		productToSave.setName(product.getName());
-		productToSave.setOnStock(product.getOnStock());
-		productToSave.setPrice(product.getPrice());
-		pr.save(productToSave);
 	}
 
 	@Override

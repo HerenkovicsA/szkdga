@@ -22,8 +22,6 @@ public interface DeliveryService {
 
 	public void editDelivery(Map<Object, Object> map) throws Exception;
 
-	public Pair<Double, List<Order>> getNewDeliveryForEmployee(String email) throws Exception;
-
 	public Set<Delivery> getAllDeliveryForEmployee(String email);
 
 	/**

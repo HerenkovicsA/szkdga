@@ -55,19 +55,17 @@ public class AdminController {
 	private OrderService os;
 	private DeliveryService ds;
 	private PostCodeService pcs;
-	private StoreFileService sfs;
 	private GoogleService gs;
 	private ServletContext context;
 	
 	@Autowired
 	public AdminController(UserService us, ProductService ps, OrderService os, DeliveryService ds, PostCodeService pcs,
-			StoreFileService sfs, GoogleService gs, ServletContext context) {
+			GoogleService gs, ServletContext context) {
 		this.us = us;
 		this.ps = ps;
 		this.os = os;
 		this.ds = ds;
 		this.pcs = pcs;
-		this.sfs = sfs;
 		this.gs = gs;
 		this.context = context;
 	}

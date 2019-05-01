@@ -37,7 +37,6 @@ function allIsReady(event) {
 		url : "/employee/deliveryIsDone?deliveryId=" + id, 
 		data : "_csrf=" + token,
 		success : function(response) {
-			console.log(window.location);
 			console.log(response);
 			window.location = window.location.origin + response;
 		},
@@ -92,7 +91,6 @@ function orderButton(event) {
 				orderTable.append("<thead><tr><th scope='col'>Név</th><th scope='col'>Ár</th><th>Mennyiség</th></tr></thead><tbody>");
 				var row = "<tr><td>{name}</td><td>{price}</td><td>{quantity}</td></tr>";
 				$.each(response, function(number, value) {
-					console.log(value);
 					orderTable.append(row.replace("{name}",value.name).replace("{price}",value.price)
 							.replace("{quantity}",value.quantity));
 				});
@@ -147,7 +145,6 @@ function fixValues() {
 }
 
 function editValue(value) {
-	console.log(value);
 	if(value.indexOf('E') >= 0) {
 		value = value.slice(0,-3);
 		var numbers = value.indexOf('E') - value.indexOf('.') -1;
@@ -167,7 +164,6 @@ function openMapModal(event) {
 	var destination = $(button.parent().parent().find(".orderAddress")).text();
 	var origin = $(button.parent().parent().prev().find(".orderAddress")).text();
 	var mapFrame = $('#mapFrame');
-	console.log(button);
 	var url = "https://www.google.com/maps/embed/v1/directions?origin=" + origin 
 		+ "&destination=" + destination + "&key=" + button.data('key');
 	mapFrame.attr("src", url);

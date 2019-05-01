@@ -26,8 +26,6 @@ public interface OrderService {
 	public List<ProductAndQuantityResponse> getProductsOfOrderList(long orderId) throws Exception;
 
 	public void editOrder(Map<Object, Object> map);
-
-	public List<Order> findOrdersForDelivery();
 	
 	/** 
 	 * @param cargoSize
