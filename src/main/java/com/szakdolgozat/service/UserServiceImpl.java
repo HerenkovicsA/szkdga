@@ -31,10 +31,10 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 	private RoleService roleService;
 	private BCryptPasswordEncoder passwordEncoder;
 
-	private final String USER_ROLE = "USER";
-	private final String EMPLOYEE_ROLE = "EMPLOYEE";
+	private static final String USER_ROLE = "USER";
+	private static final String EMPLOYEE_ROLE = "EMPLOYEE";
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(UserServiceImpl.class);
 	
 	public UserServiceImpl() {
 		
@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 		if(userSet.contains(userToRemove)) {
 			userSet.remove(userToRemove);
 			role.setUsersWithRole(userSet);
-		} else log.error("User " + userToRemove.getName() + " does not have role: " + role.getName());
+		} else LOG.error("User " + userToRemove.getName() + " does not have role: " + role.getName());
 	}
 
 	@Override
@@ -197,7 +197,7 @@ public class UserServiceImpl implements UserService, UserDetailsService{
 			orderList.sort((Order o1, Order o2) -> o2.getDeadLine().compareTo(o1.getDeadLine()));
 			return orderList;
 		} catch (Exception e) {
-			log.warn(e.getMessage());
+			LOG.warn(e.getMessage());
 			return null;
 		}
 	}

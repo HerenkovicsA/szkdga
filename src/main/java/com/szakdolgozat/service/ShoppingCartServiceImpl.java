@@ -18,14 +18,14 @@ import com.szakdolgozat.domain.Product;
 @Service
 public class ShoppingCartServiceImpl implements ShoppingCartService {
 
-	private final Double CARGO_SIZE = 14900000D;
+	private static final Double CARGO_SIZE = 14900000D;
 	
 	private ProductService ps;
 	private OrderService os;
 	private DeliveryService ds;
 	private HashMap<String, ShoppingCart> userCartMap;
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(ShoppingCartServiceImpl.class);
 	
 	@Autowired
 	public ShoppingCartServiceImpl(ProductService ps, OrderService os, DeliveryService ds) {
@@ -80,10 +80,10 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 			if(result != null) {
 				return "ok";
 			} else {
-				log.error("Couldn't remove product (" + productId + ")");
+				LOG.error("Couldn't remove product (" + productId + ")");
 			}
 		}
-		log.error("Couldn't find product (" + productId + ")");
+		LOG.error("Couldn't find product (" + productId + ")");
 		return "error";
 	}
 
@@ -95,7 +95,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 			cart.addToCart(product, quantity);
 			return "ok";
 		}
-		log.error("Couldn't change product's amount");
+		LOG.error("Couldn't change product's amount");
 		return "error";
 	}
 	
@@ -130,7 +130,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 			}
 			
 		}
-		log.error("The cart is empty");
+		LOG.error("The cart is empty");
 		return "Nincs semmi a kocsiban";
 		
 	}

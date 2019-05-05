@@ -28,16 +28,16 @@ import com.szakdolgozat.repository.DeliveryRepository;
 @Service
 public class DeliveryServiceImpl implements DeliveryService{
 
-	private final Double CARGO_SIZE = 14900000D;
-	private final double CARGO_LIMIT = 0.7; 
+	private static final Double CARGO_SIZE = 14900000D;
+	private static final double CARGO_LIMIT = 0.7; 
 	
 	private GoogleService gs;
 	private DeliveryRepository dr;
 	private UserService us;
 	private OrderService os;
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	private final String COMPANYS_ADDRESS = "9026, Győr, Egyetem tér 1.";
+	private static final Logger LOG = LoggerFactory.getLogger(DeliveryServiceImpl.class);
+	private static final String COMPANYS_ADDRESS = "9026, Győr, Egyetem tér 1.";
 	
 	public DeliveryServiceImpl() {
 	}
@@ -89,11 +89,11 @@ public class DeliveryServiceImpl implements DeliveryService{
 					try {
 						distanceMatrix[i][j] = gs.getDistance(addresses[i], addresses[j]);
 					} catch (Exception e) {
-						log.warn("Error while getting distance.");
+						LOG.warn("Error while getting distance.");
 						try {
 							distanceMatrix[i][j] = gs.getDistance(addresses[i], addresses[j]);
 						} catch (Exception e1) {
-							log.error("Error happened again. Stop creatin Delivery.");
+							LOG.error("Error happened again. Stop creatin Delivery.");
 							return null;
 						}
 					}
@@ -112,7 +112,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 			return null;
 		}
 		long stopTime = System.currentTimeMillis();
-		log.info("Getting data from Google API took: " + (stopTime - startTime) + " ms");
+		LOG.info("Getting data from Google API took: " + (stopTime - startTime) + " ms");
 		 int popSize = addresses.length * 5;
 		 int iterationMax = addresses.length * addresses.length;
 		GenAlgBusiness gab = new GenAlgBusiness(popSize, iterationMax, popSize/10, orders, cd.getDistances());
@@ -164,7 +164,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 			if(deliverySet.contains(deliveryToRemove)) {
 				deliverySet.remove(deliveryToRemove);
 			} else {
-				log.error("Delivery with " + deliveryToRemove.getId() + " id does not belongs to employee " + employee.getName());
+				LOG.error("Delivery with " + deliveryToRemove.getId() + " id does not belongs to employee " + employee.getName());
 			}
 		}
 	}
@@ -189,7 +189,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 	@Override
 	public void editDelivery(Map<Object, Object> map) throws Exception {
 		boolean deleted = false;
-		if(map.isEmpty()) log.error("Map is empty");
+		if(map.isEmpty()) LOG.error("Map is empty");
 		Delivery deliveryToEdit = dr.findById(Long.valueOf(map.get("deliveryId").toString())).get();
 		deliveryToEdit.setDone(Boolean.parseBoolean(map.get("done").toString()));
 		if(map.get("employeeId") != null) {
@@ -200,7 +200,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 					newEmployee = us.findUserById(Long.parseLong(map.get("employeeId").toString()));
 					deliveryToEdit.setEmployee(newEmployee);
 				} catch (Exception e) {
-					log.error(e.getMessage());
+					LOG.error(e.getMessage());
 				}			
 			}
 		} 
@@ -217,9 +217,9 @@ public class DeliveryServiceImpl implements DeliveryService{
 			if(Boolean.parseBoolean(orderArrayInfo[3])) {
 				if(os.deleteOrderFromDelivery(Long.parseLong(orderArrayInfo[0]), deliveryToEdit)) {
 					deleted = true;
-					log.info("Order with " + orderArrayInfo[0] + " id is removed from delivery");
+					LOG.info("Order with " + orderArrayInfo[0] + " id is removed from delivery");
 				} else {
-					log.error("Order with " + orderArrayInfo[0] + " id does not exists");
+					LOG.error("Order with " + orderArrayInfo[0] + " id does not exists");
 				}				
 			}else {
 				Set<Order> orders = deliveryToEdit.getOrdersOfDelivery();
@@ -246,7 +246,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 				try {
 					makeDelivery(orderList, newDelivery, employee);
 				} catch (Exception e) {
-					log.error(e.getMessage());
+					LOG.error(e.getMessage());
 				}
 			});
 			delMakerThread.start();
@@ -262,7 +262,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 		dr.save(newDelivery);
 		List<Order> orders = os.findOrdersForDelivery2(CARGO_SIZE, CARGO_LIMIT, newDelivery);
 		if(orders == null || orders.isEmpty()) {
-			log.error("No free order for delivery");
+			LOG.error("No free order for delivery");
 			dr.delete(newDelivery);
 			return;
 		}
@@ -289,11 +289,11 @@ public class DeliveryServiceImpl implements DeliveryService{
 	public Pair<Double, List<Order>> newDeliveryForEmployee(String email) throws Exception {
 		User employee = us.findByEmail(email);
 		if(employee == null) {
-			log.error("Employee is not found with email address: " + email);
+			LOG.error("Employee is not found with email address: " + email);
 			throw new Exception("Employee is not found with email address: " + email);
 		}
 		if(us.hasActiveDelivery(employee)) {
-			log.error("Employee has active delivery");
+			LOG.error("Employee has active delivery");
 			throw new Exception("Employee has active delivery");
 		}
 		Delivery delivery = findDeliveryForEmployee();
@@ -402,7 +402,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 				if(order.getId() == id) return order;
 			}
 		}
-		log.error("Order is not found (id=" + id +")");
+		LOG.error("Order is not found (id=" + id +")");
 		throw new Exception("Order is not found");
 	}
 

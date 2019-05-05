@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
 	private ProductsToOrdersService ptos;
 	private ProductService ps;
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(OrderServiceImpl.class);
 	
 	public OrderServiceImpl() {
 
@@ -150,7 +150,7 @@ public class OrderServiceImpl implements OrderService {
 			}
 		}
 		if(!hasChanged) {
-			log.error("Order with " + orderToRemove.getId() + " does not belong to user: " + user.getName());
+			LOG.error("Order with " + orderToRemove.getId() + " does not belong to user: " + user.getName());
 		}else {
 			user.clearOrdersOfUser();
 			for (Order order : newOrderSet) {
@@ -171,7 +171,7 @@ public class OrderServiceImpl implements OrderService {
 		if(orderSet.contains(orderToRemove)) {
 			orderSet.remove(orderToRemove);
 		} else { 
-			log.error("Order with " + orderToRemove.getId() + " does not belong to delivery with: " + delivery.getId() + " id");
+			LOG.error("Order with " + orderToRemove.getId() + " does not belong to delivery with: " + delivery.getId() + " id");
 		}
 	}
 
@@ -190,7 +190,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public void editOrder(Map<Object, Object> map) {
-		if(map.isEmpty()) log.error("Map is empty");
+		if(map.isEmpty()) LOG.error("Map is empty");
 		Order orderToEdit = or.findById(Long.valueOf(map.get("orderId").toString())).get();
 		if(orderToEdit.getUser().getId() != Long.parseLong(map.get("userId").toString())) {
 			User newUser;
@@ -198,7 +198,7 @@ public class OrderServiceImpl implements OrderService {
 				newUser = us.findUserById(Long.parseLong(map.get("userId").toString()));
 				orderToEdit.setUser(newUser);
 			} catch (Exception e) {
-				log.error(e.getMessage());
+				LOG.error(e.getMessage());
 			}
 		}
 		orderToEdit.setValue(Double.parseDouble(map.get("value").toString()));
@@ -218,7 +218,7 @@ public class OrderServiceImpl implements OrderService {
 				try {
 					ptos.deleteByOrderIdAndProductId(Long.valueOf(map.get("orderId").toString()) ,Long.parseLong(productArrayInfo[0]));
 				} catch (Exception e) {
-					log.error(e.getMessage());
+					LOG.error(e.getMessage());
 				}
 				
 			}else {
@@ -366,7 +366,7 @@ public class OrderServiceImpl implements OrderService {
 			volume += order.getVolume();
 		}
 		if(volume >= cargoSize) return true;
-		log.info("There is no enough Order for a delivery. Only (" + volume + ")");
+		LOG.info("There is no enough Order for a delivery. Only (" + volume + ")");
 		return false;
 	}
 

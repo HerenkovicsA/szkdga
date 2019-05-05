@@ -11,8 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class StoreFileServiceImpl implements StoreFileService{
 
-    private final String ENV = System.getProperty("environment");
-    private final Logger LOG = LoggerFactory.getLogger(this.getClass());
+    private static final String ENV = System.getProperty("environment");
+    private static final Logger LOG = LoggerFactory.getLogger(StoreFileServiceImpl.class);
 
     @Override
 	public String store(MultipartFile file, boolean overwrite, String contextPath) {

@@ -48,7 +48,7 @@ import com.szakdolgozat.service.UserService;
 @Controller
 public class AdminController {
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(AdminController.class);
 	
 	private UserService us;
 	private ProductService ps;
@@ -86,7 +86,7 @@ public class AdminController {
 			model.addAttribute("employeeList", us.findAllEmployees());
 			model.addAttribute("user", new User());
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return "admin";
 	}
@@ -97,7 +97,7 @@ public class AdminController {
 			model.addAttribute("userList", us.findAllUsers());
 			model.addAttribute("user", new User());
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return "admin";
 	}
@@ -107,7 +107,7 @@ public class AdminController {
 		try {
 			model.addAttribute("productList", ps.findAll());
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		model.addAttribute("newProduct", new Product());
 		return "admin";
@@ -121,7 +121,7 @@ public class AdminController {
 			model.addAttribute("editedOrder", new Order());
 		} catch (Exception e) {
 			model.addAttribute("orderList", new HashSet());
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return "admin";
 	}
@@ -133,7 +133,7 @@ public class AdminController {
 			model.addAttribute("orderList", os.findOrdersOfDelivery(deliveryId));
 			model.addAttribute("editedOrder", new Order());
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return "admin";
 	}
@@ -144,7 +144,7 @@ public class AdminController {
 		try {
 			model.addAttribute("productsOfOrderList", os.findProductsOfOrder(orderId));
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		model.addAttribute("newProduct", new Product());
 		return "admin";
@@ -156,7 +156,7 @@ public class AdminController {
 		try {
 			model.addAttribute("deliveryList",ds.findDeliveryById(deliveryId));
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return "admin";
 	}
@@ -168,7 +168,7 @@ public class AdminController {
 			model.addAttribute("deliveryList", us.findDeliveriesOfEmployee(employeeId));
 		} catch (Exception e) {
 			model.addAttribute("deliveryList", null);
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return "admin";
 	}
@@ -179,7 +179,7 @@ public class AdminController {
 			model.addAttribute("orderList", os.findAll());
 			model.addAttribute("editedOrder", new Order());
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return "admin";
 	}
@@ -189,7 +189,7 @@ public class AdminController {
 		try {
 			model.addAttribute("deliveryList", ds.findAll());
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return "admin";
 	}
@@ -279,7 +279,7 @@ public class AdminController {
 		try {
 			return us.getAllUserNameAndId(Boolean.parseBoolean(user));
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 			return "error";
 		}
     }
@@ -289,7 +289,7 @@ public class AdminController {
 		try {
 			return os.getProductsOfOrderList(orderId);
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 			return "error";
 		}
     }
@@ -302,7 +302,7 @@ public class AdminController {
 			map = mapper.readValue(request.getParameter("json"), new TypeReference<HashMap>(){});
 			os.editOrder(map);
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 			return "FAIL";
 		}
 		return "admin";
@@ -313,7 +313,7 @@ public class AdminController {
 		try {
 			return ds.getOrderOfDelivery(deliveryId);
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 			return e.getMessage();
 		}
     }
@@ -324,7 +324,7 @@ public class AdminController {
 			model.addAttribute("userList",us.findUserById(userId));
 			model.addAttribute("user", new User());
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return "admin";
     }
@@ -337,7 +337,7 @@ public class AdminController {
 			map = mapper.readValue(request.getParameter("json"), new TypeReference<HashMap>(){});
 			ds.editDelivery(map);
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 			return "redirect:/error";
 		}
 		return "admin";

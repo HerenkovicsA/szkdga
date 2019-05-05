@@ -20,7 +20,7 @@ import org.springframework.web.context.request.WebRequest;
 public class ErrorPageController implements ErrorController {
 	 
 	private static final String ERR_PATH = "/error";
-	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 	private ErrorAttributes errorAttributes;
 	
 	@Autowired
@@ -43,7 +43,7 @@ public class ErrorPageController implements ErrorController {
 			model.addAttribute("error",error.get("error"));
 			model.addAttribute("message","Kérem keresse fel a rendszergazdát a hibával kapcsolatban.");
 		}
-		model.addAttribute("timestamp",LocalDateTime.now().format(formatter));
+		model.addAttribute("timestamp",LocalDateTime.now().format(FORMATTER));
 		model.addAttribute("link",link);
 		
 		return "error";

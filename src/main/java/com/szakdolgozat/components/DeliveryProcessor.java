@@ -8,8 +8,8 @@ import com.szakdolgozat.service.OrderService;
 
 public class DeliveryProcessor implements Runnable {
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
-	private final Double CARGO_SIZE = 14900000D;
+	private static final Logger LOG = LoggerFactory.getLogger(DeliveryProcessor.class);
+	private static final Double CARGO_SIZE = 14900000D;
 	
 	private DeliveryService ds;
 	private OrderService os;
@@ -25,17 +25,17 @@ public class DeliveryProcessor implements Runnable {
 	
 	@Override
 	public void run() {
-		log.info("Starting DeliveryProcessor thread...");
+		LOG.info("Starting DeliveryProcessor thread...");
 		while(os.hasEnoughForOneDelivery(CARGO_SIZE) || os.hasUrgentOrder()) {
-			log.info("Start making new delivery...");
+			LOG.info("Start making new delivery...");
 			try {
 				ds.makeNewDelivery();
 			} catch (Exception e) {
-				log.error("Error while creating delivery. Stoping thread to retry later.\n" + e.getMessage());
+				LOG.error("Error while creating delivery. Stoping thread to retry later.\n" + e.getMessage());
 				break;
 			} 
 		}
-		log.info("Stopping DeliveryProcessor thread...");
+		LOG.info("Stopping DeliveryProcessor thread...");
 	}
 
 }

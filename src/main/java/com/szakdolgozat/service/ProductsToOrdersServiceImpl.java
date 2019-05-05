@@ -21,7 +21,7 @@ public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 	private ProductService ps;
 	private OrderService os;
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(ProductsToOrdersServiceImpl.class);
 	
 	@Autowired
 	public ProductsToOrdersServiceImpl(ProductsToOrdersRepository ptor, ProductService ps, OrderService os) {
@@ -48,7 +48,7 @@ public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 		if(ptoSet.contains(ptoToRemove)) {
 			ptoSet.remove(ptoToRemove);
 			order.setProductsToOrder(ptoSet);
-		} else log.error("ProductsToOrders with " + ptoToRemove.getId() + " id is not belongs to order with " + order.getId() + " id");
+		} else LOG.error("ProductsToOrders with " + ptoToRemove.getId() + " id is not belongs to order with " + order.getId() + " id");
 	}
 	
 	@Override
@@ -59,7 +59,7 @@ public class ProductsToOrdersServiceImpl implements ProductsToOrdersService {
 			product.setProductstoOrder(ptoSet);
 			product.setOnStock(product.getOnStock() + ptoToRemove.getQuantity());
 			ps.saveProduct(product);
-		} else log.error("ProductsToOrders with " + ptoToRemove.getId() + " id is not belongs to order with " + product.getId() + " id");
+		} else LOG.error("ProductsToOrders with " + ptoToRemove.getId() + " id is not belongs to order with " + product.getId() + " id");
 	}
 
 	@Override

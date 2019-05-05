@@ -26,7 +26,7 @@ import com.szakdolgozat.service.UserService;
 @Controller
 public class RegistrationController {
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(RegistrationController.class);
 	
 	private UserService us;
 	private PostCodeService pcs;
@@ -55,23 +55,23 @@ public class RegistrationController {
 		//if returns 0, email address is already in use
 		if(bindingResult.hasErrors())
         {
-			log.warn("There were errors during registration");
+			LOG.warn("There were errors during registration");
             return "auth/registration";
         }		
 		if(!pcs.checkPostCodeAndCity(user.getPostCode(), user.getCity())) {
-			log.debug("City: " + user.getCity() + " and postcode: " + user.getPostCode() + " is not equal");
+			LOG.debug("City: " + user.getCity() + " and postcode: " + user.getPostCode() + " is not equal");
 			model.addAttribute("postCodeError", user.getCity() + " irányítószáma nem: " + user.getPostCode() + " !");
 			return "auth/registration";
 		}
 		if(!gs.validateAddress(user.getFullAddress())) {
-			log.warn("Address is probably not valid");
+			LOG.warn("Address is probably not valid");
 			model.addAttribute("invalidAddress", "A cím: " + user.getFullAddress() + " nem biztos, hogy létezik. Kérem ellenőrizze, hogy nem írt el"
 					+ "valamit. (pl. 'ut'-at írt 'út' vagy 'utca' helyett)");
 			return "auth/registration";
 		}
 		int result = us.registerUser(user);
 		if(result == 0) {
-			log.debug("reg problem: email already exists");
+			LOG.debug("reg problem: email already exists");
 			model.addAttribute("emailError", user.getEmail() + " email cím már létezik");
 			return "auth/registration";
 		}

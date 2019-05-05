@@ -9,7 +9,7 @@ import org.apache.commons.logging.LogFactory;
 
 public class Population {
 	
-	protected Log logger = LogFactory.getLog(this.getClass());
+	private static final Log LOG = LogFactory.getLog(Population.class);
 	
 	private ArrayList<Chromosome> pop;
 	private double fitnessSum = 0;
@@ -42,7 +42,7 @@ public class Population {
 		try {
 			Collections.sort(this.pop);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		
 	}

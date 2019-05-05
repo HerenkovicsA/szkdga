@@ -40,7 +40,7 @@ import com.szakdolgozat.service.UserService;
 @Controller
 public class HomeController {
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(HomeController.class);
 	
 	private UserService us;
 	private PostCodeService pcs;
@@ -82,7 +82,7 @@ public class HomeController {
 			model.addAttribute("products", ps.findAll());
 		} catch (Exception e) {
 			model.addAttribute("productError", "Nincs termék");
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		return "index";
 	}
@@ -102,12 +102,12 @@ public class HomeController {
     public String editUser(@ModelAttribute @Valid User user, BindingResult bindingResult, Model model) {
 		if(bindingResult.hasErrors())
         {
-			log.error("Error with user edit: " + bindingResult.getAllErrors());
+			LOG.error("Error with user edit: " + bindingResult.getAllErrors());
         }else if(!pcs.checkPostCodeAndCity(user.getPostCode(), user.getCity())) {
-			log.debug("City: " + user.getCity() + " and postcode: " + user.getPostCode() + " is not equal");
+			LOG.debug("City: " + user.getCity() + " and postcode: " + user.getPostCode() + " is not equal");
 			model.addAttribute("postCodeError", user.getCity() + " irányítószáma nem: " + user.getPostCode() + " !");
 		} else if(!gs.validateAddress(user.getFullAddress())) {
-			log.warn("Address is probably not valid");
+			LOG.warn("Address is probably not valid");
 			model.addAttribute("invalidAddress", "A cím: " + user.getFullAddress() + " nem biztos, hogy létezik. Kérem ellenőrizze, hogy nem írt el"
 					+ "valamit. (pl. 'ut'-at írt 'út' vagy 'utca' helyett)");
 		} else {
@@ -115,7 +115,7 @@ public class HomeController {
 				us.editUser(user);
 			}catch(Exception e) {
 				if(e.getMessage().contains("email cím")) {
-					log.debug("reg problem: email already exists");
+					LOG.debug("reg problem: email already exists");
 					model.addAttribute("emailError",e.getMessage());
 				}
 				e.printStackTrace();
@@ -188,7 +188,7 @@ public class HomeController {
 		try {
 			return os.getProductsOfOrder(orderId);
 		} catch (Exception e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 			return "error";
 		}
 	}

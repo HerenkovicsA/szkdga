@@ -27,7 +27,7 @@ import org.springframework.data.util.Pair;
 @Controller
 public class EmplyoeeController {
 
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(EmplyoeeController.class);
 	private static final String GOOGLE_API_KEY = System.getenv("GOOGLE_API_KEY");
 	private DeliveryService ds;
 	private OrderService os;
@@ -122,9 +122,9 @@ public class EmplyoeeController {
 	public String setOrderDone(@RequestParam long orderId, @RequestParam boolean b) {
 		int result = os.setOrderDone(orderId,b);
 		if(result == 0) {
-			log.info("Didn't change order's (" + orderId + ") done property to " + b);
+			LOG.info("Didn't change order's (" + orderId + ") done property to " + b);
 		} else {
-			log.debug("Changed order's (" + orderId + ") done property to " + b);
+			LOG.debug("Changed order's (" + orderId + ") done property to " + b);
 		}
 		return "employee";
 	}

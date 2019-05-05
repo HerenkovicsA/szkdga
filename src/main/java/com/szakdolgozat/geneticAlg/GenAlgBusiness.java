@@ -24,7 +24,7 @@ public class GenAlgBusiness {
 	private int[][] citiesDistances;
 	
 	private Crossover xover = new Crossover();
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(GenAlgBusiness.class);
 	
 	public GenAlgBusiness(int popSize, int iterationMax, int elitism, List<Order> orders, int[][] citiesDistances) {
 		this.popSize = popSize;
@@ -35,7 +35,7 @@ public class GenAlgBusiness {
 	}
 
 	public Pair<Double, List<Order>> go() {
-		log.info("Start genetic algorithms");
+		LOG.info("Start genetic algorithms");
 		long startTime = System.currentTimeMillis();
 		
 		List<Chromosome> bestsList = new ArrayList<Chromosome>();		
@@ -62,16 +62,16 @@ public class GenAlgBusiness {
 				Thread.sleep(1);
 			}
 		} catch (InterruptedException e) {
-			log.error(e.getMessage());
+			LOG.error(e.getMessage());
 		}
 		long stopTime = System.currentTimeMillis();
-		log.info("Genetic algorithms took: " + (stopTime - startTime) + " ms");
+		LOG.info("Genetic algorithms took: " + (stopTime - startTime) + " ms");
 		Collections.sort(bestsList);
 		return Pair.of(bestsList.get(0).getChromValue()/1000, bestsList.get(0).getTour(orders));
 	}
 	
 	private void runOnce(List<Chromosome> bestsList) {
-		log.info("Thread has started");
+		LOG.info("Thread has started");
 		pop = new Population(this.popSize,citiesDistances);
 		Population  newPop;
 		Chromosome offspring1;
@@ -96,7 +96,7 @@ public class GenAlgBusiness {
 			
 		}
 		addToList(bestsList, pop.getBestChrom());
-		log.info("Thread has stopped");
+		LOG.info("Thread has stopped");
 	}
 	
 	private synchronized void addToList(List<Chromosome> list, Chromosome chrom) {

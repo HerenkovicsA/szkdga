@@ -16,13 +16,13 @@ import org.springframework.ui.Model;
 @ControllerAdvice
 public class FileUploadExceptionAdvice {
 	
-	private final Logger log = LoggerFactory.getLogger(this.getClass());
+	private static final Logger LOG = LoggerFactory.getLogger(FileUploadExceptionAdvice.class);
 	
     @ExceptionHandler({MaxUploadSizeExceededException.class,SizeLimitExceededException.class})
     public String handleMaxSizeException(
       MaxUploadSizeExceededException exc, HttpServletRequest request, 
       HttpServletResponse responsem, Model model) throws IOException {
-    	log.warn(exc.getLocalizedMessage());
+    	LOG.warn(exc.getLocalizedMessage());
     	model.addAttribute("message", "s2l");
     	return "redirect:/error";
     }
