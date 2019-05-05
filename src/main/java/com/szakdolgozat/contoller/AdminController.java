@@ -311,7 +311,7 @@ public class AdminController {
 	@PostMapping(value = "/getOrdersForModalTable", params="deliveryId")
     public @ResponseBody Object getOrdersForModalTable(@RequestParam long deliveryId) {
 		try {
-			return ds.getOrderOfDelivery(deliveryId);
+			return ds.getOrdersOfDelivery(deliveryId);
 		} catch (Exception e) {
 			LOG.error(e.getMessage());
 			return e.getMessage();

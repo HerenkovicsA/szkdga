@@ -36,6 +36,7 @@ public class OrderServiceImpl implements OrderService {
 	private ProductService ps;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(OrderServiceImpl.class);
+	private static final String COMPANYS_ADDRESS = "9026, Győr, Egyetem tér 1.";
 	
 	public OrderServiceImpl() {
 
@@ -431,5 +432,26 @@ public class OrderServiceImpl implements OrderService {
 		or.save(order);
 		return true;
 	}
+	
+	@Override
+	public Order getFakeOrder() {
+		User fakeUserForStart = new User();
+		fakeUserForStart.setFullAddress(COMPANYS_ADDRESS);
+		Order fakeOrderForStart = new Order();
+		fakeOrderForStart.setUser(fakeUserForStart);
+		return fakeOrderForStart;
+	}
 
+	@Override
+	public Order getOrderFromSetById(Set<Order> orderSet, long id) throws Exception {
+		if(id == 0 ) {
+			return getFakeOrder();
+		} else {
+			for (Order order : orderSet) {
+				if(order.getId() == id) return order;
+			}
+		}
+		LOG.error("Order is not found (id=" + id +")");
+		throw new Exception("Order is not found");
+	}
 }

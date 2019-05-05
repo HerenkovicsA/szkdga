@@ -18,7 +18,7 @@ public interface DeliveryService {
 
 	public String deleteDelivery(long id);
 
-	public Map<String, Order> getOrderOfDelivery(long deliveryId) throws Exception;
+	public Map<String, Order> getOrdersOfDelivery(long deliveryId) throws Exception;
 
 	public void editDelivery(Map<Object, Object> map) throws Exception;
 

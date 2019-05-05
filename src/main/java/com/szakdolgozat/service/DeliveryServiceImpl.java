@@ -37,7 +37,6 @@ public class DeliveryServiceImpl implements DeliveryService{
 	private OrderService os;
 	
 	private static final Logger LOG = LoggerFactory.getLogger(DeliveryServiceImpl.class);
-	private static final String COMPANYS_ADDRESS = "9026, Győr, Egyetem tér 1.";
 	
 	public DeliveryServiceImpl() {
 	}
@@ -78,7 +77,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 		this.os = os;
 	}
 
-	private CandD createCandD(boolean askGoogle, String[] addresses) {
+	private CandD createCandD(String[] addresses) {
 		int[][] distanceMatrix = new int[addresses.length][addresses.length];
 		
 		for (int i = 0; i < addresses.length; i++) {
@@ -105,16 +104,16 @@ public class DeliveryServiceImpl implements DeliveryService{
 		return new CandD(distanceMatrix, addresses);
 	}
 	
-	private Pair<Double, List<Order>> getShortestRoute(boolean askGoogle,String[] addresses, List<Order> orders) {
+	private Pair<Double, List<Order>> getShortestRoute(String[] addresses, List<Order> orders) {
 		long startTime = System.currentTimeMillis();
-		CandD cd = createCandD(askGoogle, addresses);
+		CandD cd = createCandD(addresses);
 		if(cd == null) {
 			return null;
 		}
 		long stopTime = System.currentTimeMillis();
 		LOG.info("Getting data from Google API took: " + (stopTime - startTime) + " ms");
-		 int popSize = addresses.length * 5;
-		 int iterationMax = addresses.length * addresses.length;
+		int popSize = addresses.length * 5;
+		int iterationMax = addresses.length * addresses.length;
 		GenAlgBusiness gab = new GenAlgBusiness(popSize, iterationMax, popSize/10, orders, cd.getDistances());
 
 		return gab.go();
@@ -141,7 +140,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 	public String deleteDelivery(long id) {
 		Optional<Delivery> deliveryToRemove = dr.findById(id);
 		if(deliveryToRemove.isPresent()) {
-			removedDeliveryFromEmployee(deliveryToRemove.get());
+			removeDeliveryFromEmployee(deliveryToRemove.get());
 			nullDeliveryOfOrders(deliveryToRemove.get());
 			dr.deleteById(id);
 			return "deleted";
@@ -157,7 +156,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 		}
 	}
 	
-	private void removedDeliveryFromEmployee(Delivery deliveryToRemove) {
+	private void removeDeliveryFromEmployee(Delivery deliveryToRemove) {
 		User employee = deliveryToRemove.getEmployee();
 		if(employee != null) {
 			Set<Delivery> deliverySet = employee.getDeliveriesOfEmployee();
@@ -170,7 +169,7 @@ public class DeliveryServiceImpl implements DeliveryService{
 	}
 
 	@Override
-	public Map<String, Order> getOrderOfDelivery(long deliveryId) throws Exception {
+	public Map<String, Order> getOrdersOfDelivery(long deliveryId) throws Exception {
 		Optional<Delivery> delivery = dr.findById(deliveryId);
 		if(delivery.isPresent()) {
 			Set<Order> orderSet = delivery.get().getOrdersOfDelivery();
@@ -271,13 +270,13 @@ public class DeliveryServiceImpl implements DeliveryService{
 	}
 	
 	private void makeDelivery(List<Order> orders, Delivery newDelivery, User employee) throws Exception {
-		orders.add(0, getFakeOrder());
+		orders.add(0, os.getFakeOrder());
 		
 		String[] addresses = new String[orders.size()];
 		for (int i = 0; i < orders.size(); i++) {
 			addresses[i] = orders.get(i).getUser().getFullAddress();
 		}
-		Pair<Double, List<Order>> resultPair = getShortestRoute(true, addresses, orders);
+		Pair<Double, List<Order>> resultPair = getShortestRoute(addresses, orders);
 		if(resultPair == null) {
 			deleteDelivery(newDelivery.getId());
 			throw new Exception("Creating was unsuccessful");
@@ -380,30 +379,10 @@ public class DeliveryServiceImpl implements DeliveryService{
 		Set<Order> orderSet = delivery.getOrdersOfDelivery();
 		String[] orderedOrderIds = delivery.getDeliveryOrder().split(";");
 		for (String orderId : orderedOrderIds) {
-			newOrderList.add(getOrderFromSetById(orderSet, Long.parseLong(orderId)));
+			newOrderList.add(os.getOrderFromSetById(orderSet, Long.parseLong(orderId)));
 		}
 		return Pair.of(Pair.of(delivery.getDistance(),
 				delivery.getDeliveryDate()),newOrderList);
-	}
-	
-	private Order getFakeOrder() {
-		User fakeUserForStart = new User();
-		fakeUserForStart.setFullAddress(COMPANYS_ADDRESS);
-		Order fakeOrderForStart = new Order();
-		fakeOrderForStart.setUser(fakeUserForStart);
-		return fakeOrderForStart;
-	}
-	
-	private Order getOrderFromSetById(Set<Order> orderSet, long id) throws Exception {
-		if(id == 0 ) {
-			return getFakeOrder();
-		} else {
-			for (Order order : orderSet) {
-				if(order.getId() == id) return order;
-			}
-		}
-		LOG.error("Order is not found (id=" + id +")");
-		throw new Exception("Order is not found");
 	}
 
 	@Override

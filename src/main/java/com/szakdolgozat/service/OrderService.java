@@ -15,17 +15,17 @@ import org.springframework.data.util.Pair;
 
 public interface OrderService {
 
-	public List<Order> findAll() throws Exception;
+	List<Order> findAll() throws Exception;
 
-	public List<Order> findOrdersOfDelivery(long deliveryId) throws Exception;
+	List<Order> findOrdersOfDelivery(long deliveryId) throws Exception;
 
-	public Set<ProductsToOrders> findProductsOfOrder(long orderId) throws Exception;
+	Set<ProductsToOrders> findProductsOfOrder(long orderId) throws Exception;
 
-	public String deleteOrder(long id);
+	String deleteOrder(long id);
 
-	public List<ProductAndQuantityResponse> getProductsOfOrderList(long orderId) throws Exception;
+	List<ProductAndQuantityResponse> getProductsOfOrderList(long orderId) throws Exception;
 
-	public void editOrder(Map<Object, Object> map);
+	void editOrder(Map<Object, Object> map);
 	
 	/** 
 	 * @param cargoSize
@@ -34,29 +34,33 @@ public interface OrderService {
 	 * @return
 	 * Not sorted list of Orders for the delivery in param
 	 */
-	public List<Order> findOrdersForDelivery2(Double cargoSize, double cargoLimit, Delivery delivery);
+	List<Order> findOrdersForDelivery2(Double cargoSize, double cargoLimit, Delivery delivery);
 
-	public Order getOrderById(long orderId);
+	Order getOrderById(long orderId);
 
-	public int setOrderDone(long orderId, boolean b);
+	int setOrderDone(long orderId, boolean b);
 
-	public String makeAnOrder(String email, HashMap<Product, Integer> items);
+	String makeAnOrder(String email, HashMap<Product, Integer> items);
 
-	public List<Pair<Product, Integer>> getProductsOfOrder(long orderId);
+	List<Pair<Product, Integer>> getProductsOfOrder(long orderId);
 
-	public List<Pair<Product, Integer>> getMissingProductList(HashMap<Product, Integer> subCart);
+	List<Pair<Product, Integer>> getMissingProductList(HashMap<Product, Integer> subCart);
 
 	/**
 	 * @return if there is enough order to make a delivery or not 
 	 */
-	public boolean hasEnoughForOneDelivery(double cargoSize);
+	boolean hasEnoughForOneDelivery(double cargoSize);
 
 	/**
 	 * @return true if there is any order that's deadLine is in 48 hours
 	 */
-	public boolean hasUrgentOrder();
+	boolean hasUrgentOrder();
 
-	public String deleteProductFromOrder(long productId, long orderId);
+	String deleteProductFromOrder(long productId, long orderId);
 
-	public boolean deleteOrderFromDelivery(long parseLong, Delivery deliveryToEdit);
+	boolean deleteOrderFromDelivery(long parseLong, Delivery deliveryToEdit);
+	
+	Order getFakeOrder();
+	
+	Order getOrderFromSetById(Set<Order> orderSet, long id) throws Exception;
 }
