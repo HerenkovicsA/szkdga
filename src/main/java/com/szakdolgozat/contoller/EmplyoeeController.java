@@ -58,6 +58,7 @@ public class EmplyoeeController {
 				model.addAttribute("distance", resultPair.getFirst());
 				model.addAttribute("orderList", resultPair.getSecond());
 				model.addAttribute("deliveryDone", false);
+				model.addAttribute("apiKey", GOOGLE_API_KEY);
 			}
 		} catch (Exception e) {
 			if (e.getMessage().equals("Employee has active delivery")) {
